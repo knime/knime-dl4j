@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Cpu
+Bundle-Name: Macosx specific CPU dependencies for Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.bin.macosx.x86_64.cpu;singleton:=true
 Bundle-Version: 0.4.310.qualifier
 Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="0.4"
