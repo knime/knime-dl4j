@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./lrn.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>LRN Layer</name>
+    
+    <shortDescription>
+        Local Response Normalization layer.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        This node adds a Local Response Normalization layer to the Deep Learning Model supplied by the input port. 
+        For more information on LRN see the following paper:<br/>
+        <a href="http://www.cs.toronto.edu/~fritz/absps/imagenet.pdf">http://www.cs.toronto.edu/~fritz/absps/imagenet.pdf</a>
+        </intro>
+        
+        <option name="Hyper Parameters">
+        The variables k, n, alpha and beta are hyper parameters for the Local Response Normalization method. 
+        The paper uses the following values:<br/>
+        <ul>
+			<li>k = 2</li>
+			<li>n = 5</li>
+			<li>alpha = 0.0001</li>
+			<li>beta = 0.75</li>
+		</ul>
+        </option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The model which will be extended by this layer.</inPort>
+        <outPort index="0" name="Deep Learning Model">The model from the input port additionally containing this layer.</outPort>
+    </ports>    
+</knimeNode>

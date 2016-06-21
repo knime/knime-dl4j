@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./predict.png" type="Predictor" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>DL4J Feedforward Predictor</name>
+    
+    <shortDescription>
+        Predictor for Feedforward Deep Learning Models.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node uses the supplied trained Deep Learning Model to create predictions or activations for the supplied
+        test data. The network output activation will be appended to the training data as a collection column where the collection
+        has the same length as the number of output units of the network, which is usually specified in the Output Layer. The numbers 
+        contained in the collection are the raw output activations of the last layer of the network. If specified and the activation of 
+        the last layer is 'softmax' the raw activation can be interpreted as class probabilities and be associated with a class label 
+        taken from the Deeplearning Model the model was trained on. The supplied data table needs to be in the same format as the table 
+        used for learning, meaning it needs to contain columns of the same name and type.</intro>
+            
+        <option name="Append softmax prediction">
+        Whether to append the predicted label to the output table. This is only possible if the output layer of the network
+        configuration uses softmax activation function. The label with the highest corresponding softmax probability will
+        be chosen.
+        </option>       
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">Trained Deep Learning Model.</inPort>
+        <inPort index="1" name="Data Table">Data table containing testing data.</inPort>
+        
+        <outPort index="0" name="Data Table">Data Table containing original testing data with appended network output.
+        The network output is given by a collection column containing output activations for each test example. Additionally,
+        softmax prediction may be appended.
+        </outPort>      
+    </ports>    
+</knimeNode>

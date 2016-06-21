@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./pool.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Pooling Layer</name>
+    
+    <shortDescription>
+        Pooling layer.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node adds a Pooling layer to the Deep Learning Model supplied by the input port.
+         The layer performs a pooling operation usually on patches of the images. 
+        </intro>
+        
+         <option name="Pooling Type">
+        The type of pooling that should be used.
+        </option>
+         <option name="Kernel Size">
+        The size if the pooling kernel in each dimension. The values are given in pixels and are separated by a comma.
+        </option>
+        <option name="Stride">
+        The stride for the pooling kernel in each dimension. Hence, the step size the kernel will be shifted over the
+        input. The values are given in pixels and are separated by a comma.
+        </option>
+    </fullDescription>
+    
+   <ports>
+        <inPort index="0" name="Deep Learning Model">The model which will be extended by this layer.</inPort>
+        <outPort index="0" name="Deep Learning Model">The model from the input port additionally containing this layer.</outPort>
+    </ports>    
+</knimeNode>

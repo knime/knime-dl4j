@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./dense.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Auto Encoder Layer</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The model which will be extended by this layer.</inPort>
+        <outPort index="0" name="Deep Learning Model">The model from the input port additionally containing this layer.</outPort>
+    </ports>    
+</knimeNode>

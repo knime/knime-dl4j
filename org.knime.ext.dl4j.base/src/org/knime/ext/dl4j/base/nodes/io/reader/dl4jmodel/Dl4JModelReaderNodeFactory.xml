@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./modelreader.png" type="Source" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>DL4J Model Reader</name>
+    
+    <shortDescription>
+        Reading of Deep Learning Models.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node reads a Deep Learning Model previously saved to a file. Only files created by the 
+        corresponding model writer are supported.</intro>
+        
+        
+        <option name="Selected File">The path of the file containing the model that should be read.</option>
+      
+    </fullDescription>
+    
+    <ports>     
+        <outPort index="0" name="Deep Learning Model">The loaded model.</outPort>
+    </ports>    
+</knimeNode>

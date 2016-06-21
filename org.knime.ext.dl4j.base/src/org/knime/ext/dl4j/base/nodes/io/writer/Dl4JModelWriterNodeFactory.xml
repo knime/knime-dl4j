@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./modelwriter.png" type="Sink" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>DL4J Model Writer</name>
+    
+    <shortDescription>
+        Writing of Deep Learning Models.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node saves a supplied Deep Learning Model to the specified location, which can be later read 
+        by the corresponding reader node.</intro>
+        
+        
+        <option name="Selected File">The path to the location where the model should be saved.</option>
+        <option name="Overwrite">Whether to overwrite a existing file at the specified location.</option>
+       
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The model which should be saved to the specified location.</inPort>  
+    </ports>    
+   
+</knimeNode>

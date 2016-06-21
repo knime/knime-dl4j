@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse version="3.0"?><plugin>
+
+   <!-- This is an example for providing an own category 
+      <extension
+         point="org.knime.workbench.repository.categories">
+      <category
+            description="Category containing my nodes"
+            icon="icons/default.png"
+            level-id="myNodes"
+            name="My nodes"
+            path="/"/>
+   </extension>
+   -->
+   
+   <extension point="org.knime.workbench.repository.nodes">
+<node category-path="/labs/deeplearning/layer/deepbelief" factory-class="org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm.RBMLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/layer" factory-class="org.knime.ext.dl4j.base.nodes.layer.init.DL4JModelInitNodeFactory"/>
+<node category-path="/labs/deeplearning/layer" factory-class="org.knime.ext.dl4j.base.nodes.layer.ffoutput.OutputLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.convolution.ConvolutionLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/learn" factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
+<node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
+<node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
+<node category-path="/labs/deeplearning/predict" factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.FeedforwardPredictorNodeFactory"/>
+<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.lrn.LRNLayerNodeFactory"/>
+<node
+      category-path="/labs/deeplearning/layer/encoder"
+      factory-class="org.knime.ext.dl4j.base.nodes.layer.autoencoder.AutoEncoderLayerNodeFactory">
+</node>
+</extension>
+   <extension point="org.knime.core.PortType">
+      <portType hidden="false" name="org.knime.dl.nodes.DNNModelPortObject" objectClass="org.knime.ext.dl4j.base.DLModelPortObject" objectSerializer="org.knime.ext.dl4j.base.DLModelPortObject$Serializer" specClass="org.knime.ext.dl4j.base.DLModelPortObjectSpec" specSerializer="org.knime.ext.dl4j.base.DLModelPortObjectSpec$Serializer">
+      </portType>
+   </extension>
+   <extension point="org.knime.workbench.repository.categories">
+      <category icon="res/icons/dl.png" level-id="deeplearning" locked="true" name="Deep Learning" path="/labs/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="layer" locked="true" name="Layer" path="/labs/deeplearning/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="deepbelief" locked="true" name="Deep Belief" path="/labs/deeplearning/layer/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="conv" locked="true" name="Convolutional" path="/labs/deeplearning/layer/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="mlp" locked="true" name="Perceptron" path="/labs/deeplearning/layer/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="data" locked="true" name="Data" path="/labs/deeplearning/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="io" locked="true" name="I/O" path="/labs/deeplearning/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="learn" locked="true" name="Learn" path="/labs/deeplearning/">
+      </category>
+      <category icon="res/icons/missing.gif" level-id="predict" locked="true" name="Predict" path="/labs/deeplearning/">
+      </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="encoder"
+            locked="true"
+            name="Encoder"
+            path="/labs/deeplearning/layer/">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.knime.workbench.ui.preferences"
+            class="org.knime.ext.dl4j.base.prefs.DL4JPreferencePage"
+            id="org.knime.deeplearning.base.prefs.DL4JPreferencePage"
+            name="Deeplearning4J Integration">
+      </page>
+   </extension>
+   <extension
+         point="org.knime.core.DataCellToJavaConverter">
+      <DataCellToJavaConverter
+            factoryClass="org.knime.ext.dl4j.base.data.convert.DoubleValueToINDArrayConverterFactory"></DataCellToJavaConverter>
+   </extension>
+   
+</plugin>

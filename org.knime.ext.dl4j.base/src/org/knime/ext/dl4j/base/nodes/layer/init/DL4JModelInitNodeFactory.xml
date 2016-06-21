@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./modelinit.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>DL4J Model Initializer</name>
+    
+    <shortDescription>
+        Initialiser for the deep learning model.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node creates an empty Deep Learning Model, which is used to start a network architecture. This node
+        needs to be the first node in every network.</intro>        
+    </fullDescription>
+    
+    <ports> 
+        <outPort index="0" name="Deep Learning Model">Empty Deep Learning Model</outPort>
+    </ports>      
+</knimeNode>

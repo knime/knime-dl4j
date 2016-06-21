@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./out.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Output Layer</name>
+    
+    <shortDescription>
+        Output layer.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        This node adds a output layer to the Deep Learning Model supplied by the input port. The layer 
+        configures the output of the network. It should be the last node of the network configuration.
+        </intro>
+        
+        <option name="Input/Output Options">
+        Allows to specify if you want to give the number of input neurons, the number of output neurons or both. 
+        If only one number is specified the other number will be calculated automatically if possible (currently only
+        possible for Convolutional Networks).
+        </option>
+        <option name="Number of Input Units">The number of inputs for this layer.</option>
+        <option name="Number of Output Units">The number of outputs for this layer. For supervised training this value needs 
+        to match the number of possible labels.</option>
+        <option name="Learning Rate">The learning rate that should be used for this layer.</option>
+        <option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
+        <option name="Loss Function">The type of loss function that should be used for this layer.</option>
+        <option name="Activation Function">The type of activation function that should be used for this layer.</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The model which will be extended by this layer.</inPort>
+        <outPort index="0" name="Deep Learning Model">The model from the input port additionally containing this layer.</outPort>
+    </ports>    
+</knimeNode>

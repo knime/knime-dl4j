@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./conv.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Convolution Layer</name>
+    
+    <shortDescription>
+        Convolutional layer.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        This node adds a Convolutional layer to the Deep Learning Model supplied by the input port. 
+        The layer performs convolution of the inputs (usually images) using a user defined number of 
+        convolution kernels.
+        </intro>
+        
+        
+        <option name="Number of Kernels">
+        The number of convolution kernels to use. Hence, the number of feature maps produced by the layer.
+        </option>
+        <option name="Learning Rate">The learning rate that should be used for this layer.</option>
+        <option name="Kernel Size">
+        The size if the convolution kernel in each dimension. The values are given in pixels and are separated by a comma.
+        </option>
+        <option name="Stride">
+        The stride for the convolution kernel in each dimension. Hence, the step size the kernel will be shifted over the
+        input. The values are given in pixels and are separated by a comma.
+        </option>
+        <option name="Activation Function">The type of activation function that should be used for this layer.</option>
+         <option name="Drop Out Rate">Drop Out probability for neurons.</option>
+      
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The model which will be extended by this layer.</inPort>
+        <outPort index="0" name="Deep Learning Model">The model from the input port additionally containing this layer.</outPort>
+    </ports>    
+</knimeNode>
