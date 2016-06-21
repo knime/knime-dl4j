@@ -43,9 +43,9 @@
 package org.knime.ext.dl4j.base.nodes.layer;
 
 /**
- * Enumerate for Deep Neural Network Layer Type.
+ * Layer types associated with deeplearning.
  * 
- * @author David Kolb
+ * @author David Kolb, KNIME.com GmbH
  */
 public enum DNNLayerType {
 	/** restricted boltzmann machine layer */

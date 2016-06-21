@@ -59,6 +59,11 @@ import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
+/**
+ * Abstract superclass for predictor node models of Deeplearning4J integration.
+ *
+ * @author David Kolb, KNIME.com GmbH
+ */
 public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 
 	private boolean m_inputTableContainsImg;
@@ -70,6 +75,16 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
         super(inPortTypes, outPortTypes);
     }	
 
+	/**
+	 * Make basic checks before a predictor can be executed. Check if the feature columns that were
+	 * used for learning are present in the table and if they have the same type. Sets predictor flags.
+	 * 
+	 * @param inSpecs the specs of the model to use for prediction (index 0) and the specs of the table 
+	 * 				  to get data for prediction (index 1)
+	 * @param logger a logger to log errors
+	 * @return
+	 * @throws InvalidSettingsException
+	 */
 	protected DataTableSpec[] configure(PortObjectSpec[] inSpecs, final NodeLogger logger)
 			throws InvalidSettingsException {
 		DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
@@ -103,6 +118,14 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 		return m_containsLabels;
 	}
 	
+	/**
+	 * Checks if the specified list of feature columns is contained in the specified spec.
+	 * 
+	 * @param spec the table spec to check for feature columns
+	 * @param expectedCols the feature columns 
+	 * @throws InvalidSettingsException if spec does not contain a column of the feature columns
+	 * 									if it contains the columns but one of it is not of the same type
+	 */
 	private void checkInputTableForFeatureColumns(DataTableSpec spec, List<Pair<String,String>> expectedCols) 
 			throws InvalidSettingsException {
 		for(Pair<String,String> c : expectedCols){
@@ -119,6 +142,12 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 		}
 	}
 	
+	/**
+	 * Checks if the last layer of the supplied list of layers has softmax activation function.
+	 * 
+	 * @param layers the list of layers to check
+	 * @return true if activation of the last layer is softmax, false if not
+	 */
 	protected boolean isOutActivationSoftmax(List<Layer> layers){
     	Layer outputLayer = layers.get(layers.size()-1);
     	if(outputLayer.getActivationFunction().equals("softmax")){

@@ -63,7 +63,11 @@ import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 
-
+/**
+ * Abstract superclass for learner node models of Deeplearning4J integration.
+ *
+ * @author David Kolb, KNIME.com GmbH
+ */
 public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {	
 	
 	private boolean isConvolutional;
@@ -76,7 +80,16 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
         super(inPortTypes, outPortTypes);
     }	
 	
-	//TODO javadoc
+	/**
+	 * Makes basic checks before a learner can be executed. Checks column selection,
+	 * sets list of columns to be learned on and sets learner flags. 
+	 * 
+	 * @param inSpecs the specs of the model to learn (index 0) and the specs of the table to learn on (index 1)
+	 * @param selectedColumns name of columns to use for learning
+	 * @param logger a logger to log errors
+	 * @return checked port object spec with set list of feature columns and empty list of labels
+	 * @throws InvalidSettingsException
+	 */
     protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs, List<String> selectedColumns,
     		final NodeLogger logger) throws InvalidSettingsException{    	
     	DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];   

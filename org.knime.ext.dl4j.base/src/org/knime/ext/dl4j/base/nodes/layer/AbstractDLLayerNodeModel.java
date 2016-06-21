@@ -57,10 +57,10 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
 /**
- * Abstract superclass for NodeModels, contains default implementations for
- * commonly used methods.
+ * Abstract superclass for layer node models of Deeplearning4J integration, 
+ * contains default implementations for configure method.
  *
- * @author David Kolb
+ * @author David Kolb, KNIME.com GmbH
  */
 public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
 
@@ -72,7 +72,18 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
 	/** DNNModelPortObjectSpec to exchange specs from configure to execute */
     protected DLModelPortObjectSpec m_outputSpec;
     
-    //TODO javadoc
+    /**
+     * Updates the spec with information of the current layer and performs some
+     * checks on the spec.
+     * 
+     * @param inSpecs the spec to extend and check
+     * @param dnnTypes the network types the current layer can be part of
+     * @param dnnLayerType the type of the current layer
+     * @param parameterSettings the settings of the current layer
+     * @param logger a logger to log errors
+     * @return extended and checked spec
+     * @throws InvalidSettingsException 
+     */
     protected DLModelPortObjectSpec[] configure(PortObjectSpec[] inSpecs, List<DNNType> dnnTypes, 
     		DNNLayerType dnnLayerType, LayerParameterSettingsModels parameterSettings, 
     		final NodeLogger logger) throws InvalidSettingsException{    	

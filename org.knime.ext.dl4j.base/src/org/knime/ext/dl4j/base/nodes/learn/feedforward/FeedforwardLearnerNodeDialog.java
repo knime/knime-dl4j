@@ -86,7 +86,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  * complex dialog please derive directly from 
  * {@link org.knime.core.node.NodeDialogPane}.
  * 
- * @author 
+ * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 

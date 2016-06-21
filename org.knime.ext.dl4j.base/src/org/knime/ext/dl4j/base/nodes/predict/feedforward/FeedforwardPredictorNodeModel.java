@@ -83,10 +83,9 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * This is the model implementation of DL4JPredictor.
- * 
+ * Predictor for feedforward networks of Deeplearning4J integration.
  *
- * @author KNIME
+ * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel {
 	

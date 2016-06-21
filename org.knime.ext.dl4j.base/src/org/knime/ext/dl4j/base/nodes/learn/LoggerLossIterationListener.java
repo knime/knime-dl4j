@@ -46,6 +46,12 @@ import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.optimize.api.IterationListener;
 import org.knime.core.node.NodeLogger;
 
+/**
+ * Implementation of {@link IterationListener} using a {@link NodeLogger}
+ * for logging.
+ *
+ * @author David Kolb, KNIME.com GmbH
+ */
 public class LoggerLossIterationListener implements IterationListener {
 
 	private static final long serialVersionUID = -6838399445673543468L;

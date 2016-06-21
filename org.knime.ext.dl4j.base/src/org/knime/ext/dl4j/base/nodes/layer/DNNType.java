@@ -51,9 +51,9 @@ import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 
 /**
- * Enumerate for Deep Neural Network Type.
+ * Neural networks associated with deeplearning.
  * 
- * @author David Kolb
+ * @author David Kolb, KNIME.com GmbH
  */
 public enum DNNType {
 	/** network type not yet specified */

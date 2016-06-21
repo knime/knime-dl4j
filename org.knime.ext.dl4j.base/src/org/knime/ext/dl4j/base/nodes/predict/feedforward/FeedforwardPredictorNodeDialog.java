@@ -57,7 +57,7 @@ import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels;
  * complex dialog please derive directly from 
  * {@link org.knime.core.node.NodeDialogPane}.
  * 
- * @author KNIME
+ * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardPredictorNodeDialog extends DefaultNodeSettingsPane {
 

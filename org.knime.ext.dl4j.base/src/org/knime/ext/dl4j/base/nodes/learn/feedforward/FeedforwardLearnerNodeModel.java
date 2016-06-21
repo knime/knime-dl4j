@@ -82,9 +82,9 @@ import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
- * Standard Learner for DNNModels for DL4J integration.
+ * Learner for feedforward networks of Deeplearning4J integration.
  *
- * @author David Kolb
+ * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 
@@ -260,6 +260,18 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		return settings;
 	} 
 	
+	/**
+	 * Performs training of the specified {@link MultiLayerNetwork} (whether to do backprop 
+	 * or finetuning or pretraining is set in model configuration) for the specified number 
+	 * of epochs using the specified {@link DataSetIterator} and specified {@link ExecutionContext} 
+	 * for progress reporting and execution cancelling.
+	 * 
+	 * @param mln the network to train
+	 * @param epochs the number of epochs to train
+	 * @param data the data to train on
+	 * @param exec
+	 * @throws Exception
+	 */
 	private void trainNetwork(MultiLayerNetwork mln, int epochs, DataSetIterator data, ExecutionContext exec)
 			throws Exception{
 		boolean isPretrain = mln.getLayerWiseConfigurations().isPretrain();
@@ -315,6 +327,12 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		}	
 	}
 	
+	/**
+	 * Logs score of specified model at specified epoch.
+	 * 
+	 * @param m the model to get score from
+	 * @param epoch the epoch number to print into log message
+	 */
 	private void logEpochScore(MultiLayerNetwork m, int epoch){
 		logger.info("Loss after epoch " + epoch + " is " + m.score());
 	}
