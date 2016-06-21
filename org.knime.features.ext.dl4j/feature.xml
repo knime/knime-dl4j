@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.knime.ext.dl4j.feature"
+      id="org.knime.features.ext.dl4j"
       label="KNIME Deeplearning4J Integration"
       version="3.2.0.qualifier"
       provider-name="KNIME GmbH, Konstanz, Germany">
@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-      This feature contains work protected by copyright law.
+      Copyright by KNIME GmbH, Konstanz, Germany
    </copyright>
 
    <license>
@@ -728,13 +728,14 @@ propagated with or for interoperation with KNIME.
    </license>
 
    <plugin
-         id="org.knime.deeplearning.base"
+         id="org.knime.ext.dl4j.base"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
-         id="org.knime.deeplearning.bin.linux.x86_64"
+         id="org.knime.ext.dl4j.bin.linux.x86_64.cpu"
          os="linux"
          arch="x86_64"
          download-size="0"
@@ -743,7 +744,7 @@ propagated with or for interoperation with KNIME.
          fragment="true"/>
 
    <plugin
-         id="org.knime.deeplearning.bin.macosx.x86_64"
+         id="org.knime.ext.dl4j.bin.macosx.x86_64.cpu"
          os="macosx"
          arch="x86_64"
          download-size="0"
@@ -752,12 +753,25 @@ propagated with or for interoperation with KNIME.
          fragment="true"/>
 
    <plugin
-         id="org.knime.deeplearning.bin.windows.x86_64"
+         id="org.knime.ext.dl4j.bin.windows.x86_64.cpu"
          os="win32"
          arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
          fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.libs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.knime.ext.textprocessing.dl4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
