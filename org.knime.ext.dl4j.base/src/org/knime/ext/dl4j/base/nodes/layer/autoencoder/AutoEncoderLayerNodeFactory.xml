@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./dense.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Auto Encoder Layer</name>
+<knimeNode icon="./ae.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>AutoEncoder Layer</name>
     
     <shortDescription>
-        
+        Denoising AutoEncoder Layer
     </shortDescription>
     
     <fullDescription>
+        <intro>
+        This node adds a Denoising AutoEncoder layer to the Deep Learning Model supplied by the input port.        
+        </intro>
         
+        <option name="Number of Input Units">The number of inputs for this layer.</option>
+        <option name="Number of Output Units">The number of outputs for this layer.</option>
+        <option name="Learning Rate">The learning rate that should be used for this layer.</option>
+        <option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
+        <option name="Activation Function">The type of activation function that should be used for this layer.</option>
+        <option name="Corruption Level">The amount of noise or corruption which should be used.</option>      
     </fullDescription>
     
     <ports>
