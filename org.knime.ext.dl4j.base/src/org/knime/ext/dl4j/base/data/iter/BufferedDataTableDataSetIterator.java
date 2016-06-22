@@ -216,6 +216,9 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
 		return (int)m_table.size();
 	}
 
+	/**
+	 * The number of features of the input data.
+	 */
 	@Override
 	public int inputColumns() {
 		return m_recordLength;

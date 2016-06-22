@@ -103,7 +103,6 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         List<Layer> newLayers = portObject.getLayers();
         
         //parameters
-        int nIn = m_dnnParameterSettings.getNumberOfInputs().getIntValue();
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         int k = m_dnnParameterSettings.getRbmIterations().getIntValue();        
         RBM.HiddenUnit hidden = RBM.HiddenUnit.valueOf(m_dnnParameterSettings.getHiddenUnit().getStringValue());
@@ -116,7 +115,6 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         
         //build layer
         Layer rbmLayer = new RBM.Builder(hidden, visible)
-        		.nIn(nIn)
         		.nOut(nOut)
         		.weightInit(weight)
         		.k(k)
@@ -146,7 +144,6 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
 	protected List<SettingsModel> initSettingsModels() {
 		m_dnnParameterSettings = new LayerParameterSettingsModels();
 		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
-		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_INPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.RBM_ITERATIONS);
 		m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_dnnParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);

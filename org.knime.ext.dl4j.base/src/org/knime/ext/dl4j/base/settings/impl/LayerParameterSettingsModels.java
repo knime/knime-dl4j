@@ -78,7 +78,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 	
 	static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";
 	
-	private SettingsModelIntegerBounded m_numberOfInputs;
 	private SettingsModelIntegerBounded m_numberOfOutputs;
 	private SettingsModelIntegerBounded m_rbmIterations;
 	private SettingsModelIntegerBounded m_lrnK;
@@ -93,7 +92,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 	private SettingsModelString m_hiddenUnit;
 	private SettingsModelString m_visibleUnit;
 	private SettingsModelString m_poolingType;
-	private SettingsModelString m_inOutOptions;
 	
 	private SettingsModelDoubleBounded m_dropOut;
 	private SettingsModelDoubleBounded m_learningRate;
@@ -107,9 +105,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 	public SettingsModel createParameter(final LayerParameter enumerate) throws IllegalStateException {
 		switch(enumerate){
 		//Integer parameters
-		case NUMBER_OF_INPUTS:
-			return new SettingsModelIntegerBounded("number_of_inputs", DEFAULT_INT, 1, 
-					Integer.MAX_VALUE);
 		case NUMBER_OF_OUTPUTS:
 			return new SettingsModelIntegerBounded("number_of_outputs", DEFAULT_INT, 1, 
 					Integer.MAX_VALUE);
@@ -141,9 +136,7 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 		case VISIBLE_UNIT:
 			return new SettingsModelString("visible_unit", DEFAULT_TRANSFORMATION);
 		case POOLING_TYPE:
-			return new SettingsModelString("pooling_type", DEFAULT_POOLING);		
-		case IN_OUT_OPTIONS:
-			return new SettingsModelString("in_out_options", DEFAULT_IN_OUT_OPTIONS);
+			return new SettingsModelString("pooling_type", DEFAULT_POOLING);				
 			
 		//Double parameters
 		case DROP_OUT:
@@ -182,11 +175,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 			if(!m_allInitializedSettings.contains(m_hiddenUnit))
 				m_allInitializedSettings.add(m_hiddenUnit);
 			break;
-		case IN_OUT_OPTIONS:
-			m_inOutOptions = (SettingsModelString)createParameter(enumerate);
-			if(!m_allInitializedSettings.contains(m_inOutOptions))
-				m_allInitializedSettings.add(m_inOutOptions);
-			break;
 		case KERNEL_SIZE:
 			m_kernelSize = (SettingsModelString)createParameter(enumerate);
 			if(!m_allInitializedSettings.contains(m_kernelSize))
@@ -196,11 +184,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 			m_lossFunction = (SettingsModelString)createParameter(enumerate);
 			if(!m_allInitializedSettings.contains(m_lossFunction))
 				m_allInitializedSettings.add(m_lossFunction);
-			break;
-		case NUMBER_OF_INPUTS:
-			m_numberOfInputs = (SettingsModelIntegerBounded)createParameter(enumerate);
-			if(!m_allInitializedSettings.contains(m_numberOfInputs))
-				m_allInitializedSettings.add(m_numberOfInputs);
 			break;
 		case NUMBER_OF_OUTPUTS:
 			m_numberOfOutputs = (SettingsModelIntegerBounded)createParameter(enumerate);
@@ -277,10 +260,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 		return m_learningRate;
 	}
 	
-	public SettingsModelIntegerBounded getNumberOfInputs() {
-		return m_numberOfInputs;
-	}
-	
 	public SettingsModelIntegerBounded getLrnK() {
 		return m_lrnK;
 	}
@@ -337,12 +316,6 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 	public SettingsModelString getPoolingType() {
 		return m_poolingType;
 	}
-
-
-	public SettingsModelString getInOutOptions() {
-		return m_inOutOptions;
-	}
-
 
 	public SettingsModelDoubleBounded getDropOut() {
 		return m_dropOut;

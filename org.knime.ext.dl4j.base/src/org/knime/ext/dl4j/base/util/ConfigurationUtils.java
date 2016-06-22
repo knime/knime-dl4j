@@ -46,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.deeplearning4j.nn.conf.layers.FeedForwardLayer;
+import org.deeplearning4j.nn.conf.layers.Layer;
+import org.deeplearning4j.nn.conf.layers.LocalResponseNormalization;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.InvalidSettingsException;
@@ -101,35 +105,7 @@ public class ConfigurationUtils {
 	 * list if no problems were discovered
 	 */
 	public static List<String> validateSpec(final DLModelPortObjectSpec spec,
-			final List<DNNType> types) throws InvalidSettingsException {
-		
-		if(spec.getInsOuts().size() != spec.getLayerTypes().size()){
-			throw new InvalidSettingsException("The number of "
-					+ "input-output pairs is not equal to the number of layers");
-		}
-		//only need to check if there is more than one layer in the net
-		if(spec.getLayerTypes().size() > 1){											
-			List<Pair<Integer,Integer>> partialInsOuts = new ArrayList<>();
-			List<DNNLayerType> partialLayerTypes = new ArrayList<>();
-				
-			int i = 0;
-			for(Pair<Integer,Integer> p : spec.getInsOuts()){
-				if(p == null){
-					validateInsOuts(partialInsOuts, partialLayerTypes, i);
-					partialInsOuts.clear();
-					partialLayerTypes.clear();
-					i++;
-				} else {
-					partialInsOuts.add(p);
-					partialLayerTypes.add(spec.getLayerTypes().get(i));
-					i++;
-				}
-									
-			}
-			validateInsOuts(partialInsOuts, partialLayerTypes, i);			
-		}
-		
-		
+			final List<DNNType> types) throws InvalidSettingsException {						
 		List<String> warnings = new ArrayList<>();
 		
 		warnings.addAll(validateType(spec, types));
@@ -262,50 +238,7 @@ public class ConfigurationUtils {
     				+ " current architecture: " + typesToString(spec.getNeuralNetworkTypes()));
 		}
 		return warnings;
-	}
-	
-	/**
-	 * Check for all layers if the number of output matches the number 
-	 * of inputs in the next layer. This method may be called on a sublist of the 
-	 * global list of {@link DNNLayerType}s containing all of them. 
-	 * 
-	 * @param insOuts pairs containing number of inputs and outputs for each layer
-	 * @param layerTypes specs corresponding to the net configuration
-	 * @param reverseLayerIndexOffset index + 1 of last element in sublist in global list
-	 * @throws InvalidNeuralNetworkConfigurationException
-	 */
-	private static void validateInsOuts(final List<Pair<Integer,Integer>> insOuts,
-			final List<DNNLayerType> layerTypes, int reverseLayerIndexOffset)
-			throws InvalidSettingsException{
-	
-		if(!insOuts.contains(null) && !insOuts.isEmpty()){			
-			if(insOuts.size() != layerTypes.size()){
-				throw new InvalidSettingsException("The number of "
-						+ "input-output pairs is not equal to the number of layers");
-			}
-			
-			Pair<Integer,Integer> firstPair = insOuts.get(0);
-			for(int i = 1 ; i < insOuts.size() ; i++){
-				Pair<Integer,Integer> secondPair = insOuts.get(i);
-				if(firstPair.getSecond().equals(secondPair.getFirst())){
-					firstPair = secondPair;
-				}
-				else{
-					String firstLayerName = layerTypes.get(i-1).toString();
-					String secondLayerName = layerTypes.get(i).toString();
-
-					int globalindexSecondLayer = reverseLayerIndexOffset - insOuts.size() + i;				
-					
-					throw new InvalidSettingsException("Number of "
-							+ "outputs in " + firstLayerName + ": " + globalindexSecondLayer + " does not "
-							+ "match number of inputs in " + secondLayerName + ": " 
-							+ (globalindexSecondLayer+1) + ". outputs: " + firstPair.getSecond() 
-							+ " inputs: " + secondPair.getFirst());
-				}
-			}
-		} 
-	}
-	
+	}	
 	
 	/**
 	 * Converts list of enums to single string where every string representation
@@ -345,5 +278,44 @@ public class ConfigurationUtils {
         	} 
     	}
     	return false;
+	}
+	
+	/**
+	 * Sets up the input/output numbers of the specified list of layers. The number of 
+	 * inputs of the first layer will be set to the specified value. Usually this value
+	 * can be calculated from the data. The numbers for possible more layers will adjusted
+	 * such that the number of outputs from one layer matches the number of inputs from the next.
+	 * It is expected that the number of outputs is correctly set for each layer so the number 
+	 * of inputs can be inferred.<br><br>
+	 * 
+	 * SubsamplingLayer and LocalResponseNormalization will be left untouched as they are no 
+	 * FeedForwardLayer (strange layer hierarchy from DL4J, e.g. recurrent layers extend 
+	 * {@link FeedForwardLayer}. May cause problems with next DL4J versions).
+	 * 
+	 * @param layers the list of layers to set up
+	 * @param numberOfInputs the number of inputs for the first layer
+	 */
+	public static void setupLayers(final List<Layer> layers, final int numberOfInputs){
+		FeedForwardLayer ffl = null;		
+		if(layers.isEmpty()) return;
+		//need to cast to FeedForwardLayer to access set/get methods of input/output numbers
+		else ffl = (FeedForwardLayer)layers.get(0);
+		//set the number of inputs to the inferred number of inputs from the data for the 
+		//first layer
+		ffl.setNIn(numberOfInputs);
+		//get user specified number of outputs from first layer
+		int previousOutNum = ffl.getNOut();		
+		//start from second layer
+		for(int i = 1; i < layers.size(); i++){
+			//SubsamplingLayer and LocalResponseNormalization are not FeedForwardLayer so skip
+			if(layers.get(i) instanceof SubsamplingLayer || layers.get(i) instanceof LocalResponseNormalization){
+				continue;
+			}
+			ffl = (FeedForwardLayer)layers.get(i);
+			//set number of inputs to number of outputs of previous layer
+			ffl.setNIn(previousOutNum);
+			//save number of outputs of current layer
+			previousOutNum = ffl.getNOut();
+		}
 	}
 }

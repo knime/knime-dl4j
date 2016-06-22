@@ -48,8 +48,6 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LayerParameter{
-	/** number of input neurons */
-    NUMBER_OF_INPUTS, 
     /** number of output neurons */
     NUMBER_OF_OUTPUTS,
     /** number of contrastive divergence iterations */
@@ -73,8 +71,6 @@ public enum LayerParameter{
     /** stride of kernel */
     STRIDE,
     /** whether to use specified input output numbers */
-    IN_OUT_OPTIONS,
-    /** the learning rate to use */
     LEARNING_RATE,
     /** hyper parameter for local response normalization */
     LRN_ALPHA,

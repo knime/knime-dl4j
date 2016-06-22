@@ -51,7 +51,6 @@ import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
 import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
-import org.knime.ext.dl4j.base.settings.enumerate.InputOutputOptions;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
@@ -80,12 +79,7 @@ public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
     protected AutoEncoderLayerNodeDialog() {
 LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
     	
-    	try {   		
-    		addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.NUMBER_OF_INPUTS),
-					"Number of Input Units"					
-					));
+    	try {   		   		
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.NUMBER_OF_OUTPUTS),

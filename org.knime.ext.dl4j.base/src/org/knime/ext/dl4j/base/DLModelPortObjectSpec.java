@@ -71,10 +71,6 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
             "NeuralNetType";
 	private static final String CFGKEY_LAYERTYPES =
             "LayerTypeList";
-	private static final String CFGKEY_NUMBERINS =
-            "NumberOfIns";
-	private static final String CFGKEY_NUMBEROUTS =
-            "NumberOfOuts";
 	private static final String CFGKEY_ISTRAINED =
             "IsTrained";
 	private static final String CFGKEY_COLUMNTYPES =
@@ -87,7 +83,6 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 	
 	private List<DNNType> m_netTypes;
 	private List<DNNLayerType> m_layerTypes;
-	private List<Pair<Integer, Integer>> m_insOuts;
 	private boolean m_isTrained;
 	
 	private List<Pair<String, String>> m_featureColumns;
@@ -101,11 +96,10 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 	}
 	
 	public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList, 
-			final List<Pair<Integer, Integer>> insOuts, final List<Pair<String, String>> featureColumns, 
+			final List<Pair<String, String>> featureColumns, 
 			final List<String> labels, final boolean isTrained){
 		this.m_netTypes = type;
 		this.m_layerTypes = layerTypeList;
-		this.m_insOuts = insOuts;
 		this.m_isTrained = isTrained;
 		this.m_featureColumns = featureColumns;
 		this.m_labels = labels;
@@ -113,10 +107,9 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 	}
 	
 	public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList, 
-			final List<Pair<Integer, Integer>> insOuts, final boolean isTrained){
+			final boolean isTrained){
 		this.m_netTypes = type;
 		this.m_layerTypes = layerTypeList;
-		this.m_insOuts = insOuts;
 		this.m_isTrained = isTrained;
 		m_featureColumns = new ArrayList<>();
 		m_labels = new ArrayList<>();
@@ -127,10 +120,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 		model.addStringArray(CFGKEY_NEURALNETTYPES,
 				EnumUtils.getStringListFromEnumCollection(m_netTypes));
 		model.addStringArray(CFGKEY_LAYERTYPES, 
-				EnumUtils.getStringListFromEnumCollection(m_layerTypes));
-
-		model.addIntArray(CFGKEY_NUMBERINS, getFirstsOfInsOuts());
-		model.addIntArray(CFGKEY_NUMBEROUTS, getSecondsOfInsOuts());
+				EnumUtils.getStringListFromEnumCollection(m_layerTypes));		
 		
 		model.addBoolean(CFGKEY_ISTRAINED, m_isTrained);
 		
@@ -175,21 +165,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 		for(String layerTypeAsString : model.getStringArray(CFGKEY_LAYERTYPES)){
 			layerTypeList.add(DNNLayerType.valueOf(layerTypeAsString));			
 		}
-		m_layerTypes = layerTypeList;
-		
-		//load insOuts
-		int[] lefts = model.getIntArray(CFGKEY_NUMBERINS);
-		int[] rights = model.getIntArray(CFGKEY_NUMBEROUTS);
-		
-		List<Pair<Integer, Integer>> pairs = new ArrayList<>();
-		for(int i = 0 ; i < lefts.length ; i ++){
-			if(lefts[i] == -1 && rights[i] == -1){
-				pairs.add(null);
-			} else {
-				pairs.add(new Pair<Integer, Integer>(lefts[i], rights[i]));
-			}			
-		}
-		m_insOuts = pairs;
+		m_layerTypes = layerTypeList;	
 		
 		//load isTrained flag
 		m_isTrained = model.getBoolean(CFGKEY_ISTRAINED);
@@ -203,10 +179,6 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 		return m_layerTypes;
 	}
 	
-	public List<Pair<Integer,Integer>> getInsOuts(){
-		return m_insOuts;
-	}
-	
 	public boolean isTrained(){
 		return m_isTrained;
 	}
@@ -217,45 +189,5 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 	
 	public List<String> getLabels(){
 		return m_labels;
-	}
-	
-	/**
-	 * Helper method to convert left side of 
-	 * pair array to single array. If a pair should be null
-	 * the value -1 is added instead to mark the null value
-	 * for load method.
-	 * 
-	 * @return left side of pair as int array
-	 */
-	private int[] getFirstsOfInsOuts(){
-		int[] firsts = new int[m_insOuts.size()];		
-		for(int i = 0 ; i < m_insOuts.size() ; i++){
-			if(m_insOuts.get(i) != null){
-				firsts[i] = m_insOuts.get(i).getFirst();
-			} else {
-				firsts[i] = -1;
-			}
-		}		
-		return firsts;
-	}
-	
-	/**
-	 * Helper method to convert right side of 
-	 * pair array to single array. If a pair should be null
-	 * the value -1 is added instead to mark the null value
-	 * for load method.
-	 * 
-	 * @return right side of pair as int array
-	 */
-	private int[] getSecondsOfInsOuts(){
-		int[] seconds = new int[m_insOuts.size()];		
-		for(int i = 0 ; i < m_insOuts.size() ; i++){
-			if(m_insOuts.get(i) != null){
-				seconds[i] = m_insOuts.get(i).getSecond();
-			} else {
-				seconds[i] = -1;
-			}
-		}		
-		return seconds;
 	}
 }

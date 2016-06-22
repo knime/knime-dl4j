@@ -62,6 +62,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
@@ -99,6 +100,19 @@ public class MultiLayerNetFactory {
 	private double m_learningRate = LearnerParameter.DEFAULT_DOUBLE;	
 	private double m_dropOut = LearnerParameter.DEFAULT_DOUBLE;	
 
+	/** The number of inputs of the first layer of the network. Used to set up input/output
+	 *  numbers of layers */
+	private int m_nIn;
+	
+	/**
+	 * Constructor for class MultiLayerNetFactory. 
+	 * 
+	 * @param numInputs the number of inputs which should be used for the first layer of the network
+	 */
+	public MultiLayerNetFactory(int numInputs) {
+		m_nIn = numInputs;
+	}
+	
 	/**
 	 * Creates a new {@link MultiLayerNetwork} based on the given list of
 	 * {@link Layer}s and the given {@link IParameterSettingsModels}. If the
@@ -205,6 +219,9 @@ public class MultiLayerNetFactory {
 		if(m_useGlobalLearningRate){
 			overwriteLearningRate(layersCopy, m_learningRate);
 		}
+		
+		//setup number if input and output neurons
+		ConfigurationUtils.setupLayers(layersCopy, m_nIn);
 		
 		if(m_useSeed) {
 			nnConfigBuilder.seed(m_seed);

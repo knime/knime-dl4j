@@ -75,6 +75,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
 	 * @param channels the number of channels of expected images
 	 */
 	public ConvMultiLayerNetFactory(final int height, final int width, final int channels) {
+		super(0);
 		m_channels = channels;
 		m_height = height;
 		m_width = width;

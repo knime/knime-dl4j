@@ -124,6 +124,11 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		FilterColumnTable selectedTable = new FilterColumnTable(table, selectedColumns.toArray(new String[selectedColumns.size()]));
 		BufferedDataTable bufferedSelectedTable = exec.createBufferedDataTable(selectedTable, exec);
 		
+		//create input iterator
+		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();		
+		DataSetIterator input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
+						batchSize, m_labels, true);
+		
 		//build multi layer net
         List<Layer> layers = portObject.getLayers();     
         MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();        
@@ -135,17 +140,14 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         	//number of channels is set to one because only two dimensional images are currently supported
         	mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);   	
         } else {
-        	mlnFactory = new MultiLayerNetFactory();
+        	mlnFactory = new MultiLayerNetFactory(input.inputColumns());
         }
         MultiLayerNetwork newMln = mlnFactory.createMultiLayerNetwork(layers, m_learnerParameterSettings);
 		
         //attempt to transfer weights between nets
         boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();           
         logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater) );
-        //create input iterator
-		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();		
-		DataSetIterator input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
-				batchSize, m_labels, true);						
+        						
 		
 		newMln.setListeners(new LoggerLossIterationListener(
 				logger, 
@@ -195,7 +197,6 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
     	m_outputSpec = new DLModelPortObjectSpec(
 				specWithoutLabels.getNeuralNetworkTypes(), 
 				specWithoutLabels.getLayerTypes(), 
-				specWithoutLabels.getInsOuts(), 
 				specWithoutLabels.getLearnedColumns(), 
 				m_labels, 
 				specWithoutLabels.isTrained());

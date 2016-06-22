@@ -98,7 +98,6 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         List<Layer> newLayers = portObject.getLayers();
         
         //parameters
-        int nIn = m_dnnParameterSettings.getNumberOfInputs().getIntValue();
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
         String activation = m_dnnParameterSettings.getActivation().getStringValue();       
@@ -108,7 +107,6 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         
         //build layer
         AutoEncoder autoencoder = new AutoEncoder.Builder(corruptionLevel)
-        		.nIn(nIn)
         		.nOut(nOut)
         		.activation(activation)
         		.weightInit(weight)
@@ -134,7 +132,6 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
 		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_dnnParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
-		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_INPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
 		m_dnnParameterSettings.setParameter(LayerParameter.CORRUPTION_LEVEL);
 		

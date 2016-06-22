@@ -99,8 +99,7 @@ public class DL4JModelInitNodeModel extends AbstractDLLayerNodeModel {
         
     	DLModelPortObjectSpec spec = new DLModelPortObjectSpec(
         		DNNTYPES,
-        		new ArrayList<DNNLayerType>(),
-        		new ArrayList<Pair<Integer,Integer>>(),
+        		new ArrayList<DNNLayerType>(),        		
         		false);
     	m_outputSpec = spec;
     	return new DLModelPortObjectSpec[]{m_outputSpec};

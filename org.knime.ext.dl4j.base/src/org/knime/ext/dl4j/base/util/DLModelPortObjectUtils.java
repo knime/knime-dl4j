@@ -116,7 +116,6 @@ public class DLModelPortObjectUtils {
 	public static DLModelPortObjectSpec loadSpecFromZip(ZipInputStream inStream) throws IOException{						
 		List<DNNLayerType> layerTypes = new ArrayList<>();
 		List<DNNType> networkTypes = new ArrayList<>();
-		List<Pair<Integer,Integer>> insOuts = new ArrayList<>();
 		boolean isTrained = false;
 		List<Pair<String,String>> learnedColumnTypes = new ArrayList<>();
 		List<String> labels = new ArrayList<>();
@@ -137,17 +136,7 @@ public class DLModelPortObjectUtils {
 		    		
 		    	} else if (entry.getName().matches("dnn_type[0123456789]+")){//read dnn type
 		    		String read = readStringFromZipStream(inStream);
-		    		networkTypes.add(DNNType.valueOf(read));
-		    		
-		    	} else if (entry.getName().matches("ins_outs[0123456789]+")){//read inOut
-		    		String read = readStringFromZipStream(inStream);
-		    		Integer in = new Integer(read.split(",")[0]);
-		    		Integer out = new Integer(read.split(",")[1]); 		
-		    		if( in == -1 && out == -1){
-		    			insOuts.add(null);	
-		    		} else {
-		    			insOuts.add(new Pair<Integer,Integer>(in,out));	
-		    		}
+		    		networkTypes.add(DNNType.valueOf(read));		    	
 		    	} else if (entry.getName().matches("input_column[0123456789]+")){//read input type
 		    		String read = readStringFromZipStream(inStream);
 		    		String columnName = read.split(",")[0];
@@ -164,7 +153,7 @@ public class DLModelPortObjectUtils {
 		    	}
 		 }
 		 
-		 DLModelPortObjectSpec spec = new DLModelPortObjectSpec(networkTypes, layerTypes, insOuts, 
+		 DLModelPortObjectSpec spec = new DLModelPortObjectSpec(networkTypes, layerTypes, 
 				 learnedColumnTypes, labels, isTrained);
 		 return spec;	
 	}
@@ -237,14 +226,12 @@ public class DLModelPortObjectUtils {
 			throws IOException{
 		List<DNNLayerType> layerTypes = spec.getLayerTypes();
 		List<DNNType> networkTypes = spec.getNeuralNetworkTypes();
-		List<Pair<Integer,Integer>> insOuts = spec.getInsOuts();
 		boolean isTrained = spec.isTrained();
 		List<Pair<String,String>> learnedColumnTypes = spec.getLearnedColumns();
 		List<String> labels = spec.getLabels();
 		
 		writeLayerTypes(layerTypes, out);
 		writeDNNTypes(networkTypes, out);
-		writeInsOuts(insOuts, out);
 		writeIsTrained(isTrained, out);
 		writeLearnedColumns(learnedColumnTypes, out);
 		writeLabels(labels, out);
@@ -333,17 +320,6 @@ public class DLModelPortObjectUtils {
 			entry = new ZipEntry("dnn_type" + i);
 			out.putNextEntry(entry);
 			out.write(layerTypesStrings[i].getBytes(Charset.forName("UTF-8")));
-		}
-	}
-
-	private static void writeInsOuts(List<Pair<Integer,Integer>> insOuts, ZipOutputStream out) throws IOException{
-		String[] insOutsStrings = convertIntegerPairsToStrings(insOuts);
-		ZipEntry entry;
-		
-		for(int i = 0 ; i < insOutsStrings.length ; i++){
-			entry = new ZipEntry("ins_outs" + i);
-			out.putNextEntry(entry);
-			out.write(insOutsStrings[i].getBytes(Charset.forName("UTF-8")));
 		}
 	}
 	

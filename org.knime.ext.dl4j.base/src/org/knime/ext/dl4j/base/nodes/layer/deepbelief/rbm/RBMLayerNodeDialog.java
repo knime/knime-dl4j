@@ -87,11 +87,6 @@ public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
     	try {
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.NUMBER_OF_INPUTS),
-					"Number of Input Units"					
-					));
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.NUMBER_OF_OUTPUTS),
 					"Number of Output Units"					
 					));

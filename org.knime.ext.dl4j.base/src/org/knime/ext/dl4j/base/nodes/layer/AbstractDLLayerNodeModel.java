@@ -49,10 +49,8 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
-import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
-import org.knime.ext.dl4j.base.settings.enumerate.InputOutputOptions;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
@@ -104,43 +102,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
     	newLayerTypes.addAll(spec.getLayerTypes());
     	newLayerTypes.add(dnnLayerType);  
 
-    	//add this ins outs to spec
-    	List<Pair<Integer,Integer>> newInsOuts = new ArrayList<>();
-    	newInsOuts.addAll(spec.getInsOuts());
-    	Integer nIn = null; 
-    	Integer nOut = null;
-    	boolean useInOut = true;
-    	 	
-    	if(parameterSettings.getNumberOfInputs() != null){
-    		nIn = parameterSettings.getNumberOfInputs().getIntValue();
-    	}
-    	if(parameterSettings.getNumberOfOutputs() != null){
-        	nOut = parameterSettings.getNumberOfOutputs().getIntValue();
-    	} 
-    	if(parameterSettings.getInOutOptions() != null){
-    		InputOutputOptions inOutOpt = InputOutputOptions
-    	       		.valueOf(parameterSettings.getInOutOptions().getStringValue());
-    		
-    		switch(inOutOpt){
-    		case NOT_OPTIONAL:
-    			useInOut = true;
-    			break;
-           	case IN_OPTIONAL:
-           		useInOut = false;
-           		break;
-           	case OUT_OPTIONAL:
-           		useInOut = false;
-           		break;
-    		}
-    	}   		
-    	
-    	if(useInOut && nIn != null && nOut != null){   		
-    		newInsOuts.add(new Pair<Integer,Integer>(nIn,nOut));	   		
-    	} else {
-    		newInsOuts.add(null);
-    	}
-
-    	m_outputSpec = new DLModelPortObjectSpec(newType, newLayerTypes,newInsOuts,false);
+    	m_outputSpec = new DLModelPortObjectSpec(newType, newLayerTypes,false);
     	
     	//check for spec sanity
     	logWarnings(logger, ConfigurationUtils.validateSpec(m_outputSpec, dnnTypes));

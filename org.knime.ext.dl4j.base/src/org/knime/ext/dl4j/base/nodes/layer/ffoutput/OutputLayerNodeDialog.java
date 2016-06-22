@@ -45,13 +45,11 @@ package org.knime.ext.dl4j.base.nodes.layer.ffoutput;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.core.node.defaultnodesettings.DialogComponentButtonGroup;
 import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
 import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
-import org.knime.ext.dl4j.base.settings.enumerate.InputOutputOptions;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
@@ -84,18 +82,6 @@ public class OutputLayerNodeDialog extends DefaultNodeSettingsPane {
     	LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
     	
     	try {
-    		addDialogComponent(new DialogComponentButtonGroup(
-        			(SettingsModelString)dnnSettingsModels.createParameter(
-        					LayerParameter.IN_OUT_OPTIONS),
-        			false,
-        			"Input/Output Options",
-        			EnumUtils.getStringListFromToString(InputOutputOptions.values())
-        			));	
-    		addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.NUMBER_OF_INPUTS),
-					"Number of Input Units"					
-					));
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.NUMBER_OF_OUTPUTS),

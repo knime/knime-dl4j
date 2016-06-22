@@ -122,7 +122,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     	List<Pair<String,String>> inputs = ConfigurationUtils.createNameTypeListOfSelectedCols(selectedColumns, tableSpec);
     	
     	m_outputSpec = new DLModelPortObjectSpec(modelSpec.getNeuralNetworkTypes(),
-    			modelSpec.getLayerTypes(), modelSpec.getInsOuts(), inputs, new ArrayList<>(), true);
+    			modelSpec.getLayerTypes(), inputs, new ArrayList<>(), true);
         return new PortObjectSpec[]{m_outputSpec};
     } 
     

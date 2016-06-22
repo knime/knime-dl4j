@@ -61,7 +61,6 @@ import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
-import org.knime.ext.dl4j.base.settings.enumerate.InputOutputOptions;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 
@@ -100,38 +99,14 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
         List<Layer> newLayers = portObject.getLayers();
         
         //parameters
-        int nIn = m_dnnParameterSettings.getNumberOfInputs().getIntValue();
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        String activation = m_dnnParameterSettings.getActivation().getStringValue();
-        InputOutputOptions inOutOpt = InputOutputOptions
-        		.valueOf(m_dnnParameterSettings.getInOutOptions().getStringValue());
+        String activation = m_dnnParameterSettings.getActivation().getStringValue();       
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
-        
-        //set nIn and nOut depending on chosen option in dialog
-        DenseLayer.Builder denseLayerBuilder = new DenseLayer.Builder();         
-        switch(inOutOpt){
-        	case NOT_OPTIONAL:
-        		denseLayerBuilder
-        			.nIn(nIn)
-        			.nOut(nOut);
-        		break;
-        	case IN_OPTIONAL:
-        		denseLayerBuilder
-    			.nOut(nOut);
-        		break;
-        	case OUT_OPTIONAL:
-        		denseLayerBuilder
-    			.nIn(nIn);
-        		break;
-        	default:
-                throw new IllegalStateException(
-                        "No case defined for this Input/Output Option:"
-                                + inOutOpt.toString());
-        }
-        
+    
         //build layer
-        Layer denseLayer = denseLayerBuilder
+        Layer denseLayer = new DenseLayer.Builder()
+        		.nOut(nOut)
         		.activation(activation)
         		.weightInit(weight)
         		.learningRate(learningRate)
@@ -153,11 +128,9 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
 	@Override
 	protected List<SettingsModel> initSettingsModels() {
 		m_dnnParameterSettings = new LayerParameterSettingsModels();
-		m_dnnParameterSettings.setParameter(LayerParameter.IN_OUT_OPTIONS);
 		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_dnnParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
-		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_INPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
 		
 		List<SettingsModel> settings = new ArrayList<>();

@@ -61,7 +61,6 @@ import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
-import org.knime.ext.dl4j.base.settings.enumerate.InputOutputOptions;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
@@ -104,38 +103,14 @@ public class OutputLayerNodeModel extends AbstractDLLayerNodeModel {
         List<Layer> newLayers = portObject.getLayers();
         
         //parameters
-        int nIn = m_dnnParameterSettings.getNumberOfInputs().getIntValue();
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();        
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
         String activation = m_dnnParameterSettings.getActivation().getStringValue();
-        LossFunction loss = LossFunction.valueOf(m_dnnParameterSettings.getLossFunction().getStringValue());
-        InputOutputOptions inOutOpt = InputOutputOptions
-        		.valueOf(m_dnnParameterSettings.getInOutOptions().getStringValue());
+        LossFunction loss = LossFunction.valueOf(m_dnnParameterSettings.getLossFunction().getStringValue());        
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
-        
-        //set nIn and nOut depending on chosen option in dialog
-        OutputLayer.Builder outputLayerBuilder = new OutputLayer.Builder(loss);         
-        switch(inOutOpt){
-        	case NOT_OPTIONAL:
-        		outputLayerBuilder
-        			.nIn(nIn)
-        			.nOut(nOut);
-        		break;
-        	case IN_OPTIONAL:
-        		outputLayerBuilder
-    			.nOut(nOut);
-        		break;
-        	case OUT_OPTIONAL:
-        		outputLayerBuilder
-    			.nIn(nIn);
-        		break;
-        	default:
-                throw new IllegalStateException(
-                        "No case defined for this Input/Output Option:"
-                                + inOutOpt.toString());
-        }
-        
-        Layer outputLayer = outputLayerBuilder
+       
+        Layer outputLayer = new OutputLayer.Builder(loss)
+        		.nOut(nOut)
         		.activation(activation)
         		.weightInit(weight) 
         		.learningRate(learningRate)
@@ -164,8 +139,6 @@ public class OutputLayerNodeModel extends AbstractDLLayerNodeModel {
 		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
 		m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_dnnParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
-		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_INPUTS);
-		m_dnnParameterSettings.setParameter(LayerParameter.IN_OUT_OPTIONS);
 		m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
 		
 		List<SettingsModel> settings = new ArrayList<>();
