@@ -71,7 +71,11 @@ public class FeedforwardPredictorNodeDialog extends DefaultNodeSettingsPane {
     	addDialogComponent(new DialogComponentBoolean(
     			(SettingsModelBoolean)predictorSettingsModels.createParameter(
     					PredictorPrameter.APPEND_PREDICTION), 
-    			"Append Softmax Predicted Label"));
+    			"Append Softmax Predicted Label?"));
+    	addDialogComponent(new DialogComponentBoolean(
+    			(SettingsModelBoolean)predictorSettingsModels.createParameter(
+    					PredictorPrameter.APPEND_SCORE), 
+    			"Append Error for each example?"));
     }
 }
 

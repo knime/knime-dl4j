@@ -188,7 +188,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 					m_labels.add(ConverterUtils.convertWithFactory(factory, cell));
 				}
 			} catch (NullPointerException e) {
-				throw new InvalidSettingsException("Label column not available or not yet selected for SUPERVISED training");
+				throw new InvalidSettingsException("Label column not available or not yet selected for SUPERVISED training. "
+						+ "Domain of Label column may not be available.");
 			} catch (UnsupportedDataTypeException e) {
 				throw new InvalidSettingsException(e);
 			}

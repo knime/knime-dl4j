@@ -15,10 +15,13 @@
         taken from the Deeplearning Model the model was trained on. The supplied data table needs to be in the same format as the table 
         used for learning, meaning it needs to contain columns of the same name and type.</intro>
             
-        <option name="Append softmax prediction">
+        <option name="Append softmax prediction?">
         Whether to append the predicted label to the output table. This is only possible if the output layer of the network
         configuration uses softmax activation function. The label with the highest corresponding softmax probability will
         be chosen.
+        </option>       
+        <option name="Append Error for each example?">
+        Whether to append the error for each example to the output table. Error is calculated with respect to the set loss function.
         </option>       
     </fullDescription>
     

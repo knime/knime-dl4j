@@ -62,6 +62,7 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
 	
 	private SettingsModelBoolean m_appendPrediction;
 	private SettingsModelBoolean m_predictSteps;
+	private SettingsModelBoolean m_appendScore;
 	
 	private List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 	
@@ -72,6 +73,8 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
 			return new SettingsModelBoolean("append_prediction", DEFAULT_BOOLEAN);
 		case PREDICT_STEPS:
 			return new SettingsModelBoolean("predict_steps", DEFAULT_BOOLEAN);
+		case APPEND_SCORE:
+			return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
 		default:
 			break;
 		}
@@ -88,6 +91,10 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
 		case PREDICT_STEPS:
 			m_predictSteps = (SettingsModelBoolean)createParameter(enumerate);
 			addToSet(m_predictSteps);
+			break;
+		case APPEND_SCORE:
+			m_appendScore = (SettingsModelBoolean)createParameter(enumerate);
+			addToSet(m_appendScore);
 			break;
 		default:
 			break;
@@ -107,6 +114,10 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
 	
 	public SettingsModelBoolean getAppendPrediction(){
 		return m_appendPrediction;
+	}
+	
+	public SettingsModelBoolean getAppendScore(){
+		return m_appendScore;
 	}
 	
 	@Override

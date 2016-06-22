@@ -118,36 +118,39 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
 		BufferedDataTable filteredTable = exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
     	
     	//create iterator and prediction
-    	BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, null, 
-    			(int)filteredTable.size(), new ArrayList<String>(), false);
+		BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, 1);
     	MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
-    	DataSet inputData = input.next();
-    	INDArray prediction = predict(mln, inputData.getFeatureMatrix(), exec.createSubExecutionContext(0.5));
     	
     	//set flag if last layer activation is softmax
     	boolean outputActivationIsSoftmax = isOutActivationSoftmax(port.getLayers());
    
     	boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
+    	boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
     	List<String> labels = portSpec.getLabels();
     	
     	//write output to table
     	BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
     	CloseableRowIterator tabelIter = table.iterator();
-    	ExecutionContext sub = exec.createSubExecutionContext(0.5);
     	
     	int i = 0;
     	while(tabelIter.hasNext()){  		
-    	 	sub.setProgress((double)(i+1)/(double)(table.size()));
-    		sub.checkCanceled();
+    		exec.setProgress((double)(i+1)/(double)(table.size()));
+    		exec.checkCanceled();
     		
     		DataRow row = tabelIter.next();
     		List<DataCell> cells = TableUtils.toListOfCells(row);
-
-    		ListCell outputVector = CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction.getRow(i)));
+    		
+    		DataSet next = input.next();
+    		INDArray prediction = predict(mln, next.getFeatureMatrix());
+    		
+    		ListCell outputVector = CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
     		cells.add(outputVector);
-
+    		if(appendScore){
+    			double score = mln.score(new DataSet(next.getFeatureMatrix(),prediction), false);
+    			cells.add(new DoubleCell(score));
+    		}    		
     		if(appendPrediction && outputActivationIsSoftmax && containsLabels()){
-    			String winningLabel = NDArrayUtils.softmaxActivationToLabel(labels, prediction.getRow(i));
+    			String winningLabel = NDArrayUtils.softmaxActivationToLabel(labels, prediction);
     			cells.add(new StringCell(winningLabel));
     		} else if (appendPrediction && containsLabels()){
     			cells.add(new MissingCell("Output Layer activation is not softmax"));			
@@ -180,8 +183,11 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
 		DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
     	ConfigurationUtils.checkLastLayer(modelSpec.getLayerTypes(), DNNLayerType.OUTPUT_LAYER);
 		
+    	boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
+    	if(appendScore){
+    		m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "error", DataType.getType(DoubleCell.class));
+    	}  	
 		boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
-		
 		if(appendPrediction){
 			m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "prediction", DataType.getType(StringCell.class));
 		} 
@@ -192,6 +198,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
 	protected List<SettingsModel> initSettingsModels() {
 		m_predictorParameter = new PredictorParameterSettingsModels();
 		m_predictorParameter.setParameter(PredictorPrameter.APPEND_PREDICTION);
+		m_predictorParameter.setParameter(PredictorPrameter.APPEND_SCORE);
 		
 		List<SettingsModel> settings = new ArrayList<>();
 		settings.addAll(m_predictorParameter.getAllInitializedSettings());
@@ -209,11 +216,10 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
 	 * @param exec {@link ExecutionContext} for progress reporting
 	 * @return array containing the output of the network for each row of the input 
 	 */
-	private INDArray predict(MultiLayerNetwork mln, INDArray input, ExecutionContext exec){
+	private INDArray predict(MultiLayerNetwork mln, INDArray input){
 		INDArray output = Nd4j.create(input.rows(), getNumberOfOutputs(mln));
 		for(int i = 0; i< input.rows(); i++){
 			output.putRow(i, mln.output(input.getRow(i), false));
-			exec.setProgress((double)(i+1)/(double)input.rows());
 		}
 		return output;
 	}

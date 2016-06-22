@@ -50,6 +50,8 @@ package org.knime.ext.dl4j.base.settings.enumerate;
 public enum PredictorPrameter {
 	/** whether to append the full output vector to the output table or not */
 	APPEND_PREDICTION,
+	/** wheter to append the score for each test example to the output */
+	APPEND_SCORE,
 	/** whether to create output for every step of a sequence or the sequence as a whole*/
 	PREDICT_STEPS
 	
