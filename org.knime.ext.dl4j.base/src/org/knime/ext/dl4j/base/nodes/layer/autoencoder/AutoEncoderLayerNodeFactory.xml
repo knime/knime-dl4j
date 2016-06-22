@@ -9,9 +9,7 @@
     <fullDescription>
         <intro>
         This node adds a Denoising AutoEncoder layer to the Deep Learning Model supplied by the input port.        
-        </intro>
-        
-        <option name="Number of Input Units">The number of inputs for this layer.</option>
+        </intro>        
         <option name="Number of Output Units">The number of outputs for this layer.</option>
         <option name="Learning Rate">The learning rate that should be used for this layer.</option>
         <option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>

@@ -113,7 +113,7 @@
             Schedule for momentum value change during training. This is specified in the following format:<br/>
             'iteration':'momentum rate','iteration':'momentum rate'  ... <br/>
             This creates a map, which maps the iteration to the momentum rate that should be used. E.g. '2:0.8' means that 
-            the rate '0.8' should be used in iteration '2'.
+            the rate '0.8' should be used in iteration '2'. Leave empty if you do not want to use a schedule.
             </option>
             <option name="Use Drop Connect">
             Whether to use <a href="http://www.matthewzeiler.com/pubs/icml2013/icml2013.pdf">Drop Connect</a>. 

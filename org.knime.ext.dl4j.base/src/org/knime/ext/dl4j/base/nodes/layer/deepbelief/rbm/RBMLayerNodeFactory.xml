@@ -9,7 +9,6 @@
     <fullDescription>
         <intro>This node adds a Restricted Boltzmann Machine layer to the Deep Learning Model supplied by the input port.</intro>
         
-        <option name="Number of Input Units">The number of inputs for this layer.</option>
         <option name="Number of Output Units">The number of outputs for this layer.</option>
         <option name="Contrastive Divergence Iterations">The number of Contrastive Divergence runs that should be performed.</option>
         <option name="Drop Out Rate">Drop Out probability for neurons.</option>
