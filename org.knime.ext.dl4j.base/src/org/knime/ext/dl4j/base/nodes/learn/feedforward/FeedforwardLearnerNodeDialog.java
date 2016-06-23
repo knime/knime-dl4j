@@ -70,12 +70,16 @@ import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.TrainingMode;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
  * <code>NodeDialog</code> for the "DL4JLearner" Node.
@@ -96,6 +100,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
     protected FeedforwardLearnerNodeDialog() {
     	LearnerParameterSettingsModels learnerSettingsModels = new LearnerParameterSettingsModels();
     	DataParameterSettingsModels dataSettingsModels = new DataParameterSettingsModels();
+    	LayerParameterSettingsModels layerSettingsModels = new LayerParameterSettingsModels();
     	
        	setDefaultTabTitle("Learning Parameters");
        	SettingsModelString trainingModeSettings = (SettingsModelString)learnerSettingsModels.createParameter(
@@ -104,6 +109,8 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 				DataParameter.LABEL_COLUMN);
        	SettingsModelFilterString columnSelectionSettings = (SettingsModelFilterString)dataSettingsModels.createParameter(
 				DataParameter.COLUMN_SELECTION);
+       	SettingsModelIntegerBounded numberOfOutputs = (SettingsModelIntegerBounded)layerSettingsModels.createParameter(
+				LayerParameter.NUMBER_OF_OUTPUTS);
        	
        	trainingModeSettings.addChangeListener(new ChangeListener(){
 			@Override
@@ -113,10 +120,12 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 				case SUPERVISED:
 					labelColumnSettings.setEnabled(true);
 					columnSelectionSettings.setEnabled(true);
+					numberOfOutputs.setEnabled(true);
 					break;
 				case UNSUPERVISED:
 					labelColumnSettings.setEnabled(false);
 					columnSelectionSettings.setEnabled(true);	
+					numberOfOutputs.setEnabled(false);
 					break;
 				default:
 					break;
@@ -322,6 +331,35 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 				(SettingsModelString)dataSettingsModels.createParameter(
 						DataParameter.IMAGE_SIZE),
 				"Size of Input Image"
+				));
+    	
+    	createNewTab("Output Layer Parameters");
+    	addDialogComponent(new DialogComponentNumberEdit(
+    			numberOfOutputs,
+				"Number of Output Units"					
+				));
+    	addDialogComponent(new DialogComponentNumberEdit(
+				(SettingsModelDoubleBounded)layerSettingsModels.createParameter(
+						LayerParameter.LEARNING_RATE),
+				"Learning Rate"					
+				));
+		addDialogComponent(new DialogComponentStringSelection(
+				(SettingsModelString)layerSettingsModels.createParameter(
+						LayerParameter.WEIGHT_INIT),
+				"Weight Initialization Strategy",
+				EnumUtils.getStringCollectionFromToString(WeightInit.values())
+				));
+		addDialogComponent(new DialogComponentStringSelection(
+				(SettingsModelString)layerSettingsModels.createParameter(
+						LayerParameter.LOSS_FUNCTION),
+				"Loss Function",
+				EnumUtils.getStringCollectionFromToString(LossFunction.values())
+				));
+		addDialogComponent(new DialogComponentStringSelection(
+				(SettingsModelString)layerSettingsModels.createParameter(
+						LayerParameter.ACTIVATION),
+				"Activation Function",
+				EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
 				));
     	
     	//get all types from where we can convert to INDArray

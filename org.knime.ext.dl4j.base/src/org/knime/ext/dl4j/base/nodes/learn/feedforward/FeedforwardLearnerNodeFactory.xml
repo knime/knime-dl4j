@@ -10,7 +10,8 @@
         <intro>
         This node supplies means to learn the network configuration specified by the Deep Learning Model. Thereby,
         the model can be either trained supervised or unsupervised using several training methods like Stochastic Gradient
-        Descent. Additionally, the node supplies further methods for regularization, gradient normalization and learning refinements.
+        Descent. The output layer of the network, which can be configured in the node dialog, will be automatically added by this node. 
+        Additionally, the node supplies further methods for regularization, gradient normalization and learning refinements.
         In order to learn the network, inputs will be automatically converted into a network understandable vector format. For the model 
         input there are two options. If the supplied model is untrained it will be trained normally by the learner. If the model was 
         trained by a previous learner the node will try to use the network parameters of the trained model to initialise the parameters 
@@ -159,6 +160,15 @@
             <option name="Input Column Selection">
             The columns of the input table containing the training data for the network.
             </option>
+        </tab>
+        <tab name="Output Layer Parameter">
+            <option name="Number of Output Units">The number of outputs for this layer. For supervised training this value is 
+        	determined automatically, hence it is not possible to set it. For unsupervised training this value specifies the
+        	number of neurons in the output layer.</option>
+        	<option name="Learning Rate">The learning rate that should be used for this layer.</option>
+        	<option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
+        	<option name="Loss Function">The type of loss function that should be used for this layer.</option>
+<option name="Activation Function">The type of activation function that should be used for this layer.</option>
         </tab>
 
     </fullDescription>

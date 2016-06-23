@@ -179,10 +179,6 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
 		m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "output_activations", 
 				DataType.getType(ListCell.class, DoubleCell.TYPE));
 		
-		//check if last layer is output layer
-		DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
-    	ConfigurationUtils.checkLastLayer(modelSpec.getLayerTypes(), DNNLayerType.OUTPUT_LAYER);
-		
     	boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
     	if(appendScore){
     		m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "error", DataType.getType(DoubleCell.class));

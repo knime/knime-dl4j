@@ -47,7 +47,8 @@ import org.deeplearning4j.optimize.api.IterationListener;
 
 /**
  * Implementation of {@link IterationListener} using a {@link AbstractDLLearnerNodeModel}
- * for score reporting and view communication.
+ * for score reporting and view communication. Also updates the score of the learner node
+ * model.
  *
  * @author David Kolb, KNIME.com GmbH
  */

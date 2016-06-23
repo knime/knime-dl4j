@@ -73,25 +73,6 @@ public class ConfigurationUtils {
 	}
 	
 	/**
-	 * Checks if the last layer of the network is of specified {@link DNNLayerType}.
-	 * 
-	 * @param layers {@link DNNLayerType}s contained in the network
-	 * @param expectedType the {@link DNNLayerType} the last layer should be
-	 * @throws InvalidSettingsException if last layer is not of expected type
-	 */
-	public static void checkLastLayer(final List<DNNLayerType> layers, DNNLayerType expectedType) 
-			throws InvalidSettingsException{
-		if(layers.size() < 1){
-			return;
-		}
-		DNNLayerType lastLayer = layers.get(layers.size()-1);
-		if(!lastLayer.equals(expectedType)){
-			throw new InvalidSettingsException("Type of last layer in newtwork: "
-					+ lastLayer.toString() + ". Needs to be: " + expectedType);	
-		}
-	}
-	
-	/**
 	 * Validates the given specification. Checks if the given {@link DNNType}s
 	 * are compatible with the spec. Checks if the layer types contained in
 	 * the spec are compatible with each other. Checks if the number of outputs 
@@ -109,8 +90,6 @@ public class ConfigurationUtils {
 		List<String> warnings = new ArrayList<>();
 		
 		warnings.addAll(validateType(spec, types));
-		warnings.addAll(validateOutputLayerPosition(spec));
-		
 		return warnings;
 	}
 	
@@ -179,42 +158,7 @@ public class ConfigurationUtils {
 		for(String columnName : columnSelection){
 			validateColumnSelection(tableSpec, columnName);				
 		}
-	}
-	
-	/**
-	 * Checks if there are more than one {@link DNNLayerType.OUTPUT_LAYER}s in 
-	 * the net and if the output layer{@link DNNLayerType.OUTPUT_LAYER} is the 
-	 * last layer in the net.
-	 * 
-	 * @param spec
-	 * @return list of warnings
-	 */
-	private static List<String> validateOutputLayerPosition(final DLModelPortObjectSpec spec){
-		List<String> warnings = new ArrayList<>();
-		
-		List<DNNLayerType> layerTypes = spec.getLayerTypes();
-		int numberOfOutputLayers = 0;
-		int indexOfLastOutputLayer = 0;
-		for(int i = 0 ; i < layerTypes.size() ; i++){
-			if(layerTypes.get(i).equals(DNNLayerType.OUTPUT_LAYER) || layerTypes.get(i).equals(DNNLayerType.RNN_OUTPUT_LAYER)){
-				numberOfOutputLayers++;
-				indexOfLastOutputLayer = i+1;
-			}
-		}
-		if(numberOfOutputLayers > 1){
-			warnings.add("There are more than one Output Layers in the network. "
-					+ "This may be a problem. NUMBER OF OUTPUT LAYERS: " +
-					numberOfOutputLayers);
-		}
-		if(indexOfLastOutputLayer != layerTypes.size() && numberOfOutputLayers != 0){
-			warnings.add("The Output Layer is not the last layer in the network. This may "
-					+ "be a problem. POSITION OF LAST OUTPUT LAYER: " + indexOfLastOutputLayer
-					+ ", NUMBER OF LAYERS IN NETWORK: " + layerTypes.size());
-		}
-		
-		return warnings;
-	}
-	
+	}	
 
 	/**
 	 * Checks if the {@link DNNType}s contained in the spec are compatible with the 
