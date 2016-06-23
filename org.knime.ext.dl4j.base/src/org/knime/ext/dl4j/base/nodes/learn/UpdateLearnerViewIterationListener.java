@@ -40,61 +40,48 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.learn.feedforward;
+package org.knime.ext.dl4j.base.nodes.learn;
 
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
-import org.knime.core.node.NodeView;
+import org.deeplearning4j.nn.api.Model;
+import org.deeplearning4j.optimize.api.IterationListener;
 
 /**
- * <code>NodeFactory</code> for the "DL4JLearner" Node.
- * 
+ * Implementation of {@link IterationListener} using a {@link AbstractDLLearnerNodeModel}
+ * for score reporting and view communication.
  *
- * @author 
+ * @author David Kolb, KNIME.com GmbH
  */
-public class FeedforwardLearnerNodeFactory 
-        extends NodeFactory<FeedforwardLearnerNodeModel> {
+public class UpdateLearnerViewIterationListener implements IterationListener {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public FeedforwardLearnerNodeModel createNodeModel() {
-        return new FeedforwardLearnerNodeModel();
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 825931436593012325L;
+	private boolean m_invoked = false;
+	private final AbstractDLLearnerNodeModel m_nodeModel;
+	
+	public UpdateLearnerViewIterationListener(AbstractDLLearnerNodeModel nodeModel) {
+		m_nodeModel = nodeModel;
+	}
+	
+	@Override
+	public boolean invoked() {		
+		return m_invoked;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getNrNodeViews() {
-        return 1;
-    }
+	@Override
+	public void invoke() {
+		m_invoked = true;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeView<FeedforwardLearnerNodeModel> createNodeView(final int viewIndex,
-            final FeedforwardLearnerNodeModel nodeModel) {
-        return new FeedforwardLearnerNodeView(nodeModel);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasDialog() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeDialogPane createNodeDialogPane() {
-        return new FeedforwardLearnerNodeDialog();
-    }
+	@Override
+	public void iterationDone(Model model, int iteration) {
+		invoke();
+        double result = model.score();
+        //pass the current score to the view
+        m_nodeModel.passObjToView(result + "");
+        //update score in node model
+        m_nodeModel.setScore(result);
+	}
 
 }
-

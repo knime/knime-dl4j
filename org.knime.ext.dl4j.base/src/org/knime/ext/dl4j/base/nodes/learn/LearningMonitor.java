@@ -42,46 +42,34 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.learn;
 
-import org.deeplearning4j.nn.api.Model;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.knime.core.node.NodeLogger;
-
 /**
- * Implementation of {@link IterationListener} using a {@link NodeLogger}
- * for logging.
+ * Class to store flag for early stopping.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class LoggerLossIterationListener implements IterationListener {
-
-	private static final long serialVersionUID = -6838399445673543468L;
-	private final NodeLogger logger;
-	private boolean invoked = false;
-	private int printIteration;
+public class LearningMonitor {
+	private boolean m_earlyStopping = false;
 	
-	public LoggerLossIterationListener(NodeLogger logger, int printIteration) {
-		this.logger = logger;
-		this.printIteration = printIteration;
+	/**
+	 * Set early stopping flag
+	 */
+	public void stopLearning(){
+		m_earlyStopping = true;
 	}
 	
-	@Override
-	public boolean invoked() {
-		return invoked;
+	/**
+	 * Returns value of early stopping flag
+	 * 
+	 * @return
+	 */
+	public boolean checkStopLearning(){
+		return m_earlyStopping;
 	}
-
-	@Override
-	public void invoke() {
-		this.invoked = true;
-	}
-
-	@Override
-	public void iterationDone(Model model, int iteration) {
-		if(printIteration <= 0)
-            printIteration = 1;
-        if(iteration % printIteration == 0) {
-            invoke();
-            double result = model.score();
-            logger.info("Loss at iteration " + iteration + " is " + result);
-        }
+	
+	/**
+	 * Set early stopping flag to false
+	 */
+	public void reset(){
+		m_earlyStopping = false;
 	}
 }

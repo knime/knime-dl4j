@@ -53,6 +53,7 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
+import org.knime.core.node.NodeModel;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.core.util.Pair;
@@ -74,6 +75,12 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 	private boolean isRecurrent;
 	private boolean inputTableContainsImg;
 	protected DLModelPortObjectSpec m_outputSpec;
+    /** the current score of this learner */
+	private Double m_score = null;
+	/** the current learning status */
+	private LearningStatus m_learningStatus = null;
+    /** a learning monitor for this learner storing if learning should be stopped */
+    private final LearningMonitor m_learningMonitor = new LearningMonitor();
 	
 	protected AbstractDLLearnerNodeModel(final PortType[] inPortTypes,
             final PortType[] outPortTypes) {
@@ -213,32 +220,40 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 
 	/**
      * Performs one epoch of pretraining of the specified {@link MultiLayerNetwork}.
+     * Checks {@link LearningMonitor} of this learner if learning should be prematurely
+     * stopped.
      * 
      * @param mln the network to train
      * @param data the data to train on
-     * @param exec used to check for cancelled execution an stop learning
+     * @param exec used to check for cancelled execution and stop learning
 	 * @throws CanceledExecutionException 
      */
     protected void pretrainOneEpoch(MultiLayerNetwork mln, DataSetIterator data, ExecutionContext exec) 
     		throws CanceledExecutionException{
 		while(data.hasNext()){
 			exec.checkCanceled();
+			if(m_learningMonitor.checkStopLearning()) break;
+			
 			mln.pretrain(data.next().getFeatureMatrix());
 		}  	
 	}
 	
     /**
      * Performs one epoch of finetuning of the specified {@link MultiLayerNetwork}.
+     * Checks {@link LearningMonitor} of this learner if learning should be prematurely
+     * stopped.
      * 
      * @param mln the network to train
      * @param data the data to train on
-     * @param exec used to check for cancelled execution an stop learning
+     * @param exec used to check for cancelled execution and stop learning
      * @throws CanceledExecutionException 
      */
 	protected void finetuneOneEpoch(MultiLayerNetwork mln, DataSetIterator data, ExecutionContext exec) 
 			throws CanceledExecutionException{
 		while (data.hasNext()) {
 			exec.checkCanceled();
+			if(m_learningMonitor.checkStopLearning()) break;
+			
             DataSet next = data.next();
             if (next.getFeatureMatrix() == null || next.getLabels() == null)
                 break;
@@ -250,11 +265,12 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 	
 	/**
      * Performs one epoch of backpropagation with gradient descent of the 
-     * specified {@link MultiLayerNetwork}.
+     * specified {@link MultiLayerNetwork}. Checks {@link LearningMonitor} 
+     * of this learner if learning should be prematurely stopped.
      * 
      * @param mln the network to train
      * @param data the data to train on
-     * @param exec used to check for cancelled execution an stop learning
+     * @param exec used to check for cancelled execution and stop learning
 	 * @throws CanceledExecutionException 
      */
 	protected void backpropOneEpoch(MultiLayerNetwork mln, DataSetIterator data, ExecutionContext exec) 
@@ -272,9 +288,35 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 		}		
 		while(data.hasNext()){
 			exec.checkCanceled();
+			if(m_learningMonitor.checkStopLearning()) {
+				break;
+			}
+			
 			mln.fit(data.next());
 		}
 		mln.getLayerWiseConfigurations().setPretrain(isPretrain);
+	}
+	
+	/**
+	 * Call notifyViews on this {@link NodeModel} with the specified
+	 * Object.
+	 * 
+	 * @param obj the object to pass
+	 */
+	public void passObjToView(Object obj){
+		notifyViews(obj);
+	}
+	
+	/**
+	 * Sets score and learning status to null and resets 
+	 * {@link LearningMonitor} of this Learner
+	 */
+	@Override
+	protected void reset() {
+		m_score = null;
+		m_learningStatus = null;
+		m_learningMonitor.reset();
+		super.reset();
 	}
 	
 	public boolean isConvolutional() {
@@ -289,4 +331,23 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 		return isRecurrent;
 	}
 
+	public Double getScore(){
+		return m_score;
+	}
+	
+	public void setScore(Double score){
+		m_score = score;
+	}
+	
+	public void setLearningStatus(LearningStatus status){
+		m_learningStatus = status;
+	}
+	
+	public LearningStatus getLearningStatus(){
+		return m_learningStatus;
+	}
+	
+	public LearningMonitor getLearningMonitor(){
+		return m_learningMonitor;
+	}
 }

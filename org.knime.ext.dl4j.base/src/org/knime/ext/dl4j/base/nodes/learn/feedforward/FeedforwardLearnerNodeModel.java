@@ -71,7 +71,8 @@ import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory;
 import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
-import org.knime.ext.dl4j.base.nodes.learn.LoggerLossIterationListener;
+import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
+import org.knime.ext.dl4j.base.nodes.learn.UpdateLearnerViewIterationListener;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.TrainingMode;
@@ -96,7 +97,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
     private LearnerParameterSettingsModels m_learnerParameterSettings;
     private DataParameterSettingsModels m_dataParameterSettings;
     
-    private List<String> m_labels = new ArrayList<>();;
+    private List<String> m_labels = new ArrayList<>();
     
 	/**
      * Constructor for the node model.
@@ -108,7 +109,6 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 
 	@Override
 	protected DLModelPortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		
 		final DLModelPortObject portObject = (DLModelPortObject)inData[0];
 		final BufferedDataTable table = (BufferedDataTable) inData[1];
 		
@@ -149,9 +149,10 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater) );
         						
 		
-		newMln.setListeners(new LoggerLossIterationListener(
-				logger, 
-				m_learnerParameterSettings.getTrainingIterations().getIntValue()));
+//		newMln.setListeners(new LoggerLossIterationListener(
+//				logger, 
+//				m_learnerParameterSettings.getTrainingIterations().getIntValue()));
+        newMln.setListeners(new UpdateLearnerViewIterationListener(this));
 		
         //train the network
 		int epochs = m_dataParameterSettings.getEpochs().getIntValue();
@@ -256,8 +257,6 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		List<SettingsModel> settings = new ArrayList<>();		
 		settings.addAll(m_learnerParameterSettings.getAllInitializedSettings());
 		settings.addAll(m_dataParameterSettings.getAllInitializedSettings());	
-		
-		
 
 		return settings;
 	} 
@@ -274,8 +273,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	 * @param exec
 	 * @throws Exception
 	 */
-	private void trainNetwork(MultiLayerNetwork mln, int epochs, DataSetIterator data, ExecutionContext exec)
-			throws Exception{
+	private void trainNetwork(final MultiLayerNetwork mln, final int epochs, final DataSetIterator data, 
+			final ExecutionContext exec) throws Exception{
 		boolean isPretrain = mln.getLayerWiseConfigurations().isPretrain();
 		boolean isBackprop = mln.getLayerWiseConfigurations().isBackprop();
 		boolean isFinetune = m_learnerParameterSettings.getUseFinetune().getBooleanValue();
@@ -298,9 +297,13 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 			logger.info("Pretrain Model for " + epochs + " epochs.");
 	        for(int i = 0; i < epochs ; i++){
 	        	exec.checkCanceled();
+	        	if(getLearningMonitor().checkStopLearning()) break;
 	        	logger.info("Pretrain epoch: " + (i+1) + " of: " + epochs);
+	        	
+	        	updateView(i+1, epochs, "Pretrain");
 	        	pretrainOneEpoch(mln, data, exec);
-	        	logEpochScore(mln, (i+1));
+	        	
+	        	logEpochScore(mln, (i+1));	        	
 	        	data.reset();  
 	        	exec.setProgress((double)(i+1)/maxProgress);
 	        }
@@ -309,24 +312,52 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	        logger.info("Finetune Model for " + epochs + " epochs.");
 	        for(int i = 0; i < epochs ; i++){  
 	        	exec.checkCanceled();
+	        	if(getLearningMonitor().checkStopLearning()) break;
 	        	logger.info("Finetune epoch: " + (i+1) + " of: " + epochs);
+	        	
+	        	updateView(i+1, epochs, "Finetune");
 	        	finetuneOneEpoch(mln, data, exec);
-	        	logEpochScore(mln, (i+1));
+	        	
+	        	logEpochScore(mln, (i+1));	        	
 	        	data.reset();	
 	        	exec.setProgress((double)(i+1)/maxProgress);
 	        }  
 		}
 		if(isBackprop){						
 			logger.info("Do Backpropagation for " + epochs + " epochs.");
-	        for(int i = 0; i < epochs ; i++){      
-	        	exec.checkCanceled();
-	        	logger.info("Backprop epoch: " + (i+1) + " of: " + epochs);
+	        for(int i = 0; i < epochs; i++){      
+	        	exec.checkCanceled();	        	
+	        	if(getLearningMonitor().checkStopLearning()) break;
+	        	logger.info("Backprop epoch: " + (i+1) + " of: " + epochs);	        	  
+	        	
+	        	updateView(i+1, epochs, "Backprop");
 	        	backpropOneEpoch(mln, data, exec);
-	        	logEpochScore(mln, (i+1));
+	        	
+	        	logEpochScore(mln, (i+1));	        		        	
 	        	data.reset();
 	        	exec.setProgress((double)(i+1)/maxProgress);
 	        }	        
 		}	
+	}
+	
+	/**
+	 * Updates the view using the specified values.
+	 * 
+	 * @param currentEpoch the current training epoch
+	 * @param maxEpochs the maximum number of epochs
+	 * @param trainingMethod a string describing the training method
+	 */
+	private void updateView(final int currentEpoch, final int maxEpochs, final String trainingMethod){
+		LearningStatus currentStatus = new LearningStatus(currentEpoch, maxEpochs, getScore(), trainingMethod);
+    	notifyViews(currentStatus);
+    	setLearningStatus(currentStatus);
+	}
+
+	@Override
+	protected void reset() {
+		//reset the view
+		notifyViews(null);
+		super.reset();
 	}
 	
 	/**
@@ -338,5 +369,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	private void logEpochScore(MultiLayerNetwork m, int epoch){
 		logger.info("Loss after epoch " + epoch + " is " + m.score());
 	}
+	
+	
 }
 
