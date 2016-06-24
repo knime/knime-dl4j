@@ -60,23 +60,8 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
  */
 public class LayerParameterSettingsModels implements IParameterSettingsModels<LayerParameter>{
 
-	static final int DEFAULT_INT = 1;
-	
-	static final Double DEFAULT_DOUBLE = 0.0;
-	static final Double DEFAULT_LRN_ALPHA = 0.0001;
-	static final Double DEFAULT_LRN_BETA = 0.75;
-	
-	static final int DEFAULT_LRN_K = 2;
-	static final int DEFAULT_LRN_N = 5;
-	
-	static final String DEFAULT_ACTIVATION = "relu";
-	static final String DEFAULT_WEIGHT_INIT = "XAVIER";
-	static final String DEFAULT_LOSS = "RMSE_XENT";
-	static final String DEFAULT_TRANSFORMATION = "BINARY";
-	static final String DEFAULT_POOLING = "MAX";
-	static final String DEFAULT_MULTIINT = "2,2";
-	
-	static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";
+	static final int DEFAULT_INT = 1;	
+	static final Double DEFAULT_DOUBLE = 0.0;	
 	
 	private SettingsModelIntegerBounded m_numberOfOutputs;
 	private SettingsModelIntegerBounded m_rbmIterations;
@@ -112,31 +97,31 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 			return new SettingsModelIntegerBounded("rbm_iterations", DEFAULT_INT, 1, 
 					Integer.MAX_VALUE);	
 		case LRN_K:
-			return new SettingsModelIntegerBounded("lrn_k", DEFAULT_LRN_K, 0 ,
+			return new SettingsModelIntegerBounded("lrn_k", LayerParameter.DEFAULT_LRN_K, 0 ,
 					Integer.MAX_VALUE);
 		case LRN_N:
-			return new SettingsModelIntegerBounded("lrn_n", DEFAULT_LRN_N, 0 ,
+			return new SettingsModelIntegerBounded("lrn_n", LayerParameter.DEFAULT_LRN_N, 0 ,
 					Integer.MAX_VALUE);
 			
 		//multi Integer parameter				
 		case KERNEL_SIZE:
-			return new SettingsModelString("kernel_size", DEFAULT_MULTIINT);
+			return new SettingsModelString("kernel_size", LayerParameter.DEFAULT_MULTIINT);
 		case STRIDE:	
-			return new SettingsModelString("stride", DEFAULT_MULTIINT);
+			return new SettingsModelString("stride", LayerParameter.DEFAULT_MULTIINT);
 			
 		//String parameters
 		case ACTIVATION:
-			return new SettingsModelString("activation", DEFAULT_ACTIVATION);
+			return new SettingsModelString("activation", LayerParameter.DEFAULT_ACTIVATION);
 		case WEIGHT_INIT:
-			return new SettingsModelString("weight_init", DEFAULT_WEIGHT_INIT);
+			return new SettingsModelString("weight_init", LayerParameter.DEFAULT_WEIGHT_INIT);
 		case LOSS_FUNCTION:
-			return new SettingsModelString("loss_function", DEFAULT_LOSS);
+			return new SettingsModelString("loss_function", LayerParameter.DEFAULT_LOSS);
 		case HIDDEN_UNIT:
-			return new SettingsModelString("hidden_unit", DEFAULT_TRANSFORMATION);
+			return new SettingsModelString("hidden_unit", LayerParameter.DEFAULT_TRANSFORMATION);
 		case VISIBLE_UNIT:
-			return new SettingsModelString("visible_unit", DEFAULT_TRANSFORMATION);
+			return new SettingsModelString("visible_unit", LayerParameter.DEFAULT_TRANSFORMATION);
 		case POOLING_TYPE:
-			return new SettingsModelString("pooling_type", DEFAULT_POOLING);				
+			return new SettingsModelString("pooling_type", LayerParameter.DEFAULT_POOLING);				
 			
 		//Double parameters
 		case DROP_OUT:
@@ -144,11 +129,11 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
 		case LEARNING_RATE:	
 			return new SettingsModelDoubleBounded("learning_rate", DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
 		case LRN_ALPHA:
-			return new SettingsModelDoubleBounded("lrn_alpha", DEFAULT_LRN_ALPHA, 0, Double.MAX_VALUE);
+			return new SettingsModelDoubleBounded("lrn_alpha", LayerParameter.DEFAULT_LRN_ALPHA, 0, Double.MAX_VALUE);
 		case LRN_BETA:
-			return new SettingsModelDoubleBounded("lrn_beta", DEFAULT_LRN_BETA, 0, Double.MAX_VALUE);
+			return new SettingsModelDoubleBounded("lrn_beta", LayerParameter.DEFAULT_LRN_BETA, 0, Double.MAX_VALUE);
 		case CORRUPTION_LEVEL:
-			return new SettingsModelDoubleBounded("corruption_level", 0, 0, 1);
+			return new SettingsModelDoubleBounded("corruption_level", DEFAULT_DOUBLE, 0, 1);
 		default:
 			throw new IllegalStateException(
                     "LayerParameter does not exist: "

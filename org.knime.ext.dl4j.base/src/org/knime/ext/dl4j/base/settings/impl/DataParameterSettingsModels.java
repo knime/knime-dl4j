@@ -60,8 +60,6 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
  */
 public class DataParameterSettingsModels implements IParameterSettingsModels<DataParameter>{
 	
-	static final int DEFAULT_INT = 1;
-	
 	private SettingsModelIntegerBounded m_batchSize;
 	private SettingsModelIntegerBounded m_epochs;
 	private SettingsModelString m_labelColumn;
@@ -76,17 +74,17 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
 	public SettingsModel createParameter(final DataParameter enumerate) throws IllegalStateException{
 		switch (enumerate) {		
 		case BATCH_SIZE:
-			return new SettingsModelIntegerBounded("batch_size", DEFAULT_INT, 1, 
+			return new SettingsModelIntegerBounded("batch_size", DataParameter.DEFAULT_BATCH_SIZE, 1, 
 					Integer.MAX_VALUE);
 		case EPOCHS:
-			return new SettingsModelIntegerBounded("epochs", DEFAULT_INT, 1, 
+			return new SettingsModelIntegerBounded("epochs", DataParameter.DEFAULT_EPOCHS, 1, 
 					Integer.MAX_VALUE);
 		case COLUMN_SELECTION:
 			return new SettingsModelFilterString("column_selection");
 		case LABEL_COLUMN:
 			return new SettingsModelString("label_column", "");
 		case IMAGE_SIZE:
-			return new SettingsModelString("image_size", "0,0,0");
+			return new SettingsModelString("image_size", DataParameter.DEFAULT_IMAGE_SIZE);
 		case DOCUMENT_COLUMN:
 			return new SettingsModelString("document_column", "");
 		case SEQUENCE_COLUMN:
@@ -108,8 +106,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
 			break;
 		case EPOCHS:
 			m_epochs = (SettingsModelIntegerBounded)createParameter(enumerate);
-			if(!m_allInitializedSettings.contains(m_epochs))
-				m_allInitializedSettings.add(m_epochs);
+			addToSet(m_epochs);
 			break;
 		case COLUMN_SELECTION:
 			m_columnSelection = (SettingsModelFilterString)createParameter(enumerate);

@@ -61,5 +61,10 @@ public enum DataParameter{
 	/** the column holding the documents */
 	DOCUMENT_COLUMN,
 	/** the column holding the sequence to train on */
-	SEQUENCE_COLUMN
+	SEQUENCE_COLUMN;
+	
+	//default values for learner parameters
+	public static final String DEFAULT_IMAGE_SIZE = "0,0,0";
+	public static final int DEFAULT_BATCH_SIZE = 1;
+	public static final int DEFAULT_EPOCHS = 1;
 }

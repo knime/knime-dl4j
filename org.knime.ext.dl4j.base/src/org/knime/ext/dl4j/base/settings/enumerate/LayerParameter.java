@@ -81,6 +81,17 @@ public enum LayerParameter{
     /** hyper parameter for local response normalization */
     LRN_N,
     /** amount of 'noise' or 'corruption' to use */
-    CORRUPTION_LEVEL,
-    
+    CORRUPTION_LEVEL;
+	
+	//default values for learner parameters
+	public static final Double DEFAULT_LRN_ALPHA = 0.0001;
+	public static final Double DEFAULT_LRN_BETA = 0.75;
+	public static final int DEFAULT_LRN_K = 2;
+	public static final int DEFAULT_LRN_N = 5;	
+	public static final String DEFAULT_ACTIVATION = "relu";
+	public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
+	public static final String DEFAULT_LOSS = "RMSE_XENT";
+	public static final String DEFAULT_TRANSFORMATION = "BINARY";
+	public static final String DEFAULT_POOLING = "MAX";
+	public static final String DEFAULT_MULTIINT = "2,2";   
 }
