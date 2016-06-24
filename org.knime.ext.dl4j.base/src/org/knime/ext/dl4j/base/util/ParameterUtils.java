@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.knime.core.node.InvalidSettingsException;
+import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 
 /**
  * Utility class for parameter validation and conversion of 
@@ -92,9 +93,15 @@ public class ParameterUtils {
 	 */
 	public static void validateImageSizeParameter(String imageSize, boolean isConv) 
 			throws InvalidSettingsException{
-		if(!imageSize.matches(imageSizePattern) && isConv){
-			throw new InvalidSettingsException("string for image size is incorrect. "
-					+ "Has to be three Integers separated by a comma (x-size,y-size,channels)");
+		if(isConv){
+			if(imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)){
+				throw new InvalidSettingsException("Image size needs to be set for convolutional "
+						+ " networks. Set image size in learner dialog -> Data Paraeters.");
+			}
+			if(!imageSize.matches(imageSizePattern)){
+				throw new InvalidSettingsException("string for image size is incorrect. "
+						+ "Has to be three Integers separated by a comma (x-size,y-size,channels)");
+			}
 		}
 	}
 	

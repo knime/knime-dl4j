@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortType;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
+import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -103,15 +104,15 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     	DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
     	
     	if(modelSpec.getLayerTypes().isEmpty()) throw new InvalidSettingsException("Can't learn without layers in network.");
-
-    	List<DNNType> dnnTypes = modelSpec.getNeuralNetworkTypes();
-    	if(dnnTypes.size() == 1 && dnnTypes.contains(DNNType.DEEPCONVOLUTIONAL)){
+   
+    	List<DNNLayerType> dnnLayerTypes = modelSpec.getLayerTypes();
+    	if(dnnLayerTypes.contains(DNNLayerType.CONVOLUTION_LAYER)){
     		isConvolutional = true;
     	} else {
     		isConvolutional = false;
     	}
     	
-    	if(dnnTypes.size() == 1 && dnnTypes.contains(DNNType.RECURRENT)){
+    	if(dnnLayerTypes.contains(DNNLayerType.GRAVES_LSTM) || dnnLayerTypes.contains(DNNLayerType.GRU)){
     		isRecurrent = true;
     	} else {
     		isRecurrent = false;
@@ -308,7 +309,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 	}
 	
 	/**
-	 * Sets score and learning status to null and resets 
+	 * Sets score and learning status to null and reset 
 	 * {@link LearningMonitor} of this Learner
 	 */
 	@Override

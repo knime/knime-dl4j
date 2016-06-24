@@ -81,6 +81,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.TrainingMode;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
@@ -196,6 +197,10 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 				throw new InvalidSettingsException(e);
 			}
 		}
+		
+		logger.info("Constructed network recognized as: " + ConfigurationUtils.typesToString(
+				specWithoutLabels.getNeuralNetworkTypes()));
+		
     	//create new spec and set labels
     	m_outputSpec = new DLModelPortObjectSpec(
 				specWithoutLabels.getNeuralNetworkTypes(), 
@@ -258,6 +263,10 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		m_layerParameterSettings = new LayerParameterSettingsModels();
 		m_layerParameterSettings.setParameter(LayerParameter.LOSS_FUNCTION);
 		m_layerParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
+		/* disable number of outputs dialog option here because supervised learning
+		 * is default where the number of outputs is specified by the number of distinct 
+		 * labels */
+		m_layerParameterSettings.getNumberOfOutputs().setEnabled(false);
 		m_layerParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_layerParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
 		m_layerParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
@@ -364,7 +373,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 
 	@Override
 	protected void reset() {
-		//reset the view
+		//reset the view, if view receives null it resets to default values
 		notifyViews(null);
 		super.reset();
 	}

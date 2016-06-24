@@ -57,7 +57,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
-import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 
 /**
@@ -191,7 +190,7 @@ public class ConfigurationUtils {
 	 * @param types
 	 * @return
 	 */
-	private static <E extends Enum<E>> String typesToString(List<E> types){
+	public static <E extends Enum<E>> String typesToString(List<E> types){
 		String typesToString = "";
 		for(int i = 0 ; i < types.size() ; i++){
 			typesToString += types.get(i).toString();

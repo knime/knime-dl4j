@@ -120,12 +120,12 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 				case SUPERVISED:
 					labelColumnSettings.setEnabled(true);
 					columnSelectionSettings.setEnabled(true);
-					numberOfOutputs.setEnabled(true);
+					numberOfOutputs.setEnabled(false);
 					break;
 				case UNSUPERVISED:
 					labelColumnSettings.setEnabled(false);
 					columnSelectionSettings.setEnabled(true);	
-					numberOfOutputs.setEnabled(false);
+					numberOfOutputs.setEnabled(true);
 					break;
 				default:
 					break;
