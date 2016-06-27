@@ -55,7 +55,8 @@ public enum DL4JActivationFunction{
 	leakyrelu,
 	maxout,
 	softsign,
-	softplus;	
+	softplus,
+	identity;
 	
 //	@Override
 //	public String toString() {
