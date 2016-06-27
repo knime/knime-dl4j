@@ -6,7 +6,7 @@ import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 
 /**
- * <code>NodeDialog</code> for the "VectorConversionTester" Node.
+ * <code>NodeDialog</code> for the "DL4JModelTester" Node.
  * 
  *
  * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
@@ -16,22 +16,21 @@ import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelectio
  * 
  * @author KNIME
  */
-public class VectorConversionTesterNodeDialog extends DefaultNodeSettingsPane {
+public class TableToDL4JVectorNodeDialog extends DefaultNodeSettingsPane {
 
     /**
-     * New pane for configuring the VectorConversionTester node.
+     * New pane for configuring the DL4JModelTester node.
      */
-    protected VectorConversionTesterNodeDialog() {
+    protected TableToDL4JVectorNodeDialog() {
     	addDialogComponent(new DialogComponentColumnNameSelection(
-    			VectorConversionTesterNodeModel.createMnistColumnSelectionModel(),
-    			"MNIST Column",
+    			TableToDL4JVectorNodeModel.createLabelColumnSettings(),
+    			"Label Column",
     			0,
+    			false,
     			true,
     			NominalValue.class
                 ));
-    	addDialogComponent(new DialogComponentBoolean(
-        		VectorConversionTesterNodeModel.createExpectBinaryImagesModel(), 
-        		"Expect Binary Images?"));
+    	
     }
 }
 

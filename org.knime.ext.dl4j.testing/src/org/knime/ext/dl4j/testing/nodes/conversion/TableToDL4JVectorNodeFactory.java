@@ -5,20 +5,20 @@ import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 /**
- * <code>NodeFactory</code> for the "VectorConversionTester" Node.
+ * <code>NodeFactory</code> for the "DL4JModelTester" Node.
  * 
  *
  * @author KNIME
  */
-public class VectorConversionTesterNodeFactory 
-        extends NodeFactory<VectorConversionTesterNodeModel> {
+public class TableToDL4JVectorNodeFactory 
+        extends NodeFactory<TableToDL4JVectorNodeModel> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public VectorConversionTesterNodeModel createNodeModel() {
-        return new VectorConversionTesterNodeModel();
+    public TableToDL4JVectorNodeModel createNodeModel() {
+        return new TableToDL4JVectorNodeModel();
     }
 
     /**
@@ -26,16 +26,16 @@ public class VectorConversionTesterNodeFactory
      */
     @Override
     public int getNrNodeViews() {
-        return 1;
+        return 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public NodeView<VectorConversionTesterNodeModel> createNodeView(final int viewIndex,
-            final VectorConversionTesterNodeModel nodeModel) {
-        return new VectorConversionTesterNodeView(nodeModel);
+    public NodeView<TableToDL4JVectorNodeModel> createNodeView(final int viewIndex,
+            final TableToDL4JVectorNodeModel nodeModel) {
+        return null;
     }
 
     /**
@@ -51,7 +51,7 @@ public class VectorConversionTesterNodeFactory
      */
     @Override
     public NodeDialogPane createNodeDialogPane() {
-        return new VectorConversionTesterNodeDialog();
+        return new TableToDL4JVectorNodeDialog();
     }
 
 }
