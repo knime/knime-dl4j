@@ -131,8 +131,14 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		
 		//create input iterator
 		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();		
-		DataSetIterator input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
-						batchSize, m_labels, true);
+		DataSetIterator input;	
+		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
+		if(trainingMode.equals(TrainingMode.SUPERVISED)){	
+			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
+					batchSize, m_labels, true);
+		} else {
+			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, batchSize);
+		}
 		
 		//build multi layer net
         List<Layer> layers = portObject.getLayers();     
