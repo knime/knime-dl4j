@@ -63,6 +63,7 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
  * AutoEncoder layer for Deeplearning4J integration.
@@ -103,6 +104,7 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         String activation = m_dnnParameterSettings.getActivation().getStringValue();       
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
         double corruptionLevel = m_dnnParameterSettings.getCorruptionLevel().getDoubleValue();
+        LossFunction loss = LossFunction.valueOf(m_dnnParameterSettings.getLossFunction().getStringValue());
       
         
         //build layer
@@ -110,6 +112,7 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         		.nOut(nOut)
         		.activation(activation)
         		.weightInit(weight)
+        		.lossFunction(loss)
         		.learningRate(learningRate)
         		.build();
         newLayers.add(autoencoder);               
@@ -134,6 +137,7 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
 		m_dnnParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
 		m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
 		m_dnnParameterSettings.setParameter(LayerParameter.CORRUPTION_LEVEL);
+		m_dnnParameterSettings.setParameter(LayerParameter.LOSS_FUNCTION);
 		
 		List<SettingsModel> settings = new ArrayList<>();
 		settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());

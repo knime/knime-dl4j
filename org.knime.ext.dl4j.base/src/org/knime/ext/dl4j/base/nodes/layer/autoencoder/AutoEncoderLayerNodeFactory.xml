@@ -14,6 +14,7 @@
         <option name="Learning Rate">The learning rate that should be used for this layer.</option>
         <option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
         <option name="Activation Function">The type of activation function that should be used for this layer.</option>
+        <option name="Loss Function">The type of loss function that should be used for this layer.</option>
         <option name="Corruption Level">The amount of noise or corruption which should be used.</option>      
     </fullDescription>
     

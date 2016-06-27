@@ -55,6 +55,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.EnumUtils;
+import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
  * <code>NodeDialog</code> for the "DenseLayer" Node.
@@ -101,6 +102,12 @@ LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModel
 							LayerParameter.ACTIVATION),
 					"Activation Function",
 					EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
+					));
+			addDialogComponent(new DialogComponentStringSelection(
+					(SettingsModelString)dnnSettingsModels.createParameter(
+							LayerParameter.LOSS_FUNCTION),
+					"Loss Function",
+					EnumUtils.getStringCollectionFromToString(LossFunction.values())
 					));
 			addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
