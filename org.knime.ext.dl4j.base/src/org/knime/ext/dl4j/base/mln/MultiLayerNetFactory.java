@@ -162,7 +162,7 @@ public class MultiLayerNetFactory {
 	protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
 		
 		NeuralNetConfiguration.ListBuilder listBuilder = createListBuilderWithLearnerParameters(layers);
-
+		
 		MultiLayerConfiguration layerConf = listBuilder.build();
 		MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
 		mln.init();
@@ -247,6 +247,9 @@ public class MultiLayerNetFactory {
 		nnConfigBuilder.updater(m_updater);
 		nnConfigBuilder.optimizationAlgo(m_optimization);
 		
+		//very strange dl4j behaviour, for unsupervised layers (RBM, Autoencoder) we need
+		//to modify the step function elswise learning does not work (error does not decrease)
+		//nnConfigBuilder.stepFunction(new DefaultStepFunction());
 
 		NeuralNetConfiguration.ListBuilder listBuilder = nnConfigBuilder.list();
 
