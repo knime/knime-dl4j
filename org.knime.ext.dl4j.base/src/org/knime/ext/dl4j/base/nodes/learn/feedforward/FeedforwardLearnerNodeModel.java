@@ -117,12 +117,13 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		final DLModelPortObject portObject = (DLModelPortObject)inData[0];
 		final BufferedDataTable table = (BufferedDataTable) inData[1];
 		
+		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
 		//select columns from input table
 		List<String> selectedColumns = new ArrayList<>();
 		selectedColumns.addAll(m_dataParameterSettings.getColumnSelection().getIncludeList());		
 		String labelColumnName = m_dataParameterSettings.getLabelColumn().getStringValue();
 		
-		if(labelColumnName != null && !labelColumnName.isEmpty()){
+		if(labelColumnName != null && !labelColumnName.isEmpty() && trainingMode.equals(TrainingMode.SUPERVISED)){
 			selectedColumns.add(labelColumnName);			
 		}		
 		
@@ -131,8 +132,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		
 		//create input iterator
 		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();		
-		DataSetIterator input;	
-		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
+		DataSetIterator input;			
 		if(trainingMode.equals(TrainingMode.SUPERVISED)){	
 			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
 					batchSize, m_labels, true);
@@ -163,7 +163,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater) );
         						
         //set listener that updates the view and the score of this model
-        newMln.setListeners(new UpdateLearnerViewIterationListener(this));
+        newMln.setListeners(new UpdateLearnerViewIterationListener(this));        
 		
         //train the network
 		int epochs = m_dataParameterSettings.getEpochs().getIntValue();
