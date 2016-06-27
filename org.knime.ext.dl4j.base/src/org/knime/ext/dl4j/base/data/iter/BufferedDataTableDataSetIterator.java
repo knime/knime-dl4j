@@ -57,6 +57,7 @@ import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
+import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -194,12 +195,12 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
 					logger.coding("Problem with input conversion",e);
 				}            	           	
             }
-            INDArray hstack = Nd4j.hstack(dataRow.toArray(new INDArray[dataRow.size()]));
-            if(hstack.length() != inputColumns()){
+            INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
+            if(linearConcat.length() != inputColumns()){
             	logger.error("Length of current input in row: " + row.getKey() + " does not match expected length. Possible images or collections "
             			+ "may not be of same size.");
             }
-            dataMatrix.putRow(k, hstack);
+            dataMatrix.putRow(k, linearConcat);
             m_cursor++;
 		}		
 		

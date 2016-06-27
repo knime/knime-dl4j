@@ -116,4 +116,28 @@ public class NDArrayUtils {
 
 		return labels.get(indexOfMax);
 	}
+	
+	/**
+	 * Horizontally concatenates arrays contained in the specified list.
+	 * 
+	 * @param arrs the arrays which should be concatenated
+	 * @return array concatenated array
+	 */
+	public static INDArray linearConcat(List<INDArray> arrs){
+		int l = 0;
+		//calculate resulting vector length
+		for(INDArray arr : arrs){
+			l += arr.length();
+		}
+		INDArray concat = Nd4j.create(l);
+		int globalPos = 0;
+		//fill with data
+		for(INDArray arr : arrs){
+			for(int i = 0; i < arr.length(); i++){
+				concat.putScalar(globalPos, arr.getDouble(i));
+				globalPos++;
+			}
+		}
+		return concat;
+	}
 }
