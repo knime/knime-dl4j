@@ -137,7 +137,10 @@ public class TableUtils {
 		
 		int i = 0;
 		for(DataCell cell : cells){
-			if(i == labelColumnIndex) continue;
+			if(i == labelColumnIndex){
+			    i++;
+			    continue;
+			}
 			
 			if (cell.getType().isCollectionType()){
         		Optional<DataCellToJavaConverterFactory<DataCell, INDArray[]>> factory =
