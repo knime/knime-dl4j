@@ -100,7 +100,7 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
     	CheckUtils.checkSourceFile(m_infile.getStringValue());
     	
     	URL url = FileUtil.toURL(m_infile.getStringValue());
-		File file = FileUtils.toFile(url);
+		File file = FileUtil.getFileFromURL(url);
 		
 		FileInputStream fileIn = new FileInputStream(file);
 		ZipInputStream zipIn = new ZipInputStream(fileIn);
@@ -150,7 +150,7 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
 		}
 		
 		URL url = FileUtil.toURL(m_infile.getStringValue());
-		File file = FileUtils.toFile(url);
+		File file = FileUtil.getFileFromURL(url);
 			
 		FileInputStream fileIn = new FileInputStream(file);;
 		ZipInputStream zipIn = new ZipInputStream(fileIn);	

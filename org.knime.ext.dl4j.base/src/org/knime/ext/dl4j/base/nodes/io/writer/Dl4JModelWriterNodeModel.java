@@ -110,7 +110,7 @@ public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
 		CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
 		
 		URL url = FileUtil.toURL(m_outfile.getStringValue());
-		File file = FileUtils.toFile(url);
+		File file = FileUtil.getFileFromURL(url);
 		FileOutputStream fileOut = new FileOutputStream(file);
 		ZipOutputStream zipOut = new ZipOutputStream(fileOut);
 		
