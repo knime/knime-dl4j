@@ -121,7 +121,7 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
 	private void compareSpec(DLModelPortObjectSpec s1, DLModelPortObjectSpec s2) throws Exception{
 		if(s1 != null && s2 != null){
 			if(!s1.equals(s2)){
-				logger.error("Spec of model1 is different than Spec of model2");
+				logger.error("Spec of model 1 is different than Spec of model 2");
 			}
 		}
 	}
@@ -131,8 +131,8 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
 			String m1Conf = m1.getLayerWiseConfigurations().toJson();
 			String m2Conf = m2.getLayerWiseConfigurations().toJson();
 			if(!m1Conf.equals(m2Conf)){
-				logger.error("MultiLayerNetwork Configuration of model1 is different from MultiLayerNetwork "
-						+ "Configuration of model2");
+				logger.error("MultiLayerNetwork Configuration of model 1 is different from MultiLayerNetwork "
+						+ "Configuration of model 2");
 				}
 			
 			
@@ -153,28 +153,34 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
 			}
 			if(m1ContainsParams && m2ContainsParams){
 				if(!m1params.equals(m2params)){
-					logger.error("Parameters of model1 are different from Parameter of model2");	
+					logger.error("Parameters of model 1 are different from Parameter of model 2");	
 				}
 			} else if(!m1ContainsParams && !m2ContainsParams){
 				//nothing to check here
 			} else if(m1ContainsParams && !m2ContainsParams){
-				logger.error("model1 contains parameters but model2 doesnt");
+				logger.error("model 1 contains parameters but model2 doesnt");
 			} else if(!m1ContainsParams && m2ContainsParams){
-				logger.error("model2 contains parameters but model1 doesnt");
+				logger.error("model 2 contains parameters but model1 doesnt");
 			}
+		} else if (m1 == null && m2 != null){
+			logger.error("model 1 does not contain MultiLayerNetwork");
+		} else if (m2 == null && m1 != null){
+			logger.error("model 2 does not contain MultiLayerNetwork");
 		}
 	}
 	
 	private void compareLayerLists(List<Layer> l1, List<Layer> l2) throws Exception{
 		if(l1 != null && l2 != null){
 			if(l1.size() != l2.size()){
-				logger.error("Different number of Layers. Number of Layers model1: " + l1.size()
-							+ " Number of Layers model2: " + l2.size());
+				logger.error("Different number of Layers. Number of Layers model 1: " + l1.size()
+							+ " Number of Layers model 2: " + l2.size());
+				return;
 			}
 			for(int i = 0; i < l1.size(); i++){
 				if(!l1.get(i).equals(l2.get(i))){
-					logger.error("Layer " + (i+1) + " of model1 is different from Layer " + (i+1) 
-							+ " of model2");
+					logger.error("Layer " + (i+1) + " of model 1 is different from Layer " + (i+1) 
+							+ " of model 2");
+					return;
 				}
 			}
 		}
