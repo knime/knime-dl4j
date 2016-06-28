@@ -62,6 +62,7 @@ import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
@@ -103,7 +104,8 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
         		m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
         int[] stride = ParameterUtils.convertStringsToInts(
         		m_dnnParameterSettings.getStride().getStringValue().split(","));
-        String activation = m_dnnParameterSettings.getActivation().getStringValue();
+        String activation = DL4JActivationFunction.fromToString(
+        		m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();      	
         double dropOut = m_dnnParameterSettings.getDropOut().getDoubleValue();
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
             

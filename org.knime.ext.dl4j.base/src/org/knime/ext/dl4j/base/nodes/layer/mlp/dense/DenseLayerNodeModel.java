@@ -62,6 +62,7 @@ import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 
 /**
@@ -101,7 +102,8 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
         //parameters
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        String activation = m_dnnParameterSettings.getActivation().getStringValue();       
+        String activation = DL4JActivationFunction.fromToString(
+        		m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();      	  
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
     
         //build layer

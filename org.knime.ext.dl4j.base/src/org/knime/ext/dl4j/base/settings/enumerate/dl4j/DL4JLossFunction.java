@@ -52,21 +52,52 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
  */
 public enum DL4JLossFunction {
 	/** Mean Squared Error: Linear Regression */
-	MSE,
+	MSE(LossFunction.MSE),
 	/** Exponential log likelihood: Poisson Regression */
-    EXPLL,
+    EXPLL(LossFunction.EXPLL),
     /** Cross Entropy: Binary Classification */
-    XENT,
+    XENT(LossFunction.XENT),
     /** Multiclass Cross Entropy */
-    MCXENT,
+    MCXENT(LossFunction.MCXENT),
     /** RMSE Cross Entropy */
-    RMSE_XENT,
+    RMSE_XENT(LossFunction.RMSE_XENT),
     /** Squared Loss */
-    SQUARED_LOSS,
+    SQUARED_LOSS(LossFunction.SQUARED_LOSS),
     /** Reconstruction Cross Entropy */
-    RECONSTRUCTION_CROSSENTROPY,
+    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY),
     /** Negative Log Likelihood */
-    NEGATIVELOGLIKELIHOOD;
+    NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
+	
+	/** the corresponding dl4j value of this enum */
+	private LossFunction m_DL4JValue;
+	
+	private DL4JLossFunction(LossFunction loss) {
+		m_DL4JValue = loss;
+	}
+	
+	/**
+     * Converts string representation of this enum back to this enum
+     * 
+     * @param toString the value from toString of this enum
+     * @return this enum corresponding to toString
+     */
+	public static DL4JLossFunction fromToString(String toString){
+        for(DL4JLossFunction e : DL4JLossFunction.values()){
+            if(e.toString().equals(toString)){
+                return e;
+            }
+        }
+        return null;
+	}
+
+	/**
+	 * Get the in dl4j usable {@link LossFunction} corresponding to this enum
+	 * 
+	 * @return dl4j usable {@link LossFunction}
+	 */
+	public LossFunction getDL4JValue(){
+	    return m_DL4JValue;
+	} 
 	
 	public String toString(){
 		switch (this) {		

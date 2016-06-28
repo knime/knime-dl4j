@@ -78,6 +78,8 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.TrainingMode;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
@@ -416,8 +418,10 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 			nOut = settings.getNumberOfOutputs().getIntValue();   
 		} 
         WeightInit weight = WeightInit.valueOf(settings.getWeightInit().getStringValue());
-        String activation = settings.getActivation().getStringValue();
-        LossFunction loss = LossFunction.valueOf(settings.getLossFunction().getStringValue());        
+        String activation = DL4JActivationFunction.fromToString(
+        		settings.getActivation().getStringValue()).getDL4JValue();      	
+        LossFunction loss = DL4JLossFunction.fromToString(
+        		settings.getLossFunction().getStringValue()).getDL4JValue();     
         double learningRate = settings.getLearningRate().getDoubleValue();
        
         OutputLayer outputLayer = new OutputLayer.Builder(loss)

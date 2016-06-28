@@ -62,6 +62,8 @@ import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -108,8 +110,10 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         RBM.HiddenUnit hidden = RBM.HiddenUnit.valueOf(m_dnnParameterSettings.getHiddenUnit().getStringValue());
         RBM.VisibleUnit visible = RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getVisibleUnit().getStringValue());
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        String activation = m_dnnParameterSettings.getActivation().getStringValue();
-        LossFunction loss = LossFunction.valueOf(m_dnnParameterSettings.getLossFunction().getStringValue());
+        String activation = DL4JActivationFunction.fromToString(
+        		m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();      	
+        LossFunction loss = DL4JLossFunction.fromToString(
+        		m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
         double drop = m_dnnParameterSettings.getDropOut().getDoubleValue();
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
         

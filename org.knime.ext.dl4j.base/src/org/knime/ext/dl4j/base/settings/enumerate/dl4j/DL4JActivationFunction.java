@@ -47,40 +47,73 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
  * Enumeration wrapper as there is no enum in DL4J.
  */
 public enum DL4JActivationFunction{
-	relu,
-	tanh,
-	sigmoid,
-	softmax,
-	hardtanh,
-	leakyrelu,
-	maxout,
-	softsign,
-	softplus,
-	identity;
+	relu("relu"),
+    tanh("tanh"),
+    sigmoid("sigmoid"),
+    softmax("softmax"),
+    hardtanh("hardtanh"),
+    leakyrelu("leakyrelu"),
+    maxout("maxout"),
+    softsign("softsign"),
+    softplus("softplus"),
+    identity("identity");
+
+	/** the corresponding dl4j value of this enum */
+    private String m_DL4JValue;
+
+    private DL4JActivationFunction(String activation) {
+        m_DL4JValue = activation;
+    }
+
+    /**
+     * Converts string representation of this enum back to this enum
+     * 
+     * @param toString the value from toString of this enum
+     * @return this enum corresponding to toString
+     */
+    public static DL4JActivationFunction fromToString(String toString){
+        for(DL4JActivationFunction e : DL4JActivationFunction.values()){
+            if(e.toString().equals(toString)){
+                return e;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the in dl4j usable activation function string corresponding to this enum
+     * 
+     * @return dl4j usable activation function string
+     */
+    public String getDL4JValue(){
+        return m_DL4JValue;
+    } 
 	
-//	@Override
-//	public String toString() {
-//		switch (this) {		
-//		case hardtanh:
-//			return "HardTanH";
-//		case leakyrelu:
-//			return "LeakyReLU";
-//		case maxout:
-//			return "MaxOut";
-//		case relu:
-//			return "ReLU";
-//		case sigmoid:
-//			return "Sigmoid";
-//		case softmax:
-//			return "Softmax";
-//		case softplus:
-//			return "SoftPlus";
-//		case softsign:
-//			return "Softsign";
-//		case tanh:
-//			return "TanH";
-//		default:
-//			return super.toString();			
-//		}
-//	}
+	@Override
+	public String toString() {
+		switch (this) {		
+		case hardtanh:
+			return "HardTanH";
+		case leakyrelu:
+			return "LeakyReLU";
+		case maxout:
+			return "MaxOut";
+		case relu:
+			return "ReLU";
+		case sigmoid:
+			return "Sigmoid";
+		case softmax:
+			return "Softmax";
+		case softplus:
+			return "SoftPlus";
+		case softsign:
+			return "Softsign";
+		case tanh:
+			return "TanH";
+		case identity:
+			return "Identity";
+		default:
+			return super.toString();			
+		}
+	}
 }

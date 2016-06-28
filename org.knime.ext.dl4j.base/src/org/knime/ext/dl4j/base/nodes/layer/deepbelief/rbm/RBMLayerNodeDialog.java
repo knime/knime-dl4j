@@ -55,9 +55,9 @@ import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.EnumUtils;
-import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
  * <code>NodeDialog</code> for the "RBMLayer" Node.
@@ -127,7 +127,7 @@ public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
 					(SettingsModelString)dnnSettingsModels.createParameter(
 							LayerParameter.LOSS_FUNCTION),
 					"Loss Function",
-					EnumUtils.getStringCollectionFromToString(LossFunction.values())
+					EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())
 					));
 			addDialogComponent(new DialogComponentStringSelection(
 					(SettingsModelString)dnnSettingsModels.createParameter(

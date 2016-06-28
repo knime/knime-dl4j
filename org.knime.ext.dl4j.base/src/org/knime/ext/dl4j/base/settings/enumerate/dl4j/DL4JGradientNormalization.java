@@ -42,9 +42,17 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
+import org.deeplearning4j.nn.conf.GradientNormalization;
+
+/**
+ * Wrapper for {@link GradientNormalization} for better String representation
+ * of values.
+ * 
+ * @author David Kolb, KNIME.com GmbH
+ */
 public enum DL4JGradientNormalization {
 	/** Rescale gradients by dividing by the L2 norm of all gradients for the layer */
-	RenormalizeL2PerLayer,
+	RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
 	/** 
 	 * <p> Rescale gradients by dividing by the L2 norm of the gradients, separately for
 	 * each type of parameter within the layer.<br>
@@ -56,7 +64,7 @@ public enum DL4JGradientNormalization {
 	 * </ul>
 	 * </p> 
 	 * */
-    RenormalizeL2PerParamType,
+    RenormalizeL2PerParamType(GradientNormalization.RenormalizeL2PerParamType),
     /**
     *<p>Clip the gradients on a per-element basis.<br>
     * For each gradient g, set g <- sign(g)*max(maxAllowedValue,|g|).<br>
@@ -69,7 +77,7 @@ public enum DL4JGradientNormalization {
     * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)
     * </p> 
     * */
-    ClipElementWiseAbsoluteValue,
+    ClipElementWiseAbsoluteValue(GradientNormalization.ClipElementWiseAbsoluteValue),
     /**
      * <p>Conditional renormalization. Somewhat similar to RenormalizeL2PerLayer, this strategy
      * scales the gradients <i>if and only if</i> the L2 norm of the gradients (for entire layer) exceeds a specified
@@ -84,7 +92,7 @@ public enum DL4JGradientNormalization {
      * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)
      * </p>
      */
-    ClipL2PerLayer,
+    ClipL2PerLayer(GradientNormalization.ClipL2PerLayer),
     /**
      * <p>Conditional renormalization. Very similar to ClipL2PerLayer, however instead of clipping
      * per layer, do clipping on each parameter type separately.<br>
@@ -93,7 +101,39 @@ public enum DL4JGradientNormalization {
      * unmodified.<br>
      * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)</p>
      */
-    ClipL2PerParamType;
+    ClipL2PerParamType(GradientNormalization.ClipL2PerParamType),;
+	
+	/** the corresponding dl4j value of this enum */
+	private GradientNormalization m_DL4JValue;
+	
+	private DL4JGradientNormalization(GradientNormalization norm) {
+		m_DL4JValue = norm;
+	}
+	
+	/**
+     * Converts string representation of this enum back to this enum
+     * 
+     * @param toString the value from toString of this enum
+     * @return this enum corresponding to toString
+     */
+	public static DL4JGradientNormalization fromToString(String toString){
+        for(DL4JGradientNormalization e : DL4JGradientNormalization.values()){
+            if(e.toString().equals(toString)){
+                return e;
+            }
+        }
+        return null;
+    }
+
+
+	/**
+	 * Get the in dl4j usable {@link GradientNormalization} corresponding to this enum
+	 * 
+	 * @return dl4j usable {@link GradientNormalization}
+	 */
+    public GradientNormalization getDL4JValue(){
+        return m_DL4JValue;
+    } 
 	
 	public String toString(){
 		switch (this) {

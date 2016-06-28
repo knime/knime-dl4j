@@ -61,6 +61,8 @@ import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
@@ -362,7 +364,8 @@ public class MultiLayerNetFactory {
 		if(booleanSettings != null) m_usePretrain = booleanSettings.getBooleanValue();
 		
 		SettingsModelString stringSettings = learnerParameters.getGradientNormalization();
-		if(stringSettings != null) m_gradientNormalization = GradientNormalization.valueOf(stringSettings.getStringValue());
+		if(stringSettings != null) m_gradientNormalization = 
+				DL4JGradientNormalization.fromToString(stringSettings.getStringValue()).getDL4JValue();				
 		
 		stringSettings = learnerParameters.getMomentumAfter();
 		if(stringSettings != null) m_momentumAfter = ParameterUtils.convertStringToMap(stringSettings.getStringValue());
@@ -371,7 +374,8 @@ public class MultiLayerNetFactory {
 		if(stringSettings != null) m_updater = Updater.valueOf(stringSettings.getStringValue());
 		
 		stringSettings = learnerParameters.getOptimizationAlgorithm();
-		if(stringSettings != null) m_optimization = OptimizationAlgorithm.valueOf(stringSettings.getStringValue());
+		if(stringSettings != null) m_optimization = 
+				DL4JOptimizationAlgorithm.fromToString(stringSettings.getStringValue()).getDL4JValue();
 		
 		stringSettings = learnerParameters.getGobalWeightInit();
 		if(stringSettings != null) m_weightInit = WeightInit.valueOf(stringSettings.getStringValue());
@@ -394,7 +398,4 @@ public class MultiLayerNetFactory {
 		doubleSettings = learnerParameters.getGlobalDropOut();
 		if(doubleSettings != null) m_dropOut = doubleSettings.getDoubleValue();
 	}
-	
-	
-	
 }

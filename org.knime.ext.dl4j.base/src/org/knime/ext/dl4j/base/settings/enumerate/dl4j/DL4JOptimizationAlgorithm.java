@@ -51,11 +51,42 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JOptimizationAlgorithm {
-	LINE_GRADIENT_DESCENT,
-    CONJUGATE_GRADIENT,
-    HESSIAN_FREE,
-    LBFGS,
-    STOCHASTIC_GRADIENT_DESCENT;
+	LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
+    CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT),
+    HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
+    LBFGS(OptimizationAlgorithm.LBFGS),
+    STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
+	
+	/** the corresponding dl4j value of this enum */
+	private OptimizationAlgorithm m_DL4JValue;
+
+    private DL4JOptimizationAlgorithm(OptimizationAlgorithm optimization) {
+        m_DL4JValue = optimization;
+    }
+
+    /**
+     * Converts string representation of this enum back to this enum
+     * 
+     * @param toString the value from toString of this enum
+     * @return this enum corresponding to toString
+     */
+    public static DL4JOptimizationAlgorithm fromToString(String toString){
+        for(DL4JOptimizationAlgorithm e : DL4JOptimizationAlgorithm.values()){
+            if(e.toString().equals(toString)){
+                return e;
+            }
+        }
+        return null;
+    }
+
+    /**
+	 * Get the in dl4j usable {@link OptimizationAlgorithm} corresponding to this enum
+	 * 
+	 * @return dl4j usable {@link OptimizationAlgorithm}
+	 */
+    public OptimizationAlgorithm getDL4JValue(){
+        return m_DL4JValue;
+    } 
 	
 	public String toString(){
 		switch (this) {	

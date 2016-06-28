@@ -62,6 +62,8 @@ import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -101,12 +103,13 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         //parameters
         int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        String activation = m_dnnParameterSettings.getActivation().getStringValue();       
+        String activation = DL4JActivationFunction.fromToString(
+        		m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();      		       
         double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
         double corruptionLevel = m_dnnParameterSettings.getCorruptionLevel().getDoubleValue();
-        LossFunction loss = LossFunction.valueOf(m_dnnParameterSettings.getLossFunction().getStringValue());
-      
-        
+        LossFunction loss = DL4JLossFunction.fromToString(
+        		m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
+        	
         //build layer
         AutoEncoder autoencoder = new AutoEncoder.Builder(corruptionLevel)
         		.nOut(nOut)
