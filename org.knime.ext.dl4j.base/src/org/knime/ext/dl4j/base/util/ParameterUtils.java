@@ -95,8 +95,8 @@ public class ParameterUtils {
 			throws InvalidSettingsException{
 		if(isConv){
 			if(imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)){
-				throw new InvalidSettingsException("Image size needs to be set for convolutional "
-						+ " networks. Set image size in learner dialog -> Data Paraeters.");
+				throw new InvalidSettingsException("Image size needs to be set for convolutional"
+						+ " networks. Set image size in learner dialog -> Data Parameters.");
 			}
 			if(!imageSize.matches(imageSizePattern)){
 				throw new InvalidSettingsException("string for image size is incorrect. "
