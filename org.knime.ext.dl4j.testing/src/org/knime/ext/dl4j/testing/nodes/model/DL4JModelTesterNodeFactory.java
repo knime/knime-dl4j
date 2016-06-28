@@ -26,7 +26,7 @@ public class DL4JModelTesterNodeFactory
      */
     @Override
     public int getNrNodeViews() {
-        return 1;
+        return 0;
     }
 
     /**
@@ -35,7 +35,7 @@ public class DL4JModelTesterNodeFactory
     @Override
     public NodeView<DL4JModelTesterNodeModel> createNodeView(final int viewIndex,
             final DL4JModelTesterNodeModel nodeModel) {
-        return new DL4JModelTesterNodeView(nodeModel);
+        return null;
     }
 
     /**

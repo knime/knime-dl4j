@@ -22,10 +22,10 @@ public class DL4JModelTesterNodeDialog extends DefaultNodeSettingsPane {
     protected DL4JModelTesterNodeDialog() {
     	addDialogComponent(new DialogComponentBoolean(
     			DL4JModelTesterNodeModel.createCompareModelsModel(), 
-    			"Check Models for Differences"));
+    			"Check Models for Differences?"));
     	addDialogComponent(new DialogComponentBoolean(
     			DL4JModelTesterNodeModel.createOutputModelsModel(), 
-    			"Output Model Configurations"));
+    			"Output Model Configurations?"));
     }
 }
 
