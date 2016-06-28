@@ -5,19 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
-import org.deeplearning4j.nn.conf.layers.Layer;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.data.DataCell;
-import org.knime.core.data.DataColumnSpec;
-import org.knime.core.data.DataColumnSpecCreator;
-import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.DataType;
 import org.knime.core.data.RowKey;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.data.def.DefaultRow;
-import org.knime.core.data.def.StringCell;
 import org.knime.core.data.vector.doublevector.DoubleVectorCellFactory;
 import org.knime.core.node.BufferedDataContainer;
 import org.knime.core.node.BufferedDataTable;
@@ -25,18 +18,11 @@ import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
-import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
-import org.knime.core.node.port.PortObject;
-import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
-import org.knime.ext.dl4j.base.DLModelPortObject;
-import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.BufferedDataTableDataSetIterator;
-import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
-import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
@@ -48,10 +34,6 @@ import org.nd4j.linalg.dataset.api.DataSet;
  * @author KNIME
  */
 public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
-
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(TableToDL4JVectorNodeModel.class);
 
     private SettingsModelString m_labelColumn;
     private DataTableSpec m_outputSpec;

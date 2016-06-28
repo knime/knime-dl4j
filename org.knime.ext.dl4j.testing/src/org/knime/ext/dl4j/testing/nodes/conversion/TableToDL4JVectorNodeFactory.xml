@@ -3,35 +3,22 @@
     <name>Table To DL4J Vector</name>
     
     <shortDescription>
-        
+        Convert specified columns to one flat number vector.
     </shortDescription>
     
     <fullDescription>
-        <intro>Insert long description here...</intro>
+        <intro>This node converts a table to a number vector used by the Deeplearning4J Integration. This node
+        is only used for testing purposes in order to validate the conversion. The node tries to convert every 
+        input column contained in the table. A possible label column can be specified in the node dialog which
+        will be converted to one-hot representation.</intro>
         
         
-        <option name="short name of first option (like in the dialog)">description of first option</option>
-        <option name="short name of second option (like in the dialog)">description of second option</option>
-        <!-- possibly more options that can also be grouped by tabs -->
-        <!--
-        <tab name="Standard Options">
-            <option name="short name of first option (like in the dialog)">description of first option</option>
-            <option name="short name of second option (like in the dialog)">description of second option</option>
-        </tab>
-        <tab name="Advanced Options">
-            <option name="short name of first advanced option (like in the dialog)">description of first advanced option</option>
-        </tab>
-        -->
+        <option name="Label Column">Specify the column which should be converted into one-hot vector</option>      
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Description of first input port...</inPort>
-        <!-- possibly more input ports here-->
-        <outPort index="0" name="Out-Port name">Description of first output port...</outPort>
-        <!-- possibly more output ports here-->
+        <inPort index="0" name="Data Table">The table to convert</inPort>
+        <outPort index="0" name="Vectors">The resulting vectors</outPort>
     </ports>    
-    <views>
-        <view index="0" name="name of first view">Description of first view...</view>
-        <!--view index="1" name="name of second view">Description of second view...</view-->
-    </views>
+    
 </knimeNode>

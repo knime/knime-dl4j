@@ -2,7 +2,6 @@ package org.knime.ext.dl4j.testing.nodes.conversion;
 
 import org.knime.core.data.NominalValue;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 
 /**
