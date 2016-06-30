@@ -348,21 +348,6 @@ public class DLModelPortObjectUtils {
 		}
 	}
 	
-	private static String[] convertIntegerPairsToStrings(List<Pair<Integer,Integer>> intPairs){
-		String[] intPairsStrings = new String[intPairs.size()];
-		
-		int i = 0;
-		for(Pair<Integer,Integer> pair : intPairs){
-			if(pair != null){
-				intPairsStrings[i] = new String(pair.getFirst() + "," + pair.getSecond());								
-			} else {
-				intPairsStrings[i] = new String("-1,-1");
-			}
-			i++;
-		}
-		return intPairsStrings;
-	}
-	
 	/**
 	 * Converts layers to list of Strings in json format.
 	 * 
