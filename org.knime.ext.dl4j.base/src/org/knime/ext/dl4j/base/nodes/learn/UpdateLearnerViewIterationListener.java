@@ -61,6 +61,14 @@ public class UpdateLearnerViewIterationListener implements IterationListener {
 	private boolean m_invoked = false;
 	private final AbstractDLLearnerNodeModel m_nodeModel;
 	
+	/**
+	 * Constructor for class UpdateLearnerViewIterationListener specifying the 
+	 * {@link AbstractDLLearnerNodeModel} it should use for updating the view.
+	 * After each iteration the method {@link AbstractDLLearnerNodeModel#passObjToView(Object)}
+	 * is called which in turn calls notifyView on the NodeModel.
+	 * 
+	 * @param nodeModel
+	 */
 	public UpdateLearnerViewIterationListener(AbstractDLLearnerNodeModel nodeModel) {
 		m_nodeModel = nodeModel;
 	}
