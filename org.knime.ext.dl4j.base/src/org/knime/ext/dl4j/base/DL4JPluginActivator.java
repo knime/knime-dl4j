@@ -45,12 +45,8 @@ package org.knime.ext.dl4j.base;
 import java.net.URL;
 import java.util.Enumeration;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.knime.ext.dl4j.base.prefs.DL4JPreferencePage;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 public class DL4JPluginActivator extends AbstractUIPlugin {
 

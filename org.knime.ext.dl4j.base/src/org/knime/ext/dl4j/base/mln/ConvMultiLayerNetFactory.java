@@ -49,7 +49,6 @@ import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.knime.core.node.NodeLogger;
 
 /**
  * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional
