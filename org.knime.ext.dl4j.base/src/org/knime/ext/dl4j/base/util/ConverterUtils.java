@@ -49,7 +49,6 @@ import org.knime.core.data.convert.java.DataCellToJavaConverter;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * Utility class for type conversion using the converter extension point.
@@ -66,7 +65,7 @@ public class ConverterUtils {
 	 * @param converterFactory the factory to create converter
 	 * @param cellToConvert the cell to convert
 	 * @throws UnsupportedDataTypeException if no converter available or if there was an error with conversion
-	 * @return the {@link DataCell} converted to {@link INDArray} or null if conversion failed
+	 * @return the conversion result created by the converter created by the specified converter factory
 	 */
 	public static <T> T convertWithFactory(Optional<DataCellToJavaConverterFactory<DataCell, T>> converterFactory, DataCell cellToConvert) 
 			throws UnsupportedDataTypeException{
