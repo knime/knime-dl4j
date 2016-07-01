@@ -61,15 +61,6 @@
       </category>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.knime.workbench.ui.preferences"
-            class="org.knime.ext.dl4j.base.prefs.DL4JPreferencePage"
-            id="org.knime.deeplearning.base.prefs.DL4JPreferencePage"
-            name="Deeplearning4J Integration">
-      </page>
-   </extension>
-   <extension
          point="org.knime.core.DataCellToJavaConverter">
       <DataCellToJavaConverter
             factoryClass="org.knime.ext.dl4j.base.data.convert.DoubleValueToINDArrayConverterFactory"></DataCellToJavaConverter>
