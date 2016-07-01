@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/annotations-2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/aopalliance-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/aopalliance-repackaged-2.4.0-b09.jar"/>
@@ -22,7 +24,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-pool2-2.4.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/compiler-0.8.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-core-0.4-rc3.10.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-core/0.4-rc3.10/deeplearning4j-core-0.4-rc3.10-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nlp-0.4-rc3.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nlp-0.4-rc3.10.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-nlp/0.4-rc3.10/deeplearning4j-nlp-0.4-rc3.10-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/dsiutils-2.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/fastutil-6.5.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/freemarker-2.3.21.jar"/>
@@ -96,7 +98,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/metrics-jvm-3.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/metrics-logback-3.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/metrics-servlets-3.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-api-0.4-rc3.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-api-0.4-rc3.10.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/nd4j/nd4j-api/0.4-rc3.10/nd4j-api-0.4-rc3.10-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/nd4j-buffer-0.4-rc3.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/nd4j-common-0.4-rc3.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/nd4j-context-0.4-rc3.10.jar"/>
