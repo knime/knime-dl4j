@@ -742,6 +742,15 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
+         
+   <plugin
+         id="org.knime.ext.dl4j.bin.linux.x86_64.gpu"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
    <plugin
          id="org.knime.ext.dl4j.bin.macosx.x86_64.cpu"
@@ -751,9 +760,28 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
+         
+   <plugin
+         id="org.knime.ext.dl4j.bin.macosx.x86_64.gpu"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+         
 
    <plugin
          id="org.knime.ext.dl4j.bin.windows.x86_64.cpu"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+         
+   <plugin
+         id="org.knime.ext.dl4j.bin.windows.x86_64.gpu"
          os="win32"
          arch="x86_64"
          download-size="0"
