@@ -44,8 +44,12 @@ package org.knime.ext.dl4j.libs.prefs;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 import org.knime.ext.dl4j.libs.DL4JPluginActivator;
 
 /**
@@ -56,11 +60,13 @@ import org.knime.ext.dl4j.libs.DL4JPluginActivator;
 public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	public static final String P_BACKEND_TYPE = "backendType";
+	private boolean m_useGPU;
 	
 	public DL4JPreferencePage() {
 		super(GRID);
         setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
         setDescription("Preferences for the KNIME Deeplearning4J Integration.");
+        m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
 	}
 	
 	@Override
@@ -77,6 +83,35 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 		addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", 
 				BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
 
+	}
+	
+	@Override
+	public boolean performOk() {
+		boolean result = super.performOk();
+        checkChanges();
+        return result;
+	}
+	
+	private void checkChanges(){
+		boolean currentUseGPU = DL4JPluginActivator.getDefault()
+				.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+		boolean useGPUChanged = m_useGPU != currentUseGPU;
+		
+		if(useGPUChanged){
+			m_useGPU = currentUseGPU;
+			MessageBox mb =
+                    new MessageBox(Display.getDefault().getActiveShell(),
+                            SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+            mb.setText("Restart workbench...");
+            mb.setMessage("Changes of the used backend become "
+                    + "first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?");
+            if (mb.open() != SWT.YES) {
+                return;
+            }
+
+            PlatformUI.getWorkbench().restart();
+		}
 	}
 
 }
