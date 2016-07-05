@@ -59,17 +59,22 @@ import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
 public class ConverterUtils {
 	
 	/**
-	 * Converts the specified {@link DataCell} using a converter from the specified {@link DataCellToJavaConverterFactory}.
-	 * Appearance of result depends on used converter factory, which is usually acquired from 
-	 * {@link DataCellToJavaConverterRegistry}.
+	 * Converts the specified {@link DataCell} to the specified class. For conversion the KNIME
+	 * converter framework is used and in this case the converter created by the converter 
+	 * factory returned by <code>getPreferredConverterFactory</code> using the specified class.
 	 * 
-	 * @param converterFactory the factory to create converter
-	 * @param cellToConvert the cell to convert
-	 * @throws UnsupportedDataTypeException if no converter available or if there was an error with conversion
-	 * @return the conversion result created by the converter created by the specified converter factory
+	 * @param cellToConvert the cell which should be converted
+	 * @param classOfResultType the class of the type which should be converted to
+	 * @return the result of the converter
+	 * @throws UnsupportedDataTypeException if no converter is available for the specified cell and class
+	 * 										if there are errors during conversion 
 	 */
-	public static <T> T convertWithFactory(Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory, DataCell cellToConvert) 
+	public static <T> T convertDataCellToJava(DataCell cellToConvert, Class<T> classOfResultType)
 			throws UnsupportedDataTypeException{
+		
+		Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory =
+				DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);  
+		
 		if (!converterFactory.isPresent()) {
 			throw new UnsupportedDataTypeException("No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
 		}

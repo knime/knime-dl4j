@@ -144,16 +144,12 @@ public class TableUtils {
 			}
 			
 			if (cell.getType().isCollectionType()){
-        		Optional<DataCellToJavaConverterFactory<DataValue, INDArray[]>> factory =
-                        DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray[].class);             		
-        		INDArray[] arrs = ConverterUtils.convertWithFactory(factory, cell);        		
+        		INDArray[] arrs = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);   
         		for(INDArray arr : arrs){
         			recordLength += arr.length();
         		}
         	} else {    
-        		Optional<DataCellToJavaConverterFactory<DataValue, INDArray>> factory =
-                        DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray.class); 
-        		recordLength += ConverterUtils.convertWithFactory(factory, cell).length();
+        		recordLength += ConverterUtils.convertDataCellToJava(cell, INDArray.class).length();
         	}
 			i++;
 		}

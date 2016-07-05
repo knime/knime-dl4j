@@ -55,9 +55,7 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     		String labelColumnName = m_labelColumn.getStringValue();
     		List<String> labels = new ArrayList<String>();
 			for(DataCell cell: tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()){
-				Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
-						DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class);
-				labels.add(ConverterUtils.convertWithFactory(factory, cell));
+				labels.add(ConverterUtils.convertDataCellToJava(cell, String.class));
 			}
     		input = new BufferedDataTableDataSetIterator(inData[0], labelColumnName, 1, labels, true);
     	} else{

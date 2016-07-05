@@ -175,22 +175,16 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
             		//if label convert to one hot vector
             		if(i == m_labelColumnIndex && m_isTrain){   
             			//first convert nominal value to string
-            			Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class); 
-            			String label = ConverterUtils.convertWithFactory(factory, cell);
+            			String label = ConverterUtils.convertDataCellToJava(cell, String.class);
             			INDArray labelOutcomeVector = FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
             			labelsMatrix.putRow(k, labelOutcomeVector);
             			//if collection convert every entry using existing converters
-            		} else if (cell.getType().isCollectionType()){
-            			Optional<DataCellToJavaConverterFactory<DataValue, INDArray[]>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray[].class);             		
-            			INDArray[] convertedCollction = ConverterUtils.convertWithFactory(factory, cell);
+            		} else if (cell.getType().isCollectionType()){  			
+            			INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);            			
             			dataRow.addAll(Arrays.asList(convertedCollction));
             			//else convert directly
             		} else {    
-            			Optional<DataCellToJavaConverterFactory<DataValue, INDArray>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray.class);       
-            			dataRow.add(ConverterUtils.convertWithFactory(factory, cell));            		          	
+            			dataRow.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
             		}					
 				} catch (Exception e) {
 					logger.coding("Problem with input conversion",e);
