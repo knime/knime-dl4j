@@ -12,8 +12,8 @@ import org.osgi.framework.BundleContext;
 public class DL4JPluginActivator extends AbstractUIPlugin {
 	private static DL4JPluginActivator plugin;
 	
-	private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu";
-	private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu";
+	private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu.*";
+	private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu.*";
 	
 	private enum BackendType{
 		GPU,
