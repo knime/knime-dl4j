@@ -65,6 +65,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
+import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
@@ -211,7 +212,7 @@ public class MultiLayerNetFactory {
 		 * in the NeuralNetConfiguration does not overwrite it when it was already set in the 
 		 * specific layer. Hence, need to clone layers to not alter original layers.
 		 */		
-		List<Layer> layersCopy = cloneLayers(layers);
+		List<Layer> layersCopy = DLModelPortObjectUtils.cloneLayers(layers);
 		if(m_useGlobalDropOut){
 			overwriteDropOut(layersCopy, m_dropOut);
 		}
@@ -264,20 +265,6 @@ public class MultiLayerNetFactory {
 		listBuilder.backprop(m_useBackprop);
 
 		return listBuilder;
-	}
-	
-	/**
-	 * Returns a cloned list of the specified list of {@link Layer}s. 
-	 * 
-	 * @param layers the list of layers to clone
-	 * @return clone of specified list of layers
-	 */
-	private List<Layer> cloneLayers(List<Layer> layers){
-		List<Layer> layersClone = new ArrayList<>();
-		for(Layer l : layers){
-			layersClone.add(l.clone());
-		}
-		return layersClone;
 	}
 	
 	/**

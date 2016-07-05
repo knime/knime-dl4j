@@ -413,4 +413,18 @@ public class DLModelPortObjectUtils {
 		return (V[])pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
 				.toArray((V[])Array.newInstance(c, pairs.size()));
 	}
+	
+	/**
+	 * Returns a cloned list of the specified list of {@link Layer}s. 
+	 * 
+	 * @param layers the list of layers to clone
+	 * @return clone of specified list of layers
+	 */
+	public static List<Layer> cloneLayers(List<Layer> layers){
+		List<Layer> layersClone = new ArrayList<>();
+		for(Layer l : layers){
+			layersClone.add(l.clone());
+		}
+		return layersClone;
+	}
 }
