@@ -55,6 +55,7 @@ import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataType;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.StringValue;
 import org.knime.core.data.collection.CollectionDataValue;
 import org.knime.core.data.container.CloseableRowIterator;
@@ -143,15 +144,15 @@ public class TableUtils {
 			}
 			
 			if (cell.getType().isCollectionType()){
-        		Optional<DataCellToJavaConverterFactory<DataCell, INDArray[]>> factory =
-                        DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), INDArray[].class);             		
+        		Optional<DataCellToJavaConverterFactory<DataValue, INDArray[]>> factory =
+                        DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray[].class);             		
         		INDArray[] arrs = ConverterUtils.convertWithFactory(factory, cell);        		
         		for(INDArray arr : arrs){
         			recordLength += arr.length();
         		}
         	} else {    
-        		Optional<DataCellToJavaConverterFactory<DataCell, INDArray>> factory =
-                        DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), INDArray.class); 
+        		Optional<DataCellToJavaConverterFactory<DataValue, INDArray>> factory =
+                        DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray.class); 
         		recordLength += ConverterUtils.convertWithFactory(factory, cell).length();
         	}
 			i++;

@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base.util;
 import java.util.Optional;
 
 import org.knime.core.data.DataCell;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.convert.java.DataCellToJavaConverter;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
@@ -67,12 +68,12 @@ public class ConverterUtils {
 	 * @throws UnsupportedDataTypeException if no converter available or if there was an error with conversion
 	 * @return the conversion result created by the converter created by the specified converter factory
 	 */
-	public static <T> T convertWithFactory(Optional<DataCellToJavaConverterFactory<DataCell, T>> converterFactory, DataCell cellToConvert) 
+	public static <T> T convertWithFactory(Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory, DataCell cellToConvert) 
 			throws UnsupportedDataTypeException{
 		if (!converterFactory.isPresent()) {
 			throw new UnsupportedDataTypeException("No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
 		}
-		DataCellToJavaConverter<DataCell, T> converter = converterFactory.get().create();							
+		DataCellToJavaConverter<DataValue, T> converter = converterFactory.get().create();							
 		try {
 			return converter.convert(cellToConvert);
 		} catch (Exception e) {

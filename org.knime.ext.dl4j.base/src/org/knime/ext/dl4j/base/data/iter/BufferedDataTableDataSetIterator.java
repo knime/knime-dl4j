@@ -51,6 +51,7 @@ import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataType;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
@@ -174,21 +175,21 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
             		//if label convert to one hot vector
             		if(i == m_labelColumnIndex && m_isTrain){   
             			//first convert nominal value to string
-            			Optional<DataCellToJavaConverterFactory<DataCell, String>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), String.class); 
+            			Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
+            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class); 
             			String label = ConverterUtils.convertWithFactory(factory, cell);
             			INDArray labelOutcomeVector = FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
             			labelsMatrix.putRow(k, labelOutcomeVector);
             			//if collection convert every entry using existing converters
             		} else if (cell.getType().isCollectionType()){
-            			Optional<DataCellToJavaConverterFactory<DataCell, INDArray[]>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), INDArray[].class);             		
+            			Optional<DataCellToJavaConverterFactory<DataValue, INDArray[]>> factory =
+            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray[].class);             		
             			INDArray[] convertedCollction = ConverterUtils.convertWithFactory(factory, cell);
             			dataRow.addAll(Arrays.asList(convertedCollction));
             			//else convert directly
             		} else {    
-            			Optional<DataCellToJavaConverterFactory<DataCell, INDArray>> factory =
-            					DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), INDArray.class);       
+            			Optional<DataCellToJavaConverterFactory<DataValue, INDArray>> factory =
+            					DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), INDArray.class);       
             			dataRow.add(ConverterUtils.convertWithFactory(factory, cell));            		          	
             		}					
 				} catch (Exception e) {

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.RowKey;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
@@ -16,7 +17,6 @@ import org.knime.core.node.BufferedDataContainer;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.port.PortType;
@@ -55,8 +55,8 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     		String labelColumnName = m_labelColumn.getStringValue();
     		List<String> labels = new ArrayList<String>();
 			for(DataCell cell: tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()){
-				Optional<DataCellToJavaConverterFactory<DataCell, String>> factory =
-						DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), String.class);
+				Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
+						DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class);
 				labels.add(ConverterUtils.convertWithFactory(factory, cell));
 			}
     		input = new BufferedDataTableDataSetIterator(inData[0], labelColumnName, 1, labels, true);

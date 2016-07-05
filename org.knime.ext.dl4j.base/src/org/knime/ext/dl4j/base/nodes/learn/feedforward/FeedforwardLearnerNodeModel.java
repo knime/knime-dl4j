@@ -54,6 +54,7 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.base.data.filter.column.FilterColumnTable;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.BufferedDataTable;
@@ -194,8 +195,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 			try {
 				m_labels = new ArrayList<String>();
 				for(DataCell cell: tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()){
-					Optional<DataCellToJavaConverterFactory<DataCell, String>> factory =
-							DataCellToJavaConverterRegistry.getInstance().getConverterFactory(cell.getType(), String.class);
+					Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
+							DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class);
 					m_labels.add(ConverterUtils.convertWithFactory(factory, cell));
 				}
 			} catch (NullPointerException e) {
