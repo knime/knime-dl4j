@@ -72,6 +72,7 @@ import org.knime.ext.dl4j.base.data.iter.BufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
 import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory;
 import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory;
+import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
 import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
 import org.knime.ext.dl4j.base.nodes.learn.UpdateLearnerViewIterationListener;
@@ -86,6 +87,7 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
+import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -144,13 +146,20 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		}
 		
 		//build multi layer net
+        //List<Layer> layers = DLModelPortObjectUtils.cloneLayers(portObject.getLayers());     
         List<Layer> layers = portObject.getLayers();     
         MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();        
         MultiLayerNetFactory mlnFactory;
         
-        //add feedforward output layer to learner
+        //check if list of layers already contains output layer, happens if
+        //several learners are used in sequence
+        if(checkOutputLayer(layers)){
+        	//if so first remove the old output layer
+        	layers.remove(layers.size()-1);  	
+        }
+        //add the new output layer
         layers.add(createOutputLayer(m_layerParameterSettings));
-        
+
         if(isConvolutional()){
         	String imageSizeString = m_dataParameterSettings.getImageSize().getStringValue();
         	int[] xyc = ParameterUtils.convertIntsAsStringToInts(imageSizeString);
@@ -163,7 +172,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		
         //attempt to transfer weights between nets
         boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();           
-        logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater) );
+        logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater));
         						
         //set listener that updates the view and the score of this model
         newMln.setListeners(new UpdateLearnerViewIterationListener(this));        
@@ -172,7 +181,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		int epochs = m_dataParameterSettings.getEpochs().getIntValue();
 		trainNetwork(newMln, epochs, input, exec);
 		
-        DLModelPortObject newPortObject = new DLModelPortObject(portObject.getLayers(), newMln, m_outputSpec);
+        DLModelPortObject newPortObject = new DLModelPortObject(layers, newMln, m_outputSpec);
 		return new DLModelPortObject[]{newPortObject};
 	}
 
@@ -195,9 +204,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 			try {
 				m_labels = new ArrayList<String>();
 				for(DataCell cell: tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()){
-					Optional<DataCellToJavaConverterFactory<DataValue, String>> factory =
-							DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cell.getType(), String.class);
-					m_labels.add(ConverterUtils.convertWithFactory(factory, cell));
+					m_labels.add(ConverterUtils.convertDataCellToJava(cell, String.class));
 				}
 			} catch (NullPointerException e) {
 				throw new InvalidSettingsException("Label column not available or not yet selected for SUPERVISED training. "
@@ -210,10 +217,17 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		logger.info("Constructed network recognized as: " + ConfigurationUtils.typesToString(
 				specWithoutLabels.getNeuralNetworkTypes()));
 		
+		//if several learners are used in sequence the spec already contains a output layer
+		List<DNNLayerType> newLayerTypes = new ArrayList<DNNLayerType>();
+		newLayerTypes.addAll(specWithoutLabels.getLayerTypes());
+		if(!newLayerTypes.get(newLayerTypes.size()-1).equals(DNNLayerType.OUTPUT_LAYER)){
+			newLayerTypes.add(DNNLayerType.OUTPUT_LAYER);
+		}
+		
     	//create new spec and set labels
     	m_outputSpec = new DLModelPortObjectSpec(
 				specWithoutLabels.getNeuralNetworkTypes(), 
-				specWithoutLabels.getLayerTypes(), 
+				newLayerTypes, 
 				specWithoutLabels.getLearnedColumns(), 
 				m_labels, 
 				specWithoutLabels.isTrained());
@@ -432,6 +446,27 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         		.learningRate(learningRate)
         		.build();
         return outputLayer;
+	}
+	
+	/**
+	 * Checks if the last layer in the specified list of layers is a {@link OutputLayer}.
+	 * 
+	 * @param layers the list of layers to check
+	 * @return true if the last layer is of type {@link OutputLayer}, false if not		
+	 */
+	private boolean checkOutputLayer(List<Layer> layers){
+		if(layers.get(layers.size()-1) instanceof OutputLayer){
+			logger.debug("Last layer is output layer. Should be replaced in Learner Node for uptraining.");
+			return true;
+		} else {
+			for(Layer l : layers){
+				if(l instanceof OutputLayer){
+					logger.coding("The Output Layer is not the last layer of the network");
+					return false;
+				}
+			}
+			return false;
+		}
 	}
 	
 }
