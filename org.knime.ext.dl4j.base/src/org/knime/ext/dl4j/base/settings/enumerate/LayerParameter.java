@@ -88,9 +88,9 @@ public enum LayerParameter{
 	public static final Double DEFAULT_LRN_BETA = 0.75;
 	public static final int DEFAULT_LRN_K = 2;
 	public static final int DEFAULT_LRN_N = 5;	
-	public static final String DEFAULT_ACTIVATION = "relu";
+	public static final String DEFAULT_ACTIVATION = "ReLU";
 	public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
-	public static final String DEFAULT_LOSS = "RMSE_XENT";
+	public static final String DEFAULT_LOSS = "Mean Squared Error";
 	public static final String DEFAULT_TRANSFORMATION = "BINARY";
 	public static final String DEFAULT_POOLING = "MAX";
 	public static final String DEFAULT_MULTIINT = "2,2";   

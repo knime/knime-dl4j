@@ -112,9 +112,9 @@ public enum LearnerParameter {
 	public static final int DEFAULT_INT = 1;
 	public static final Double DEFAULT_DOUBLE = 0.0;
 	public static final Double DEFAULT_LEARNING_RATE = 0.1;	
-	public static final String DEFAULT_OPTIMIZATION = "STOCHASTIC_GRADIENT_DESCENT";
-	public static final String DEFAULT_GRADIENTNORM = "None";
-	public static final String DEFAULT_UPDATER = "ADAGRAD";
+	public static final String DEFAULT_OPTIMIZATION = "Stochastic Gradient Descent";
+	public static final String DEFAULT_GRADIENTNORM = "Clip Element Wise Absolute Value";
+	public static final String DEFAULT_UPDATER = "NESTEROVS";
 	public static final String DEFAULT_MAP = "0:0.0";
 	public static final String DEFAULT_TRAININGS_MODE = "SUPERVISED";
 	public static final String DEFAULT_WEIGHT_INIT = "XAVIER";	
