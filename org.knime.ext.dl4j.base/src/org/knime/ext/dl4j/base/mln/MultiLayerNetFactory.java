@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.mln;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,10 +89,12 @@ public class MultiLayerNetFactory {
 	private boolean m_useBackprop = LearnerParameter.DEFAULT_BOOLEAN;
 	private boolean m_usePretrain = LearnerParameter.DEFAULT_BOOLEAN;
 	
-	private GradientNormalization m_gradientNormalization = GradientNormalization.valueOf(LearnerParameter.DEFAULT_GRADIENTNORM);		
+	private GradientNormalization m_gradientNormalization = DL4JGradientNormalization
+			.fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();		
 	private Map<Integer,Double> m_momentumAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
 	private Updater m_updater = Updater.valueOf(LearnerParameter.DEFAULT_UPDATER);
-	private OptimizationAlgorithm m_optimization = OptimizationAlgorithm.valueOf(LearnerParameter.DEFAULT_OPTIMIZATION);
+	private OptimizationAlgorithm m_optimization = DL4JOptimizationAlgorithm
+			.fromToString(LearnerParameter.DEFAULT_OPTIMIZATION).getDL4JValue();
 	private WeightInit m_weightInit = WeightInit.valueOf(LearnerParameter.DEFAULT_WEIGHT_INIT);
 	
 	private double m_gradientNormalizationThreshold = LearnerParameter.DEFAULT_DOUBLE;	
