@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.knime.workbench.repository.nodes">
+      <node
+            category-path="/labs/deeplearning/testing"
+            deprecated="false"
+            factory-class="org.knime.ext.dl4j.testing.nodes.model.DL4JModelTesterNodeFactory">
+      </node>
+      <node
+            category-path="/labs/deeplearning/testing"
+            deprecated="false"
+            factory-class="org.knime.ext.dl4j.testing.nodes.conversion.TableToDL4JVectorNodeFactory">
+      </node>
+   </extension>
+
+</plugin>

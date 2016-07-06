@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./default.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Table To DL4J Vector</name>
+    
+    <shortDescription>
+        Convert specified columns to one flat number vector.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node converts a table to a number vector used by the Deeplearning4J Integration. This node
+        is only used for testing purposes in order to validate the conversion. The node tries to convert every 
+        input column contained in the table. A possible label column can be specified in the node dialog which
+        will be converted to one-hot representation.</intro>
+        
+        
+        <option name="Label Column">Specify the column which should be converted into one-hot vector</option>      
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Data Table">The table to convert</inPort>
+        <outPort index="0" name="Vectors">The resulting vectors</outPort>
+    </ports>    
+    
+</knimeNode>

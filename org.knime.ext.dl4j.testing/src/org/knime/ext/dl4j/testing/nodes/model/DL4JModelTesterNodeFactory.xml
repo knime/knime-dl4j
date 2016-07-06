@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./default.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>DL4J Model Tester</name>
+    
+    <shortDescription>
+        Compares Deep Learning Models and outputs configuration
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>Compares Deep Learning Models and outputs configuration.</intro>
+        
+        
+        <option name="Check Models for Differences?">Whether to compare the models.</option>
+        <option name="Output Model Configurations?">Whether to output the model configurations.</option>
+       
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Deep Learning Model">The first model</inPort>
+        <inPort index="1" name="Deep Learning Model">The second model</inPort>
+        <outPort index="0" name="Out-Port name">Configuration of the first model</outPort>
+		<outPort index="1" name="Out-Port name">Configuration of the second model</outPort>
+    </ports>    
+   
+</knimeNode>
