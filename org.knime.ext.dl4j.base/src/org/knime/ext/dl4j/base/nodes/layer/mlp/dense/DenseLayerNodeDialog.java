@@ -82,12 +82,14 @@ public class DenseLayerNodeDialog extends DefaultNodeSettingsPane {
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.NUMBER_OF_OUTPUTS),
-					"Number of Output Units"					
+					"Number of Output Units",
+					4
 					));
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 							LayerParameter.LEARNING_RATE),
-					"Learning Rate"					
+					"Learning Rate",
+					4
 					));
 			addDialogComponent(new DialogComponentStringSelection(
 					(SettingsModelString)dnnSettingsModels.createParameter(

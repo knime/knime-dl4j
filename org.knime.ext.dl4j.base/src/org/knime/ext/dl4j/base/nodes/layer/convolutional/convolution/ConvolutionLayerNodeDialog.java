@@ -77,7 +77,8 @@ public class ConvolutionLayerNodeDialog extends DefaultNodeSettingsPane {
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 						LayerParameter.NUMBER_OF_OUTPUTS),
-				"Number of Kernels"					
+				"Number of Kernels",
+				4
 				));  
     	addDialogComponent(new DialogComponentString(
 				(SettingsModelString)dnnSettingsModels.createParameter(
@@ -100,12 +101,14 @@ public class ConvolutionLayerNodeDialog extends DefaultNodeSettingsPane {
 		addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 						LayerParameter.LEARNING_RATE),
-				"Learning Rate"					
+				"Learning Rate",
+				4
 				));
 		addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 						LayerParameter.DROP_OUT),
-				"Drop Out Rate"					
+				"Drop Out Rate",
+				4
 				));
 		closeCurrentGroup();
 		

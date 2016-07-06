@@ -88,22 +88,26 @@ public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.NUMBER_OF_OUTPUTS),
-					"Number of Output Units"					
+					"Number of Output Units",
+					4
 					));
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 							LayerParameter.RBM_ITERATIONS),
-					"Contrastive Divergence Iterations"					
+					"Contrastive Divergence Iterations",
+					4
 					));
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 							LayerParameter.DROP_OUT),
-					"Drop Out Rate"					
+					"Drop Out Rate",
+					4
 					));
         	addDialogComponent(new DialogComponentNumberEdit(
 					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 							LayerParameter.LEARNING_RATE),
-					"Learning Rate"					
+					"Learning Rate",
+					4
 					));
 			addDialogComponent(new DialogComponentStringSelection(
 					(SettingsModelString)dnnSettingsModels.createParameter(

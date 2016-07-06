@@ -72,22 +72,26 @@ public class LRNLayerNodeDialog extends DefaultNodeSettingsPane {
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 						LayerParameter.LRN_K),
-				"k"					
+				"k",
+				4
 				));
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
 						LayerParameter.LRN_N),
-				"n"					
+				"n",
+				4
 				));
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 						LayerParameter.LRN_ALPHA),
-				"alpha"					
+				"alpha",
+				4
 				));
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
 						LayerParameter.LRN_BETA),
-				"beta"					
+				"beta",
+				4
 				));
     	
     }

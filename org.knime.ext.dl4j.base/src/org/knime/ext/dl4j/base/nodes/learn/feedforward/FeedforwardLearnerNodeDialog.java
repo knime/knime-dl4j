@@ -319,12 +319,14 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelIntegerBounded)dataSettingsModels.createParameter(
 						DataParameter.BATCH_SIZE),
-				"Batch Size"					
+				"Batch Size",
+				4
 				));
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelIntegerBounded)dataSettingsModels.createParameter(
 						DataParameter.EPOCHS),
-				"Epochs"					
+				"Epochs",
+				4
 				));
     	setHorizontalPlacement(false);
     	addDialogComponent(new DialogComponentString(
@@ -336,12 +338,14 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
     	createNewTab("Output Layer Parameters");
     	addDialogComponent(new DialogComponentNumberEdit(
     			numberOfOutputs,
-				"Number of Output Units"					
+				"Number of Output Units",
+				4
 				));
     	addDialogComponent(new DialogComponentNumberEdit(
 				(SettingsModelDoubleBounded)layerSettingsModels.createParameter(
 						LayerParameter.LEARNING_RATE),
-				"Learning Rate"					
+				"Learning Rate",
+				4
 				));
 		addDialogComponent(new DialogComponentStringSelection(
 				(SettingsModelString)layerSettingsModels.createParameter(
