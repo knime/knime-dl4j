@@ -6,10 +6,14 @@ import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
 import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
 import org.eclipse.osgi.internal.loader.classpath.FragmentClasspath;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.knime.core.node.NodeLogger;
 import org.knime.ext.dl4j.libs.prefs.DL4JPreferencePage;
 import org.osgi.framework.BundleContext;
 
 public class DL4JPluginActivator extends AbstractUIPlugin {
+	private static final NodeLogger logger = NodeLogger
+            .getLogger(DL4JPluginActivator.class);
+	
 	private static DL4JPluginActivator plugin;
 	
 	private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu.*";
@@ -113,6 +117,8 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
 			String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
 			if(fragmentFileName.matches(regex)){
 				return fcp;
+			} else {
+				logger.debug(fragmentFileName + " does not match " + regex);
 			}
 		}
 		return null;
