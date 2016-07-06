@@ -224,7 +224,7 @@ public class MultiLayerNetFactory {
 			overwriteLearningRate(layersCopy, m_learningRate);
 		}
 		
-		//setup number if input and output neurons
+		//setup number of input and output neurons
 		ConfigurationUtils.setupLayers(layersCopy, m_nIn);
 		
 		if(m_useSeed) {
@@ -309,8 +309,8 @@ public class MultiLayerNetFactory {
 	
 	/**
 	 * Initialise members with values from {@link LearnerParameterSettingsModels}.
-	 * Some {@link SettingsModel}s for some parameters may not be present, hence we 
-	 * all expected models are checked for null. If null a default value is used.
+	 * {@link SettingsModel}s for some parameters may not be present, hence 
+	 * all models are checked for null. If null a default value is used.
 	 * 
 	 * @param learnerParameters the parameters to get the values from
 	 */
