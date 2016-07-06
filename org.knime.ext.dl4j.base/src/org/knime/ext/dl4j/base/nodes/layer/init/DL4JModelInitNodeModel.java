@@ -53,7 +53,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
-import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;

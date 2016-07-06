@@ -44,7 +44,6 @@ package org.knime.ext.dl4j.base.nodes.learn.feedforward;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.conf.layers.Layer;
@@ -54,9 +53,6 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.base.data.filter.column.FilterColumnTable;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.DataValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
@@ -87,7 +83,6 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
-import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -346,7 +341,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	        	
 	        	logEpochScore(mln, (i+1));	        	
 	        	data.reset();  
-	        	exec.setProgress((double)(i+1)/maxProgress);
+	        	exec.setProgress((i+1)/maxProgress);
 	        }
 		}
 		if(isFinetune){
@@ -361,7 +356,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	        	
 	        	logEpochScore(mln, (i+1));	        	
 	        	data.reset();	
-	        	exec.setProgress((double)(i+1)/maxProgress);
+	        	exec.setProgress((i+1)/maxProgress);
 	        }  
 		}
 		if(isBackprop){						
@@ -376,7 +371,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	        	
 	        	logEpochScore(mln, (i+1));	        		        	
 	        	data.reset();
-	        	exec.setProgress((double)(i+1)/maxProgress);
+	        	exec.setProgress((i+1)/maxProgress);
 	        }	        
 		}	
 	}

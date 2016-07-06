@@ -118,8 +118,8 @@ Bundle-ClassPath: libs/annotations-2.0.1.jar,
  libs/uimaj-core-2.5.0.jar,
  libs/validation-api-1.1.0.Final.jar,
  libs/xz-1.5.jar,
- .,
- libs/commons-lang3-3.3.1.jar
+ libs/commons-lang3-3.3.1.jar,
+ knime-dl4j-libs.jar
 Export-Package: org.deeplearning4j.berkeley,
  org.deeplearning4j.datasets.iterator,
  org.deeplearning4j.datasets.iterator.impl,
@@ -171,4 +171,5 @@ Require-Bundle: com.google.guava;bundle-version="19.0.0",
  org.eclipse.ui;bundle-version="3.107.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.knime.ext.dl4j.libs.DL4JPluginActivator
+Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 

@@ -45,16 +45,13 @@ package org.knime.ext.dl4j.base.data.iter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataType;
-import org.knime.core.data.DataValue;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.dl4j.base.util.ConverterUtils;

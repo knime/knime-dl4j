@@ -2,15 +2,11 @@ package org.knime.ext.dl4j.testing.nodes.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.DataValue;
 import org.knime.core.data.RowKey;
-import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.data.vector.doublevector.DoubleVectorCellFactory;
 import org.knime.core.node.BufferedDataContainer;
@@ -29,7 +25,7 @@ import org.nd4j.linalg.dataset.api.DataSet;
 
 /**
  * This is the model implementation of DL4JModelTester.
- * 
+ *
  *
  * @author KNIME
  */
@@ -37,19 +33,19 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
 
     private SettingsModelString m_labelColumn;
     private DataTableSpec m_outputSpec;
-    
+
 	/**
      * Constructor for the node model.
      */
-    protected TableToDL4JVectorNodeModel() {   
+    protected TableToDL4JVectorNodeModel() {
     	super(new PortType[] {BufferedDataTable.TYPE}, new PortType[] {
-    			BufferedDataTable.TYPE});   	
+    			BufferedDataTable.TYPE});
     }
-	
+
     @Override
-    protected BufferedDataTable[] execute(BufferedDataTable[] inData, ExecutionContext exec) throws Exception {
+    protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec) throws Exception {
     	DataTableSpec tableSpec = inData[0].getDataTableSpec();
-    	
+
     	DataSetIterator input = null;
     	if(m_labelColumn.getStringValue() != null && !m_labelColumn.getStringValue().isEmpty()){
     		String labelColumnName = m_labelColumn.getStringValue();
@@ -61,7 +57,7 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     	} else{
     		input = new BufferedDataTableDataSetIterator(inData[0], 1);
     	}
-    	
+
     	BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
     	int i = 0;
     	while(input.hasNext()){
@@ -69,26 +65,26 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     		INDArray features = n.getFeatureMatrix();
     		INDArray one_hot = n.getLabels();
     		List<DataCell> cells = new ArrayList<DataCell>();
-    		
+
     		cells.add(INDArrayToDoubleVector(features));
     		if(m_labelColumn.getStringValue() != null && !m_labelColumn.getStringValue().isEmpty()){
     			cells.add(INDArrayToDoubleVector(one_hot));
     		}
-    		
+
     		container.addRowToTable(new DefaultRow(new RowKey("Row" + i), cells));
     		i++;
     	}
     	container.close();
-    	
+
     	return new BufferedDataTable[]{container.getTable()};
     }
-    
+
     public static SettingsModelString createLabelColumnSettings(){
     	return new SettingsModelString("label_column", "");
     }
-    
+
     @Override
-    protected DataTableSpec[] configure(DataTableSpec[] inSpecs) throws InvalidSettingsException {
+    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
     	DataTableSpec newSpec = new DataTableSpec();
     	newSpec = TableUtils.appendColumnSpec(newSpec, "dl4j_vector", DoubleVectorCellFactory.TYPE);
     	if(m_labelColumn.getStringValue() != null && !m_labelColumn.getStringValue().isEmpty()){
@@ -97,7 +93,7 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     	m_outputSpec = newSpec;
     	return new DataTableSpec[]{newSpec};
     }
-   
+
 	@Override
 	protected List<SettingsModel> initSettingsModels() {
 		m_labelColumn = createLabelColumnSettings();
@@ -105,8 +101,8 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
 		settings.add(m_labelColumn);
 		return settings;
 	}
-	
-	private DataCell INDArrayToDoubleVector(INDArray arr){
+
+	private DataCell INDArrayToDoubleVector(final INDArray arr){
 		double[] content = new double[arr.length()];
 		for(int i = 0; i < arr.length(); i++){
 			content[i] = arr.getDouble(i);

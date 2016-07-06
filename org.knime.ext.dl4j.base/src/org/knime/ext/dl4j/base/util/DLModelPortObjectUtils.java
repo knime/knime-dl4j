@@ -1,4 +1,5 @@
-/*******************************************************************************
+/*
+ * ------------------------------------------------------------------------
  * Copyright by KNIME GmbH, Konstanz, Germany
  * Website: http://www.knime.org; Email: contact@knime.org
  *
@@ -39,7 +40,8 @@
  * propagated with or for interoperation with KNIME.  The owner of a Node
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
- *******************************************************************************/
+ * -------------------------------------------------------------------
+ */
 package org.knime.ext.dl4j.base.util;
 
 import java.io.IOException;
@@ -183,8 +185,7 @@ public class DLModelPortObjectUtils {
 	    	} else if (entry.getName().matches("mln_params")){
 	    		mln_params = Nd4j.read(inStream);
 	    	} else if (entry.getName().matches("mln_updater")){    		
-	    		ObjectInputStream ois = new ObjectInputStream(inStream);
-	    		try {
+	    		try (ObjectInputStream ois = new ObjectInputStream(inStream)) {
 					updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
 				} catch (ClassNotFoundException e) {
 					throw new IOException("Problem with updater loading: " + e.getMessage());					
@@ -394,7 +395,7 @@ public class DLModelPortObjectUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E,V> E[] getFirsts(List<Pair<E,V>> pairs, Class<E> c){				
-		return (E[])pairs.stream().map(f -> f.getFirst()).collect(Collectors.toList())
+		return pairs.stream().map(f -> f.getFirst()).collect(Collectors.toList())
 				.toArray((E[])Array.newInstance(c, pairs.size()));
 	}
 	
@@ -410,7 +411,7 @@ public class DLModelPortObjectUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E,V> V[] getSeconds(List<Pair<E,V>> pairs, Class<V> c){		
-		return (V[])pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
+		return pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
 				.toArray((V[])Array.newInstance(c, pairs.size()));
 	}
 	
