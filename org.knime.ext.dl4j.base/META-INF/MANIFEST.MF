@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.11.0,4.0.0)",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.knime.ext.dl4j.base,
+ org.knime.ext.dl4j.base.data.iter,
  org.knime.ext.dl4j.base.settings,
  org.knime.ext.dl4j.base.settings.enumerate,
  org.knime.ext.dl4j.base.settings.impl,

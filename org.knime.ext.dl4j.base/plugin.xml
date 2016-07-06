@@ -59,6 +59,13 @@
             name="Encoder"
             path="/labs/deeplearning/layer/">
       </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="testing"
+            locked="true"
+            name="Testing"
+            path="/labs/deeplearning/">
+      </category>
    </extension>
    <extension
          point="org.knime.core.DataCellToJavaConverter">
