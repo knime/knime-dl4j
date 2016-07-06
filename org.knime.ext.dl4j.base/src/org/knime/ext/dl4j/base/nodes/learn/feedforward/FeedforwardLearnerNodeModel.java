@@ -155,16 +155,21 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         //add the new output layer
         layers.add(createOutputLayer(m_layerParameterSettings));
 
-        if(isConvolutional()){
-        	String imageSizeString = m_dataParameterSettings.getImageSize().getStringValue();
-        	int[] xyc = ParameterUtils.convertIntsAsStringToInts(imageSizeString);
-        	//number of channels is set to one because only two dimensional images are currently supported
-        	mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);   	
-        } else {
-        	mlnFactory = new MultiLayerNetFactory(input.inputColumns());
+        MultiLayerNetwork newMln;
+        //network creation seems not to be thread safe
+        //TODO review this
+        synchronized (logger) {
+	        if(isConvolutional()){
+	        	String imageSizeString = m_dataParameterSettings.getImageSize().getStringValue();
+	        	int[] xyc = ParameterUtils.convertIntsAsStringToInts(imageSizeString);
+	        	//number of channels is set to one because only two dimensional images are currently supported
+	        	mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);   	
+	        } else {
+	        	mlnFactory = new MultiLayerNetFactory(input.inputColumns());
+	        }
+	        newMln = mlnFactory.createMultiLayerNetwork(layers, m_learnerParameterSettings);
         }
-        MultiLayerNetwork newMln = mlnFactory.createMultiLayerNetwork(layers, m_learnerParameterSettings);
-		
+        
         //attempt to transfer weights between nets
         boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();           
         logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater));
