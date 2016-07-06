@@ -145,7 +145,7 @@
             The number of examples used for one minibatch.
             </option>
             <option name="Epochs">
-            The number of epochs to train the network.
+            The number of epochs to train the network, hence the number of training runs on the whole data set.
             </option>
             <option name="Size of Input Image">
             If the input table contains images the dimensionality of the images needs to be specified.
