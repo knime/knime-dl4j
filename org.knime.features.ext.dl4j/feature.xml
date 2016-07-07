@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.knime.features.ext.dl4j"
-      label="KNIME Deeplearning4J Integration"
+      label="KNIME Deeplearning4J Integration (64bit only)"
       version="3.2.0.qualifier"
       provider-name="KNIME GmbH, Konstanz, Germany">
 
@@ -729,6 +729,7 @@ propagated with or for interoperation with KNIME.
 
    <plugin
          id="org.knime.ext.dl4j.base"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -742,7 +743,7 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-         
+
    <plugin
          id="org.knime.ext.dl4j.bin.linux.x86_64.gpu"
          os="linux"
@@ -760,7 +761,7 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-         
+
    <plugin
          id="org.knime.ext.dl4j.bin.macosx.x86_64.gpu"
          os="macosx"
@@ -769,7 +770,6 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-         
 
    <plugin
          id="org.knime.ext.dl4j.bin.windows.x86_64.cpu"
@@ -779,7 +779,7 @@ propagated with or for interoperation with KNIME.
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-         
+
    <plugin
          id="org.knime.ext.dl4j.bin.windows.x86_64.gpu"
          os="win32"
@@ -791,6 +791,7 @@ propagated with or for interoperation with KNIME.
 
    <plugin
          id="org.knime.ext.dl4j.libs"
+         arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
