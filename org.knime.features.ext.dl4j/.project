@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.knime.ext.dl4j.feature</name>
+	<name>org.knime.features.ext.dl4j</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.pde.FeatureBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.sonarlint.eclipse.core.sonarlintBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
