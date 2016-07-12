@@ -96,61 +96,61 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	// the logger instance
     private static final NodeLogger logger = NodeLogger
             .getLogger(FeedforwardLearnerNodeModel.class);
-	
-    /* SettingsModels */    
+
+    /* SettingsModels */
     private LearnerParameterSettingsModels m_learnerParameterSettings;
     private DataParameterSettingsModels m_dataParameterSettings;
     private LayerParameterSettingsModels m_layerParameterSettings;
-    
+
     private List<String> m_labels = new ArrayList<>();
-    
+
 	/**
      * Constructor for the node model.
      */
-    protected FeedforwardLearnerNodeModel() {   
+    protected FeedforwardLearnerNodeModel() {
     	super(new PortType[] { DLModelPortObject.TYPE , BufferedDataTable.TYPE }, new PortType[] {
-    			DLModelPortObject.TYPE });   	
+    			DLModelPortObject.TYPE });
     }
 
 	@Override
-	protected DLModelPortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
+	protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
 		final DLModelPortObject portObject = (DLModelPortObject)inData[0];
 		final BufferedDataTable table = (BufferedDataTable) inData[1];
-		
+
 		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
 		//select columns from input table
 		List<String> selectedColumns = new ArrayList<>();
-		selectedColumns.addAll(m_dataParameterSettings.getColumnSelection().getIncludeList());		
+		selectedColumns.addAll(m_dataParameterSettings.getColumnSelection().getIncludeList());
 		String labelColumnName = m_dataParameterSettings.getLabelColumn().getStringValue();
-		
+
 		if(labelColumnName != null && !labelColumnName.isEmpty() && trainingMode.equals(TrainingMode.SUPERVISED)){
-			selectedColumns.add(labelColumnName);			
-		}		
-		
+			selectedColumns.add(labelColumnName);
+		}
+
 		FilterColumnTable selectedTable = new FilterColumnTable(table, selectedColumns.toArray(new String[selectedColumns.size()]));
 		BufferedDataTable bufferedSelectedTable = exec.createBufferedDataTable(selectedTable, exec);
-		
+
 		//create input iterator
-		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();		
-		DataSetIterator input;			
-		if(trainingMode.equals(TrainingMode.SUPERVISED)){	
-			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, 
+		int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();
+		DataSetIterator input;
+		if(trainingMode.equals(TrainingMode.SUPERVISED)){
+			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName,
 					batchSize, m_labels, true);
 		} else {
 			input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, batchSize);
 		}
-		
+
 		//build multi layer net
-        //List<Layer> layers = DLModelPortObjectUtils.cloneLayers(portObject.getLayers());     
-        List<Layer> layers = portObject.getLayers();     
-        MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();        
+        //List<Layer> layers = DLModelPortObjectUtils.cloneLayers(portObject.getLayers());
+        List<Layer> layers = portObject.getLayers();
+        MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();
         MultiLayerNetFactory mlnFactory;
-        
+
         //check if list of layers already contains output layer, happens if
         //several learners are used in sequence
         if(checkOutputLayer(layers)){
         	//if so first remove the old output layer
-        	layers.remove(layers.size()-1);  	
+        	layers.remove(layers.size()-1);
         }
         //add the new output layer
         layers.add(createOutputLayer(m_layerParameterSettings));
@@ -163,43 +163,43 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 	        	String imageSizeString = m_dataParameterSettings.getImageSize().getStringValue();
 	        	int[] xyc = ParameterUtils.convertIntsAsStringToInts(imageSizeString);
 	        	//number of channels is set to one because only two dimensional images are currently supported
-	        	mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);   	
+	        	mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);
 	        } else {
 	        	mlnFactory = new MultiLayerNetFactory(input.inputColumns());
 	        }
 	        newMln = mlnFactory.createMultiLayerNetwork(layers, m_learnerParameterSettings);
         }
-        
+
         //attempt to transfer weights between nets
-        boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();           
+        boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();
         logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater));
-        						
+
         //set listener that updates the view and the score of this model
-        newMln.setListeners(new UpdateLearnerViewIterationListener(this));        
-		
+        newMln.setListeners(new UpdateLearnerViewIterationListener(this));
+
         //train the network
 		int epochs = m_dataParameterSettings.getEpochs().getIntValue();
 		trainNetwork(newMln, epochs, input, exec);
-		
+
         DLModelPortObject newPortObject = new DLModelPortObject(layers, newMln, m_outputSpec);
 		return new DLModelPortObject[]{newPortObject};
 	}
 
 	@Override
-	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		DLModelPortObjectSpec specWithoutLabels = (DLModelPortObjectSpec)configure(inSpecs, 
+	protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+		DLModelPortObjectSpec specWithoutLabels = (DLModelPortObjectSpec)configure(inSpecs,
 				m_dataParameterSettings.getColumnSelection().getIncludeList(), logger)[0];
 		DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
-		
+
 		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
 		String labelColumnName = m_dataParameterSettings.getLabelColumn().getStringValue();
-    	
-		if(trainingMode.equals(TrainingMode.UNSUPERVISED)){		
+
+		if(trainingMode.equals(TrainingMode.UNSUPERVISED)){
 			boolean doBackprop = m_learnerParameterSettings.getUseBackprop().getBooleanValue();
 			if(doBackprop){
 				throw new InvalidSettingsException("Backpropagation not available in UNSUPERVISED training mode");
 			}
-			return new DLModelPortObjectSpec[]{specWithoutLabels};	
+			return new DLModelPortObjectSpec[]{specWithoutLabels};
 		} else if (trainingMode.equals(TrainingMode.SUPERVISED)){
 			try {
 				m_labels = new ArrayList<String>();
@@ -213,39 +213,39 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 				throw new InvalidSettingsException(e);
 			}
 		}
-		
+
 		logger.info("Constructed network recognized as: " + ConfigurationUtils.typesToString(
 				specWithoutLabels.getNeuralNetworkTypes()));
-		
+
 		//if several learners are used in sequence the spec already contains a output layer
 		List<DNNLayerType> newLayerTypes = new ArrayList<DNNLayerType>();
 		newLayerTypes.addAll(specWithoutLabels.getLayerTypes());
 		if(!newLayerTypes.get(newLayerTypes.size()-1).equals(DNNLayerType.OUTPUT_LAYER)){
 			newLayerTypes.add(DNNLayerType.OUTPUT_LAYER);
 		}
-		
+
     	//create new spec and set labels
     	m_outputSpec = new DLModelPortObjectSpec(
-				specWithoutLabels.getNeuralNetworkTypes(), 
-				newLayerTypes, 
-				specWithoutLabels.getLearnedColumns(), 
-				m_labels, 
+				specWithoutLabels.getNeuralNetworkTypes(),
+				newLayerTypes,
+				specWithoutLabels.getLearnedColumns(),
+				m_labels,
 				specWithoutLabels.isTrained());
 
 		return new DLModelPortObjectSpec[]{m_outputSpec};
 	}
-	
+
 	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
+	protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
 		String momentumAfter = settings.getString(LearnerParameter.MOMENTUM_AFTER.toString().toLowerCase());
 		String imageSize = settings.getString(DataParameter.IMAGE_SIZE.toString().toLowerCase());
-		
-		ParameterUtils.validateMomentumAfterParameter(momentumAfter);	
+
+		ParameterUtils.validateMomentumAfterParameter(momentumAfter);
 		ParameterUtils.validateImageSizeParameter(imageSize, isConvolutional());
-		
+
 		super.validateSettings(settings);
 	}
-	
+
 	@Override
 	protected List<SettingsModel> initSettingsModels() {
 		m_dataParameterSettings = new DataParameterSettingsModels();
@@ -254,9 +254,9 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		m_dataParameterSettings.setParameter(DataParameter.COLUMN_SELECTION);
 		m_dataParameterSettings.setParameter(DataParameter.LABEL_COLUMN);
 		m_dataParameterSettings.setParameter(DataParameter.IMAGE_SIZE);
-		
+
 		m_learnerParameterSettings = new LearnerParameterSettingsModels();
-		m_learnerParameterSettings.setParameter(LearnerParameter.TRAINING_MODE);	
+		m_learnerParameterSettings.setParameter(LearnerParameter.TRAINING_MODE);
 		m_learnerParameterSettings.setParameter(LearnerParameter.SEED);
 		m_learnerParameterSettings.setParameter(LearnerParameter.TRAINING_ITERATIONS);
 		m_learnerParameterSettings.setParameter(LearnerParameter.OPTIMIZATION_ALGORITHM);
@@ -282,46 +282,46 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_WEIGHT_INIT);
 		m_learnerParameterSettings.setParameter(LearnerParameter.USE_PRETRAINED_UPDATER);
 		m_learnerParameterSettings.setParameter(LearnerParameter.USE_FINETUNE);
-		
+
 		m_layerParameterSettings = new LayerParameterSettingsModels();
 		m_layerParameterSettings.setParameter(LayerParameter.LOSS_FUNCTION);
 		m_layerParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
 		/* disable number of outputs dialog option here because supervised learning
-		 * is default where the number of outputs is specified by the number of distinct 
+		 * is default where the number of outputs is specified by the number of distinct
 		 * labels */
 		m_layerParameterSettings.getNumberOfOutputs().setEnabled(false);
 		m_layerParameterSettings.setParameter(LayerParameter.ACTIVATION);
 		m_layerParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
 		m_layerParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
-		
-		List<SettingsModel> settings = new ArrayList<>();		
+
+		List<SettingsModel> settings = new ArrayList<>();
 		settings.addAll(m_learnerParameterSettings.getAllInitializedSettings());
 		settings.addAll(m_dataParameterSettings.getAllInitializedSettings());
 		settings.addAll(m_layerParameterSettings.getAllInitializedSettings());
 
 		return settings;
-	} 
-	
+	}
+
 	/**
-	 * Performs training of the specified {@link MultiLayerNetwork} (whether to do backprop 
-	 * or finetuning or pretraining is set in model configuration) for the specified number 
-	 * of epochs using the specified {@link DataSetIterator} and specified {@link ExecutionContext} 
+	 * Performs training of the specified {@link MultiLayerNetwork} (whether to do backprop
+	 * or finetuning or pretraining is set in model configuration) for the specified number
+	 * of epochs using the specified {@link DataSetIterator} and specified {@link ExecutionContext}
 	 * for progress reporting and execution cancelling.
-	 * 
+	 *
 	 * @param mln the network to train
 	 * @param epochs the number of epochs to train
 	 * @param data the data to train on
 	 * @param exec
 	 * @throws Exception
 	 */
-	private void trainNetwork(final MultiLayerNetwork mln, final int epochs, final DataSetIterator data, 
+	private void trainNetwork(final MultiLayerNetwork mln, final int epochs, final DataSetIterator data,
 			final ExecutionContext exec) throws Exception{
 		boolean isPretrain = mln.getLayerWiseConfigurations().isPretrain();
 		boolean isBackprop = mln.getLayerWiseConfigurations().isBackprop();
 		boolean isFinetune = m_learnerParameterSettings.getUseFinetune().getBooleanValue();
-		
+
 		exec.setProgress(0.0);
-		
+
 		//calculate progress relative to number of epochs and what to train
 		double maxProgress = 0.0;
 		if(isBackprop){
@@ -333,57 +333,63 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		if(isPretrain){
 			maxProgress += epochs;
 		}
-					
-		if(isPretrain){		
+
+		if(isPretrain){
 			logger.info("Pretrain Model for " + epochs + " epochs.");
 	        for(int i = 0; i < epochs ; i++){
 	        	exec.checkCanceled();
-	        	if(getLearningMonitor().checkStopLearning()) break;
+	        	if(getLearningMonitor().checkStopLearning()) {
+                    break;
+                }
 	        	logger.info("Pretrain epoch: " + (i+1) + " of: " + epochs);
-	        	
+
 	        	updateView(i+1, epochs, "Pretrain");
 	        	pretrainOneEpoch(mln, data, exec);
-	        	
-	        	logEpochScore(mln, (i+1));	        	
-	        	data.reset();  
+
+	        	logEpochScore(mln, (i+1));
+	        	data.reset();
 	        	exec.setProgress((i+1)/maxProgress);
 	        }
 		}
 		if(isFinetune){
 	        logger.info("Finetune Model for " + epochs + " epochs.");
-	        for(int i = 0; i < epochs ; i++){  
+	        for(int i = 0; i < epochs ; i++){
 	        	exec.checkCanceled();
-	        	if(getLearningMonitor().checkStopLearning()) break;
+	        	if(getLearningMonitor().checkStopLearning()) {
+                    break;
+                }
 	        	logger.info("Finetune epoch: " + (i+1) + " of: " + epochs);
-	        	
+
 	        	updateView(i+1, epochs, "Finetune");
 	        	finetuneOneEpoch(mln, data, exec);
-	        	
-	        	logEpochScore(mln, (i+1));	        	
-	        	data.reset();	
-	        	exec.setProgress((i+1)/maxProgress);
-	        }  
-		}
-		if(isBackprop){						
-			logger.info("Do Backpropagation for " + epochs + " epochs.");
-	        for(int i = 0; i < epochs; i++){      
-	        	exec.checkCanceled();	        	
-	        	if(getLearningMonitor().checkStopLearning()) break;
-	        	logger.info("Backprop epoch: " + (i+1) + " of: " + epochs);	        	  
-	        	
-	        	updateView(i+1, epochs, "Backprop");
-	        	backpropOneEpoch(mln, data, exec);
-	        	
-	        	logEpochScore(mln, (i+1));	        		        	
+
+	        	logEpochScore(mln, (i+1));
 	        	data.reset();
 	        	exec.setProgress((i+1)/maxProgress);
-	        }	        
-		}	
+	        }
+		}
+		if(isBackprop){
+			logger.info("Do Backpropagation for " + epochs + " epochs.");
+	        for(int i = 0; i < epochs; i++){
+	        	exec.checkCanceled();
+	        	if(getLearningMonitor().checkStopLearning()) {
+                    break;
+                }
+	        	logger.info("Backprop epoch: " + (i+1) + " of: " + epochs);
+
+	        	updateView(i+1, epochs, "Backprop");
+	        	backpropOneEpoch(mln, data, exec);
+
+	        	logEpochScore(mln, (i+1));
+	        	data.reset();
+	        	exec.setProgress((i+1)/maxProgress);
+	        }
+		}
 	}
-	
+
 	/**
 	 * Updates the view using the specified values.
-	 * 
+	 *
 	 * @param currentEpoch the current training epoch
 	 * @param maxEpochs the maximum number of epochs
 	 * @param trainingMethod a string describing the training method
@@ -400,61 +406,61 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 		notifyViews(null);
 		super.reset();
 	}
-	
+
 	/**
 	 * Logs score of specified model at specified epoch.
-	 * 
+	 *
 	 * @param m the model to get score from
 	 * @param epoch the epoch number to print into log message
 	 */
-	private void logEpochScore(MultiLayerNetwork m, int epoch){
+	private void logEpochScore(final MultiLayerNetwork m, final int epoch){
 		logger.info("Loss after epoch " + epoch + " is " + m.score());
 	}
-	
+
 	/**
 	 * Creates an new {@link OutputLayer} using the specified layer parameters. If training modes is
-	 * supervised the number of outputs is automatically set to the number of distinct labels of the 
+	 * supervised the number of outputs is automatically set to the number of distinct labels of the
 	 * input table. If unsupervised the value from the node dialog is taken.
-	 * 
+	 *
 	 * @param settings the parameter settings models object holding the layer parameter
 	 * @return a new output layer using the specified parameters
 	 * @throws InvalidSettingsException if supervised training mode but labels are not available, meaning
 	 * 									null or empty
 	 */
-	private OutputLayer createOutputLayer(LayerParameterSettingsModels settings) throws InvalidSettingsException{
+	private OutputLayer createOutputLayer(final LayerParameterSettingsModels settings) throws InvalidSettingsException{
 		TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
-		int nOut;	
+		int nOut;
 		if(trainingMode.equals(TrainingMode.SUPERVISED)){
 			if(m_labels == null || m_labels.isEmpty()){
 				throw new InvalidSettingsException("Labels not available for SUPERVISED training.");
 			}
 			nOut = m_labels.size();
 		} else {
-			nOut = settings.getNumberOfOutputs().getIntValue();   
-		} 
+			nOut = settings.getNumberOfOutputs().getIntValue();
+		}
         WeightInit weight = WeightInit.valueOf(settings.getWeightInit().getStringValue());
         String activation = DL4JActivationFunction.fromToString(
-        		settings.getActivation().getStringValue()).getDL4JValue();      	
+        		settings.getActivation().getStringValue()).getDL4JValue();
         LossFunction loss = DL4JLossFunction.fromToString(
-        		settings.getLossFunction().getStringValue()).getDL4JValue();     
+        		settings.getLossFunction().getStringValue()).getDL4JValue();
         double learningRate = settings.getLearningRate().getDoubleValue();
-       
+
         OutputLayer outputLayer = new OutputLayer.Builder(loss)
         		.nOut(nOut)
         		.activation(activation)
-        		.weightInit(weight) 
+        		.weightInit(weight)
         		.learningRate(learningRate)
         		.build();
         return outputLayer;
 	}
-	
+
 	/**
 	 * Checks if the last layer in the specified list of layers is a {@link OutputLayer}.
-	 * 
+	 *
 	 * @param layers the list of layers to check
-	 * @return true if the last layer is of type {@link OutputLayer}, false if not		
+	 * @return true if the last layer is of type {@link OutputLayer}, false if not
 	 */
-	private boolean checkOutputLayer(List<Layer> layers){
+	private boolean checkOutputLayer(final List<Layer> layers){
 		if(layers.get(layers.size()-1) instanceof OutputLayer){
 			logger.debug("Last layer is output layer. Should be replaced in Learner Node for uptraining.");
 			return true;
@@ -468,6 +474,6 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 			return false;
 		}
 	}
-	
+
 }
 
