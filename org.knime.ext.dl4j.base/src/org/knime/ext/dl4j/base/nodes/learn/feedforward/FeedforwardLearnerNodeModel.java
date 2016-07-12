@@ -194,15 +194,15 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         final TrainingMode trainingMode = TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
         final String labelColumnName = m_dataParameterSettings.getLabelColumn().getStringValue();
 
+        m_labels = new ArrayList<String>();
+
         if(trainingMode.equals(TrainingMode.UNSUPERVISED)){
             final boolean doBackprop = m_learnerParameterSettings.getUseBackprop().getBooleanValue();
             if(doBackprop){
                 throw new InvalidSettingsException("Backpropagation not available in UNSUPERVISED training mode");
             }
-            return new DLModelPortObjectSpec[]{specWithoutLabels};
         } else if (trainingMode.equals(TrainingMode.SUPERVISED)){
             try {
-                m_labels = new ArrayList<String>();
                 for(final DataCell cell: tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()){
                     m_labels.add(ConverterUtils.convertDataCellToJava(cell, String.class));
                 }
