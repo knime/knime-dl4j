@@ -48,12 +48,12 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "DL4JLearner" Node.
- * 
  *
- * @author 
+ *
+ * @author
  */
-public class FeedforwardLearnerNodeFactory 
-        extends NodeFactory<FeedforwardLearnerNodeModel> {
+public class FeedforwardLearnerNodeFactory
+extends NodeFactory<FeedforwardLearnerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,7 +76,7 @@ public class FeedforwardLearnerNodeFactory
      */
     @Override
     public NodeView<FeedforwardLearnerNodeModel> createNodeView(final int viewIndex,
-            final FeedforwardLearnerNodeModel nodeModel) {
+        final FeedforwardLearnerNodeModel nodeModel) {
         return new FeedforwardLearnerNodeView(nodeModel);
     }
 

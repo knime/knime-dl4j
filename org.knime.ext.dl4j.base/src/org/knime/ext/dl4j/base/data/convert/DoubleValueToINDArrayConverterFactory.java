@@ -53,34 +53,34 @@ import org.nd4j.linalg.factory.Nd4j;
 /**
  * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from
  * DoubleValue to INDArray.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, INDArray> {
 
-	/**
-	 * Create a new converter from {@link DoubleValue} to {@link INDArray}. 
-	 * The convert method will return an INDArray containing 
-	 * {@link DoubleValue#getDoubleValue()}.
-	 */
-	@Override
-	public DataCellToJavaConverter<DoubleValue, INDArray> create() {		
-		return (v) -> Nd4j.create(new double[]{v.getDoubleValue()});
-	}
+    /**
+     * Create a new converter from {@link DoubleValue} to {@link INDArray}.
+     * The convert method will return an INDArray containing
+     * {@link DoubleValue#getDoubleValue()}.
+     */
+    @Override
+    public DataCellToJavaConverter<DoubleValue, INDArray> create() {
+        return (v) -> Nd4j.create(new double[]{v.getDoubleValue()});
+    }
 
-	@Override
-	public Class<DoubleValue> getSourceType() {		
-		return DoubleValue.class;
-	}
+    @Override
+    public Class<DoubleValue> getSourceType() {
+        return DoubleValue.class;
+    }
 
-	@Override
-	public Class<INDArray> getDestinationType() {		
-		return INDArray.class;
-	}
+    @Override
+    public Class<INDArray> getDestinationType() {
+        return INDArray.class;
+    }
 
-	@Override
-	public String getIdentifier() {		
-		return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + "," + ""
-	            + ")";
-	}
+    @Override
+    public String getIdentifier() {
+        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + "," + ""
+                + ")";
+    }
 }

@@ -52,10 +52,10 @@ import org.knime.core.data.DataType;
  */
 public class UnsupportedDataTypeException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-	/**
+    /**
      * Constructs an <code>UnsupportedDataTypeException</code> with the specified
      * detail message. Use a helpful message here as it will be displayed to the
      * user, and it is the only hint ones understands to actual the problem.

@@ -61,110 +61,110 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 
 /**
  * PortObject for Deep Learning Models.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DLModelPortObject extends AbstractPortObject {
 
-	public static final class Serializer
-		extends AbstractPortObjectSerializer<DLModelPortObject> {
-	}
-	
-	/**
+    public static final class Serializer
+    extends AbstractPortObjectSerializer<DLModelPortObject> {
+    }
+
+    /**
      * Define port type of objects of this class when used as PortObjects.
      */
-	public static final PortType TYPE =
+    public static final PortType TYPE =
             PortTypeRegistry.getInstance().getPortType(DLModelPortObject.class);
 
     private static final String SUMMARY =
-            "Deep Learning Model"; 
-	
-	private List<Layer> m_layers;
-	private MultiLayerNetwork m_multiLayerNet;
-	private DLModelPortObjectSpec m_spec;
-	
-	/**
+            "Deep Learning Model";
+
+    private List<Layer> m_layers;
+    private MultiLayerNetwork m_multiLayerNet;
+    private DLModelPortObjectSpec m_spec;
+
+    /**
      * Empty no-arg constructor as needed by {@link AbstractPortObject}
      */
-	public DLModelPortObject() {
-		
-	}
-	
-	public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln,
-			final DLModelPortObjectSpec spec){
-		this.m_layers = layers;		
-		this.m_spec = spec;
-		this.m_multiLayerNet = mln;
-	}
-	
+    public DLModelPortObject() {
 
-	@Override
-	protected void save(final PortObjectZipOutputStream out, final ExecutionMonitor exec)
-			throws IOException, CanceledExecutionException {
-		
-		DLModelPortObjectUtils.saveModelToZip(this, true, false, out);
-	}
+    }
 
-	@Override
-	protected void load(final PortObjectZipInputStream in, final PortObjectSpec spec, final ExecutionMonitor exec)
-			throws IOException, CanceledExecutionException {
-		
-		DLModelPortObject port = DLModelPortObjectUtils.loadPortFromZip(in);
-		
-		this.m_spec = (DLModelPortObjectSpec) spec;
-		this.m_layers = port.getLayers();
-		this.m_multiLayerNet = port.getMultilayerLayerNetwork();		
-	}
-	
-	@Override
-	public String getSummary() {
-		return SUMMARY;
-	}
+    public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln,
+        final DLModelPortObjectSpec spec){
+        this.m_layers = layers;
+        this.m_spec = spec;
+        this.m_multiLayerNet = mln;
+    }
 
-	@Override
-	public PortObjectSpec getSpec() {
-		return m_spec;
-	}
-	
-	public List<Layer> getLayers(){
-		return m_layers;
-	}
-	
-	public MultiLayerNetwork getMultilayerLayerNetwork(){
-		return m_multiLayerNet;
-	}
 
-	@Override
-	public JComponent[] getViews() {
-		return new JComponent[] {};
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-	           return true;
-	    }
-	    if (obj == null) {
-	        return false;
-	    }
-	    if (!(obj instanceof DLModelPortObject)) {
-	        return false;
-	    }
-	    DLModelPortObject other = (DLModelPortObject)obj;
-	    
-	    int i = 0;
-	    for(Layer l : other.getLayers()){
-	    	if(!m_layers.get(i).equals(l)){
-	    		return false;
-	    	}
-	    }
-	    if(!m_multiLayerNet.equals(other.getMultilayerLayerNetwork())){
-	    	return false;
-	    }
-	    if(!m_spec.equals(other.getSpec())){
-	    	return false;
-	    }
-	    return true;  
-	}
+    @Override
+    protected void save(final PortObjectZipOutputStream out, final ExecutionMonitor exec)
+            throws IOException, CanceledExecutionException {
+
+        DLModelPortObjectUtils.saveModelToZip(this, true, false, out);
+    }
+
+    @Override
+    protected void load(final PortObjectZipInputStream in, final PortObjectSpec spec, final ExecutionMonitor exec)
+            throws IOException, CanceledExecutionException {
+
+        final DLModelPortObject port = DLModelPortObjectUtils.loadPortFromZip(in);
+
+        this.m_spec = (DLModelPortObjectSpec) spec;
+        this.m_layers = port.getLayers();
+        this.m_multiLayerNet = port.getMultilayerLayerNetwork();
+    }
+
+    @Override
+    public String getSummary() {
+        return SUMMARY;
+    }
+
+    @Override
+    public PortObjectSpec getSpec() {
+        return m_spec;
+    }
+
+    public List<Layer> getLayers(){
+        return m_layers;
+    }
+
+    public MultiLayerNetwork getMultilayerLayerNetwork(){
+        return m_multiLayerNet;
+    }
+
+    @Override
+    public JComponent[] getViews() {
+        return new JComponent[] {};
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof DLModelPortObject)) {
+            return false;
+        }
+        final DLModelPortObject other = (DLModelPortObject)obj;
+
+        final int i = 0;
+        for(final Layer l : other.getLayers()){
+            if(!m_layers.get(i).equals(l)){
+                return false;
+            }
+        }
+        if(!m_multiLayerNet.equals(other.getMultilayerLayerNetwork())){
+            return false;
+        }
+        if(!m_spec.equals(other.getSpec())){
+            return false;
+        }
+        return true;
+    }
 
 }

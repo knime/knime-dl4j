@@ -48,12 +48,12 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "DenseLayer" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class AutoEncoderLayerNodeFactory 
-        extends NodeFactory<AutoEncoderLayerNodeModel> {
+public class AutoEncoderLayerNodeFactory
+extends NodeFactory<AutoEncoderLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,7 +76,7 @@ public class AutoEncoderLayerNodeFactory
      */
     @Override
     public NodeView<AutoEncoderLayerNodeModel> createNodeView(final int viewIndex,
-            final AutoEncoderLayerNodeModel nodeModel) {
+        final AutoEncoderLayerNodeModel nodeModel) {
         return null;
     }
 

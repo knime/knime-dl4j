@@ -44,13 +44,13 @@ package org.knime.ext.dl4j.base.settings.enumerate;
 
 /**
  * Parameters for training of deep networks.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LearnerParameter {
-	 /** whether a seed or not */
+    /** whether a seed or not */
     USE_SEED,
-    /** seed used for reproducibility between runs */          
+    /** seed used for reproducibility between runs */
     SEED,
     /** number of training iterations */
     TRAINING_ITERATIONS,
@@ -70,12 +70,12 @@ public enum LearnerParameter {
     USE_GRADIENT_NORMALIZATION,
     /** gradient normalization strategy */
     GRADIENT_NORMALIZATION,
-    /** 
-     * Threshold for gradient normalization, only used for 
-     * GradientNormalization.ClipL2PerLayer, GradientNormalization.ClipL2PerParamType, 
+    /**
+     * Threshold for gradient normalization, only used for
+     * GradientNormalization.ClipL2PerLayer, GradientNormalization.ClipL2PerParamType,
      * and GradientNormalization.ClipElementWiseAbsoluteValue. Not used otherwise.
-     * L2 threshold for first two types of clipping, or absolute value threshold for 
-     * last type of clipping. 
+     * L2 threshold for first two types of clipping, or absolute value threshold for
+     * last type of clipping.
      */
     GRADIENT_NORMALIZATION_THRESHOLD,
     /** whether to do pretraining or not, only applies for RBMs and states whether to run
@@ -106,18 +106,18 @@ public enum LearnerParameter {
     /** global weight initialization strategy */
     GLOBAL_WEIGHT_INIT,
     /** whether to overwrite weight initialization strategy of each layer*/
-    USE_GLOBAL_WEIGHT_INIT; 
-	
-	//default values for learner parameters
-	public static final int DEFAULT_INT = 1;
-	public static final Double DEFAULT_DOUBLE = 0.0;
-	public static final Double DEFAULT_LEARNING_RATE = 0.1;	
-	public static final String DEFAULT_OPTIMIZATION = "Stochastic Gradient Descent";
-	public static final String DEFAULT_GRADIENTNORM = "Clip Element Wise Absolute Value";
-	public static final String DEFAULT_UPDATER = "NESTEROVS";
-	public static final String DEFAULT_MAP = "0:0.0";
-	public static final String DEFAULT_TRAININGS_MODE = "SUPERVISED";
-	public static final String DEFAULT_WEIGHT_INIT = "XAVIER";	
-	public static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";	
-	public static final boolean DEFAULT_BOOLEAN = false;
+    USE_GLOBAL_WEIGHT_INIT;
+
+    //default values for learner parameters
+    public static final int DEFAULT_INT = 1;
+    public static final Double DEFAULT_DOUBLE = 0.0;
+    public static final Double DEFAULT_LEARNING_RATE = 0.1;
+    public static final String DEFAULT_OPTIMIZATION = "Stochastic Gradient Descent";
+    public static final String DEFAULT_GRADIENTNORM = "Clip Element Wise Absolute Value";
+    public static final String DEFAULT_UPDATER = "NESTEROVS";
+    public static final String DEFAULT_MAP = "0:0.0";
+    public static final String DEFAULT_TRAININGS_MODE = "SUPERVISED";
+    public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
+    public static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";
+    public static final boolean DEFAULT_BOOLEAN = false;
 }

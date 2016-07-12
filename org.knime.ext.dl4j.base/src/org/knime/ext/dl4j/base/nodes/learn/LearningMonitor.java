@@ -48,28 +48,28 @@ package org.knime.ext.dl4j.base.nodes.learn;
  * @author David Kolb, KNIME.com GmbH
  */
 public class LearningMonitor {
-	private boolean m_earlyStopping = false;
-	
-	/**
-	 * Set early stopping flag
-	 */
-	public void stopLearning(){
-		m_earlyStopping = true;
-	}
-	
-	/**
-	 * Returns value of early stopping flag
-	 * 
-	 * @return
-	 */
-	public boolean checkStopLearning(){
-		return m_earlyStopping;
-	}
-	
-	/**
-	 * Set early stopping flag to false
-	 */
-	public void reset(){
-		m_earlyStopping = false;
-	}
+    private boolean m_earlyStopping = false;
+
+    /**
+     * Set early stopping flag
+     */
+    public void stopLearning(){
+        m_earlyStopping = true;
+    }
+
+    /**
+     * Returns value of early stopping flag
+     *
+     * @return
+     */
+    public boolean checkStopLearning(){
+        return m_earlyStopping;
+    }
+
+    /**
+     * Set early stopping flag to false
+     */
+    public void reset(){
+        m_earlyStopping = false;
+    }
 }

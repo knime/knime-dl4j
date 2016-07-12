@@ -47,31 +47,31 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 /**
  * Wrapper for {@link OptimizationAlgorithm} for better String representation
  * of values.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JOptimizationAlgorithm {
-	LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
+    LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
     CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT),
     HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
     LBFGS(OptimizationAlgorithm.LBFGS),
     STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
-	
-	/** the corresponding dl4j value of this enum */
-	private OptimizationAlgorithm m_DL4JValue;
 
-    private DL4JOptimizationAlgorithm(OptimizationAlgorithm optimization) {
+    /** the corresponding dl4j value of this enum */
+    private OptimizationAlgorithm m_DL4JValue;
+
+    private DL4JOptimizationAlgorithm(final OptimizationAlgorithm optimization) {
         m_DL4JValue = optimization;
     }
 
     /**
      * Converts string representation of this enum back to this enum
-     * 
+     *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
      */
-    public static DL4JOptimizationAlgorithm fromToString(String toString){
-        for(DL4JOptimizationAlgorithm e : DL4JOptimizationAlgorithm.values()){
+    public static DL4JOptimizationAlgorithm fromToString(final String toString){
+        for(final DL4JOptimizationAlgorithm e : DL4JOptimizationAlgorithm.values()){
             if(e.toString().equals(toString)){
                 return e;
             }
@@ -80,28 +80,29 @@ public enum DL4JOptimizationAlgorithm {
     }
 
     /**
-	 * Get the in dl4j usable {@link OptimizationAlgorithm} corresponding to this enum
-	 * 
-	 * @return dl4j usable {@link OptimizationAlgorithm}
-	 */
+     * Get the in dl4j usable {@link OptimizationAlgorithm} corresponding to this enum
+     *
+     * @return dl4j usable {@link OptimizationAlgorithm}
+     */
     public OptimizationAlgorithm getDL4JValue(){
         return m_DL4JValue;
-    } 
-	
-	public String toString(){
-		switch (this) {	
-		case CONJUGATE_GRADIENT:
-			return "Conjugate Gradient Descent";
-		case HESSIAN_FREE:
-			return "Hessian Free";
-		case LBFGS:
-			return super.toString();
-		case LINE_GRADIENT_DESCENT:
-			return "Line Gradient Descent";
-		case STOCHASTIC_GRADIENT_DESCENT:
-			return "Stochastic Gradient Descent";
-		default:
-			return super.toString();
-		}
-	}
+    }
+
+    @Override
+    public String toString(){
+        switch (this) {
+            case CONJUGATE_GRADIENT:
+                return "Conjugate Gradient Descent";
+            case HESSIAN_FREE:
+                return "Hessian Free";
+            case LBFGS:
+                return super.toString();
+            case LINE_GRADIENT_DESCENT:
+                return "Line Gradient Descent";
+            case STOCHASTIC_GRADIENT_DESCENT:
+                return "Stochastic Gradient Descent";
+            default:
+                return super.toString();
+        }
+    }
 }

@@ -64,72 +64,72 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 
 /**
  * Local Response Normalization layer for Deeplearning4J integration.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class LRNLayerNodeModel extends AbstractDLLayerNodeModel {
-	
-	// the logger instance
+
+    // the logger instance
     private static final NodeLogger logger = NodeLogger
             .getLogger(LRNLayerNodeModel.class);
-    
-    private static final List<DNNType> DNNTYPES = 
-    		Arrays.asList(DNNType.DEEPCONVOLUTIONAL);    		   
+
+    private static final List<DNNType> DNNTYPES =
+            Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.LOCAL_RESPONSE_NORMALIZATION;
-	
+
     /* SettingsModels */
     private LayerParameterSettingsModels m_dnnParameterSettings;
-	 
+
     /**
      * Constructor for the node model.
      */
-    protected LRNLayerNodeModel() {   
-    	super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-    			DLModelPortObject.TYPE });   	
+    protected LRNLayerNodeModel() {
+        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
+            DLModelPortObject.TYPE });
     }
-	
+
     @Override
-    protected DLModelPortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-    	DLModelPortObject portObject = (DLModelPortObject)inData[0];
-        List<Layer> newLayers = portObject.getLayers();
-    	
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+        final DLModelPortObject portObject = (DLModelPortObject)inData[0];
+        final List<Layer> newLayers = portObject.getLayers();
+
         //parameters
-        int k = m_dnnParameterSettings.getLrnK().getIntValue();
-        int n = m_dnnParameterSettings.getLrnN().getIntValue();
-        double alpha = m_dnnParameterSettings.getLrnAlpha().getDoubleValue();
-        double beta = m_dnnParameterSettings.getLrnBeta().getDoubleValue();
-        
+        final int k = m_dnnParameterSettings.getLrnK().getIntValue();
+        final int n = m_dnnParameterSettings.getLrnN().getIntValue();
+        final double alpha = m_dnnParameterSettings.getLrnAlpha().getDoubleValue();
+        final double beta = m_dnnParameterSettings.getLrnBeta().getDoubleValue();
+
         //build layer
-        Layer lrnLayer = new LocalResponseNormalization.Builder(k, n, alpha, beta).build();
-        
-        newLayers.add(lrnLayer);            
-        
+        final Layer lrnLayer = new LocalResponseNormalization.Builder(k, n, alpha, beta).build();
+
+        newLayers.add(lrnLayer);
+
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), 
-        		m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
+            m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
     }
-    
-    @Override
-    protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-    	return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
-    }
-    
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		m_dnnParameterSettings = new LayerParameterSettingsModels();
-		m_dnnParameterSettings.setParameter(LayerParameter.LRN_ALPHA);
-		m_dnnParameterSettings.setParameter(LayerParameter.LRN_BETA);
-		m_dnnParameterSettings.setParameter(LayerParameter.LRN_K);
-		m_dnnParameterSettings.setParameter(LayerParameter.LRN_N);
 
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
-				
-		return settings;
-	}
-    
-    
+    @Override
+    protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
+    }
+
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_dnnParameterSettings = new LayerParameterSettingsModels();
+        m_dnnParameterSettings.setParameter(LayerParameter.LRN_ALPHA);
+        m_dnnParameterSettings.setParameter(LayerParameter.LRN_BETA);
+        m_dnnParameterSettings.setParameter(LayerParameter.LRN_K);
+        m_dnnParameterSettings.setParameter(LayerParameter.LRN_N);
+
+
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
+
+        return settings;
+    }
+
+
 }
 

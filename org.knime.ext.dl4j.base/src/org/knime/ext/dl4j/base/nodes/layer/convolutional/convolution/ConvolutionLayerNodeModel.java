@@ -72,92 +72,92 @@ import org.knime.ext.dl4j.base.util.ParameterUtils;
  * @author David Kolb, KNIME.com GmbH
  */
 public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
-    
-	// the logger instance
+
+    // the logger instance
     private static final NodeLogger logger = NodeLogger
             .getLogger(ConvolutionLayerNodeModel.class);
-    
-    private static final List<DNNType> DNNTYPES = 
-    		Arrays.asList(DNNType.DEEPCONVOLUTIONAL);    		   
+
+    private static final List<DNNType> DNNTYPES =
+            Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.CONVOLUTION_LAYER;
-	
+
     /* SettingsModels */
     private LayerParameterSettingsModels m_dnnParameterSettings;
-    
+
     /**
      * Constructor for the node model.
      */
-    protected ConvolutionLayerNodeModel() {   
-    	super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-    			DLModelPortObject.TYPE });   	
+    protected ConvolutionLayerNodeModel() {
+        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
+            DLModelPortObject.TYPE });
     }
 
-	@Override
-	protected DLModelPortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		
-		DLModelPortObject portObject = (DLModelPortObject)inData[0];
-        List<Layer> newLayers = portObject.getLayers();
-        
+    @Override
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+
+        final DLModelPortObject portObject = (DLModelPortObject)inData[0];
+        final List<Layer> newLayers = portObject.getLayers();
+
         //parameters
-        int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
-        int[] kernelSize = ParameterUtils.convertStringsToInts(
-        		m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
-        int[] stride = ParameterUtils.convertStringsToInts(
-        		m_dnnParameterSettings.getStride().getStringValue().split(","));
-        String activation = DL4JActivationFunction.fromToString(
-        		m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();      	
-        double dropOut = m_dnnParameterSettings.getDropOut().getDoubleValue();
-        double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
-            
+        final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
+        final int[] kernelSize = ParameterUtils.convertStringsToInts(
+            m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+        final int[] stride = ParameterUtils.convertStringsToInts(
+            m_dnnParameterSettings.getStride().getStringValue().split(","));
+        final String activation = DL4JActivationFunction.fromToString(
+            m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+        final double dropOut = m_dnnParameterSettings.getDropOut().getDoubleValue();
+        final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
+
         //build layer
-        Layer convolutionLayer = new ConvolutionLayer.Builder()
-        		.nOut(nOut)
-        		.activation(activation)
-        		.stride(stride)
-        		.kernelSize(kernelSize)
-        		.dropOut(dropOut)
-        		.learningRate(learningRate)
-        		.build();
-        newLayers.add(convolutionLayer);            
-        
+        final Layer convolutionLayer = new ConvolutionLayer.Builder()
+                .nOut(nOut)
+                .activation(activation)
+                .stride(stride)
+                .kernelSize(kernelSize)
+                .dropOut(dropOut)
+                .learningRate(learningRate)
+                .build();
+        newLayers.add(convolutionLayer);
+
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), 
-        		m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
+            m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
-	}
+    }
 
-	@Override
-	protected DLModelPortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
-	}
-	
-	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase());
-		String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
-				
-		ParameterUtils.validateKernelSizeParameter(kernel);
-		ParameterUtils.validateStrideParameter(stride);
-		
-		super.validateSettings(settings);
-	}
+    @Override
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
+    }
+
+    @Override
+    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
+        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase());
+        final String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
+
+        ParameterUtils.validateKernelSizeParameter(kernel);
+        ParameterUtils.validateStrideParameter(stride);
+
+        super.validateSettings(settings);
+    }
 
 
 
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		m_dnnParameterSettings = new LayerParameterSettingsModels();
-		m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
-		m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
-		m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);
-		m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
-		m_dnnParameterSettings.setParameter(LayerParameter.DROP_OUT);
-		m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
-				
-		return settings;
-	}
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_dnnParameterSettings = new LayerParameterSettingsModels();
+        m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
+        m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
+        m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);
+        m_dnnParameterSettings.setParameter(LayerParameter.ACTIVATION);
+        m_dnnParameterSettings.setParameter(LayerParameter.DROP_OUT);
+        m_dnnParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
+
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
+
+        return settings;
+    }
 }
 

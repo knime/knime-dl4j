@@ -48,12 +48,12 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "SubsamplingLayer" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class PoolingLayerNodeFactory 
-        extends NodeFactory<PoolingLayerNodeModel> {
+public class PoolingLayerNodeFactory
+extends NodeFactory<PoolingLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,7 +76,7 @@ public class PoolingLayerNodeFactory
      */
     @Override
     public NodeView<PoolingLayerNodeModel> createNodeView(final int viewIndex,
-            final PoolingLayerNodeModel nodeModel) {
+        final PoolingLayerNodeModel nodeModel) {
         return null;
     }
 

@@ -45,16 +45,16 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 import org.deeplearning4j.nn.conf.Updater;
 
 /**
- * Wrapper for {@link Updater} to hide unsupported unsupported 
+ * Wrapper for {@link Updater} to hide unsupported unsupported
  * {@link Updater#CUSTOM} and {@link Updater#NONE}.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JUpdater {
-	SGD,
-	ADAM,
-	ADADELTA,
-	NESTEROVS,
-	ADAGRAD,
-	RMSPROP;
+    SGD,
+    ADAM,
+    ADADELTA,
+    NESTEROVS,
+    ADAGRAD,
+    RMSPROP;
 }

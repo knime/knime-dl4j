@@ -44,7 +44,7 @@ package org.knime.ext.dl4j.base.settings.enumerate;
 
 /**
  * Parameters for layers contained in deep networks.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LayerParameter{
@@ -52,7 +52,7 @@ public enum LayerParameter{
     NUMBER_OF_OUTPUTS,
     /** number of contrastive divergence iterations */
     RBM_ITERATIONS,
-	/** activation function */
+    /** activation function */
     ACTIVATION,
     /** weight initialization strategy */
     WEIGHT_INIT,
@@ -62,7 +62,7 @@ public enum LayerParameter{
     HIDDEN_UNIT,
     /** visible unit type */
     VISIBLE_UNIT,
-	/** drop out rate */
+    /** drop out rate */
     DROP_OUT,
     /** type of pooling for subsampling layer */
     POOLING_TYPE,
@@ -82,16 +82,16 @@ public enum LayerParameter{
     LRN_N,
     /** amount of 'noise' or 'corruption' to use */
     CORRUPTION_LEVEL;
-	
-	//default values for learner parameters
-	public static final Double DEFAULT_LRN_ALPHA = 0.0001;
-	public static final Double DEFAULT_LRN_BETA = 0.75;
-	public static final int DEFAULT_LRN_K = 2;
-	public static final int DEFAULT_LRN_N = 5;	
-	public static final String DEFAULT_ACTIVATION = "ReLU";
-	public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
-	public static final String DEFAULT_LOSS = "Mean Squared Error";
-	public static final String DEFAULT_TRANSFORMATION = "BINARY";
-	public static final String DEFAULT_POOLING = "MAX";
-	public static final String DEFAULT_MULTIINT = "2,2";   
+
+    //default values for learner parameters
+    public static final Double DEFAULT_LRN_ALPHA = 0.0001;
+    public static final Double DEFAULT_LRN_BETA = 0.75;
+    public static final int DEFAULT_LRN_K = 2;
+    public static final int DEFAULT_LRN_N = 5;
+    public static final String DEFAULT_ACTIVATION = "ReLU";
+    public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
+    public static final String DEFAULT_LOSS = "Mean Squared Error";
+    public static final String DEFAULT_TRANSFORMATION = "BINARY";
+    public static final String DEFAULT_POOLING = "MAX";
+    public static final String DEFAULT_MULTIINT = "2,2";
 }

@@ -48,38 +48,38 @@ import java.util.List;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 
 /**
- * Interface for classes which store and create {@link SettingsModel}s for parameters 
+ * Interface for classes which store and create {@link SettingsModel}s for parameters
  * that can be determined by an enumeration.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  *
  * @param <E> the enum corresponding to the parameters
  */
 public interface IParameterSettingsModels<E extends Enum<?>> {
-	
-	/**
-	 * Creates a new {@link SettingsModel} corresponding to the passed
-	 * enum.
-	 * 
-	 * @param enumerate the enum corresponding to the parameter to create
-	 * @return a new {@link SettingsModel} with the suitable type and key for the parameter
-	 * @throws IllegalStateException 
-	 */
-	SettingsModel createParameter(E enumerate) throws IllegalStateException;
-	
-	/**
-	 * Sets the member corresponding to the passed enum.
-	 * 
-	 * @param enumerate the enum corresponding to the parameter to set
-	 * @throws IllegalStateException
-	 */
-	void setParameter(E enumerate) throws IllegalStateException;
-	
-	/**
-	 * Returns a list of all {@link SettingsModel}s set by the setParameter() method.
-	 * 
-	 * @return
-	 */
-	List<SettingsModel> getAllInitializedSettings();
-	
+
+    /**
+     * Creates a new {@link SettingsModel} corresponding to the passed
+     * enum.
+     *
+     * @param enumerate the enum corresponding to the parameter to create
+     * @return a new {@link SettingsModel} with the suitable type and key for the parameter
+     * @throws IllegalStateException
+     */
+    SettingsModel createParameter(E enumerate) throws IllegalStateException;
+
+    /**
+     * Sets the member corresponding to the passed enum.
+     *
+     * @param enumerate the enum corresponding to the parameter to set
+     * @throws IllegalStateException
+     */
+    void setParameter(E enumerate) throws IllegalStateException;
+
+    /**
+     * Returns a list of all {@link SettingsModel}s set by the setParameter() method.
+     *
+     * @return
+     */
+    List<SettingsModel> getAllInitializedSettings();
+
 }

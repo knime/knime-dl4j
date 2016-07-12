@@ -62,203 +62,205 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 /**
  * Utility class to validate deep neural network
  * configurations and {@link DLModelPortObjectSpec}.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class ConfigurationUtils {
 
-	private ConfigurationUtils(){
-		// Utility class
-	}
-	
-	/**
-	 * Validates the given specification. Checks if the given {@link DNNType}s
-	 * are compatible with the spec. Checks if the layer types contained in
-	 * the spec are compatible with each other. Checks if the number of outputs 
-	 * of each layer is the same as the number of inputs of the next layer. If no
-	 * exception is thrown the specification seems to be valid, however there
-	 * may be warning messages.
-	 * 
-	 * @param spec the spec which we want to validate
-	 * @param types the {@link DNNType} of the current layer
-	 * @return warning messages giving possible problems of spec, returns empty
-	 * list if no problems were discovered
-	 */
-	public static List<String> validateSpec(final DLModelPortObjectSpec spec,
-			final List<DNNType> types) throws InvalidSettingsException {						
-		List<String> warnings = new ArrayList<>();
-		
-		warnings.addAll(validateType(spec, types));
-		return warnings;
-	}
-	
-	/**
-	 * Checks if the specified column selection is present in the specified {@link DataTableSpec}
-	 * and if the selection is empty.
-	 * 
-	 * @param tableSpec the spec of the table
-	 * @param columnSelection the selected column/s
-	 * @throws InvalidSettingsException if no columns are selected
-	 * 									if selected columns are not available in the table
-	 */
-	public static void validateColumnSelection(DataTableSpec tableSpec, SettingsModelFilterString columnSelection)
-			throws InvalidSettingsException{
-		List<String> selectedColumns = columnSelection.getIncludeList();
-		for(String columnName : selectedColumns){
-			validateColumnSelection(tableSpec, columnName);
-		}
-	}
-	
-	/**
-	 * Checks if the specified column selection is present in the specified {@link DataTableSpec}
-	 * and if the selection is empty.
-	 * 
-	 * @param tableSpec the spec of the table
-	 * @param columnSelection the selected column
-	 * @throws InvalidSettingsException if no columns are selected
-	 * 									if selected columns are not available in the table
-	 */
-	public static void validateColumnSelection(DataTableSpec tableSpec, SettingsModelString columnSelection)
-			throws InvalidSettingsException{		
-		String selectedColumn = columnSelection.getStringValue();	
-		validateColumnSelection(tableSpec, selectedColumn);	
-	}
-	
-	/**
-	 * Checks if the specified column selection is present in the specified {@link DataTableSpec}
-	 * and if the selection is empty.
-	 * 
-	 * @param tableSpec the spec of the table
-	 * @param columnSelection the selected column
-	 * @throws InvalidSettingsException if no columns are selected
-	 * 									if selected columns are not available in the table
-	 */
-	public static void validateColumnSelection(DataTableSpec tableSpec, String columnSelection)
-			throws InvalidSettingsException{	
-		if(columnSelection.isEmpty()){
-			throw new InvalidSettingsException("No input columns selected");
-		}
-		if(!tableSpec.containsName(columnSelection)){
-			throw new InvalidSettingsException("Input column not available in table");
-		} 				
-	}
-	
-	/**
-	 * Checks if the specified column selection is present in the specified {@link DataTableSpec}
-	 * and if the selection is empty.
-	 * 
-	 * @param tableSpec the spec of the table
-	 * @param columnSelection the selected column/s
-	 * @throws InvalidSettingsException if no columns are selected
-	 * 									if selected columns are not available in the table
-	 */
-	public static void validateColumnSelection(DataTableSpec tableSpec, String[] columnSelection)
-			throws InvalidSettingsException{	
-		for(String columnName : columnSelection){
-			validateColumnSelection(tableSpec, columnName);				
-		}
-	}	
-
-	/**
-	 * Checks if the {@link DNNType}s contained in the spec are compatible with the 
-	 * {@link DNNType}s of this node.
-	 * 
-	 * @param spec
-	 * @param types of this node
-	 * @return list of warnings
-	 */
-	private static List<String> validateType (final DLModelPortObjectSpec spec, 
-			final List<DNNType> types){
-		List<String> warnings = new ArrayList<>();
-		List<DNNType> intersectOfTypes = new ArrayList<>(spec.getNeuralNetworkTypes());
-		
-		//calc intersection between types in spec and types of this node
-		intersectOfTypes.retainAll(types);
-		if(intersectOfTypes.isEmpty() && !spec.getNeuralNetworkTypes().contains(DNNType.EMPTY)){
-			warnings.add(typesToString(types) + " may be incompatible with the "
-    				+ "current network architecture. "
-    				+ "this architecture: " + typesToString(types)
-    				+ " current architecture: " + typesToString(spec.getNeuralNetworkTypes()));
-		}
-		return warnings;
-	}	
-	
-	/**
-	 * Converts list of enums to single string where every string representation
-	 * of the enum is separated by a "OR" in the returned string. 
-	 * 
-	 * @param types
-	 * @return
-	 */
-	public static <E extends Enum<E>> String typesToString(List<E> types){
-		String typesToString = "";
-		for(int i = 0 ; i < types.size() ; i++){
-			typesToString += types.get(i).toString();
-			if(i+1 != types.size()){
-				typesToString += " or ";
-			}
-		}		
-		return typesToString;
-	}
-	
-	public static List<Pair<String,String>> createNameTypeListOfSelectedCols(List<String> featureColumns, DataTableSpec tableSpec) 
-			throws InvalidSettingsException{
-		List<Pair<String,String>> inputs = new ArrayList<>();
-		for(String colName : featureColumns){
-			DataColumnSpec colSpec = tableSpec.getColumnSpec(colName);
-			String type = colSpec.getType().getName();			
-			inputs.add(new Pair<String, String>(colName,type));		
-		}
-		return inputs;
+    private ConfigurationUtils(){
+        // Utility class
     }
-	
-	public static boolean containsImg(DataTableSpec spec){		
-    	Iterator<DataColumnSpec> colSpecs = spec.iterator();
-    	while(colSpecs.hasNext()){
-    		DataColumnSpec colSpec = colSpecs.next();   		
-    		if(colSpec.getType().getName().contains("Image")){
-        		return true;
-        	} 
-    	}
-    	return false;
-	}
-	
-	/**
-	 * Sets up the input/output numbers of the specified list of layers. The number of 
-	 * inputs of the first layer will be set to the specified value. Usually this value
-	 * can be calculated from the data. The numbers for possible more layers will adjusted
-	 * such that the number of outputs from one layer matches the number of inputs from the next.
-	 * It is expected that the number of outputs is correctly set for each layer so the number 
-	 * of inputs can be inferred.<br><br>
-	 * 
-	 * SubsamplingLayer and LocalResponseNormalization will be left untouched as they are no 
-	 * FeedForwardLayer (strange layer hierarchy from DL4J, e.g. recurrent layers extend 
-	 * {@link FeedForwardLayer}. May cause problems with next DL4J versions).
-	 * 
-	 * @param layers the list of layers to set up
-	 * @param numberOfInputs the number of inputs for the first layer
-	 */
-	public static void setupLayers(final List<Layer> layers, final int numberOfInputs){
-		FeedForwardLayer ffl = null;		
-		if(layers.isEmpty()) return;
-		//need to cast to FeedForwardLayer to access set/get methods of input/output numbers
-		else ffl = (FeedForwardLayer)layers.get(0);
-		//set the number of inputs to the inferred number of inputs from the data for the 
-		//first layer
-		ffl.setNIn(numberOfInputs);
-		//get user specified number of outputs from first layer
-		int previousOutNum = ffl.getNOut();		
-		//start from second layer
-		for(int i = 1; i < layers.size(); i++){
-			//SubsamplingLayer and LocalResponseNormalization are not FeedForwardLayer so skip
-			if(layers.get(i) instanceof SubsamplingLayer || layers.get(i) instanceof LocalResponseNormalization){
-				continue;
-			}
-			ffl = (FeedForwardLayer)layers.get(i);
-			//set number of inputs to number of outputs of previous layer
-			ffl.setNIn(previousOutNum);
-			//save number of outputs of current layer
-			previousOutNum = ffl.getNOut();
-		}
-	}
+
+    /**
+     * Validates the given specification. Checks if the given {@link DNNType}s
+     * are compatible with the spec. Checks if the layer types contained in
+     * the spec are compatible with each other. Checks if the number of outputs
+     * of each layer is the same as the number of inputs of the next layer. If no
+     * exception is thrown the specification seems to be valid, however there
+     * may be warning messages.
+     *
+     * @param spec the spec which we want to validate
+     * @param types the {@link DNNType} of the current layer
+     * @return warning messages giving possible problems of spec, returns empty
+     * list if no problems were discovered
+     */
+    public static List<String> validateSpec(final DLModelPortObjectSpec spec,
+        final List<DNNType> types) throws InvalidSettingsException {
+        final List<String> warnings = new ArrayList<>();
+
+        warnings.addAll(validateType(spec, types));
+        return warnings;
+    }
+
+    /**
+     * Checks if the specified column selection is present in the specified {@link DataTableSpec}
+     * and if the selection is empty.
+     *
+     * @param tableSpec the spec of the table
+     * @param columnSelection the selected column/s
+     * @throws InvalidSettingsException if no columns are selected
+     * 									if selected columns are not available in the table
+     */
+    public static void validateColumnSelection(final DataTableSpec tableSpec, final SettingsModelFilterString columnSelection)
+            throws InvalidSettingsException{
+        final List<String> selectedColumns = columnSelection.getIncludeList();
+        for(final String columnName : selectedColumns){
+            validateColumnSelection(tableSpec, columnName);
+        }
+    }
+
+    /**
+     * Checks if the specified column selection is present in the specified {@link DataTableSpec}
+     * and if the selection is empty.
+     *
+     * @param tableSpec the spec of the table
+     * @param columnSelection the selected column
+     * @throws InvalidSettingsException if no columns are selected
+     * 									if selected columns are not available in the table
+     */
+    public static void validateColumnSelection(final DataTableSpec tableSpec, final SettingsModelString columnSelection)
+            throws InvalidSettingsException{
+        final String selectedColumn = columnSelection.getStringValue();
+        validateColumnSelection(tableSpec, selectedColumn);
+    }
+
+    /**
+     * Checks if the specified column selection is present in the specified {@link DataTableSpec}
+     * and if the selection is empty.
+     *
+     * @param tableSpec the spec of the table
+     * @param columnSelection the selected column
+     * @throws InvalidSettingsException if no columns are selected
+     * 									if selected columns are not available in the table
+     */
+    public static void validateColumnSelection(final DataTableSpec tableSpec, final String columnSelection)
+            throws InvalidSettingsException{
+        if(columnSelection.isEmpty()){
+            throw new InvalidSettingsException("No input columns selected");
+        }
+        if(!tableSpec.containsName(columnSelection)){
+            throw new InvalidSettingsException("Input column not available in table");
+        }
+    }
+
+    /**
+     * Checks if the specified column selection is present in the specified {@link DataTableSpec}
+     * and if the selection is empty.
+     *
+     * @param tableSpec the spec of the table
+     * @param columnSelection the selected column/s
+     * @throws InvalidSettingsException if no columns are selected
+     * 									if selected columns are not available in the table
+     */
+    public static void validateColumnSelection(final DataTableSpec tableSpec, final String[] columnSelection)
+            throws InvalidSettingsException{
+        for(final String columnName : columnSelection){
+            validateColumnSelection(tableSpec, columnName);
+        }
+    }
+
+    /**
+     * Checks if the {@link DNNType}s contained in the spec are compatible with the
+     * {@link DNNType}s of this node.
+     *
+     * @param spec
+     * @param types of this node
+     * @return list of warnings
+     */
+    private static List<String> validateType (final DLModelPortObjectSpec spec,
+        final List<DNNType> types){
+        final List<String> warnings = new ArrayList<>();
+        final List<DNNType> intersectOfTypes = new ArrayList<>(spec.getNeuralNetworkTypes());
+
+        //calc intersection between types in spec and types of this node
+        intersectOfTypes.retainAll(types);
+        if(intersectOfTypes.isEmpty() && !spec.getNeuralNetworkTypes().contains(DNNType.EMPTY)){
+            warnings.add(typesToString(types) + " may be incompatible with the "
+                    + "current network architecture. "
+                    + "this architecture: " + typesToString(types)
+                    + " current architecture: " + typesToString(spec.getNeuralNetworkTypes()));
+        }
+        return warnings;
+    }
+
+    /**
+     * Converts list of enums to single string where every string representation
+     * of the enum is separated by a "OR" in the returned string.
+     *
+     * @param types
+     * @return
+     */
+    public static <E extends Enum<E>> String typesToString(final List<E> types){
+        String typesToString = "";
+        for(int i = 0 ; i < types.size() ; i++){
+            typesToString += types.get(i).toString();
+            if((i+1) != types.size()){
+                typesToString += " or ";
+            }
+        }
+        return typesToString;
+    }
+
+    public static List<Pair<String,String>> createNameTypeListOfSelectedCols(final List<String> featureColumns, final DataTableSpec tableSpec)
+            throws InvalidSettingsException{
+        final List<Pair<String,String>> inputs = new ArrayList<>();
+        for(final String colName : featureColumns){
+            final DataColumnSpec colSpec = tableSpec.getColumnSpec(colName);
+            final String type = colSpec.getType().getName();
+            inputs.add(new Pair<String, String>(colName,type));
+        }
+        return inputs;
+    }
+
+    public static boolean containsImg(final DataTableSpec spec){
+        final Iterator<DataColumnSpec> colSpecs = spec.iterator();
+        while(colSpecs.hasNext()){
+            final DataColumnSpec colSpec = colSpecs.next();
+            if(colSpec.getType().getName().contains("Image")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets up the input/output numbers of the specified list of layers. The number of
+     * inputs of the first layer will be set to the specified value. Usually this value
+     * can be calculated from the data. The numbers for possible more layers will adjusted
+     * such that the number of outputs from one layer matches the number of inputs from the next.
+     * It is expected that the number of outputs is correctly set for each layer so the number
+     * of inputs can be inferred.<br><br>
+     *
+     * SubsamplingLayer and LocalResponseNormalization will be left untouched as they are no
+     * FeedForwardLayer (strange layer hierarchy from DL4J, e.g. recurrent layers extend
+     * {@link FeedForwardLayer}. May cause problems with next DL4J versions).
+     *
+     * @param layers the list of layers to set up
+     * @param numberOfInputs the number of inputs for the first layer
+     */
+    public static void setupLayers(final List<Layer> layers, final int numberOfInputs){
+        FeedForwardLayer ffl = null;
+        if(layers.isEmpty()) {
+            return;
+        } else {
+            ffl = (FeedForwardLayer)layers.get(0);
+        }
+        //set the number of inputs to the inferred number of inputs from the data for the
+        //first layer
+        ffl.setNIn(numberOfInputs);
+        //get user specified number of outputs from first layer
+        int previousOutNum = ffl.getNOut();
+        //start from second layer
+        for(int i = 1; i < layers.size(); i++){
+            //SubsamplingLayer and LocalResponseNormalization are not FeedForwardLayer so skip
+            if((layers.get(i) instanceof SubsamplingLayer) || (layers.get(i) instanceof LocalResponseNormalization)){
+                continue;
+            }
+            ffl = (FeedForwardLayer)layers.get(i);
+            //set number of inputs to number of outputs of previous layer
+            ffl.setNIn(previousOutNum);
+            //save number of outputs of current layer
+            previousOutNum = ffl.getNOut();
+        }
+    }
 }

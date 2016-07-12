@@ -52,13 +52,13 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 /**
  * <code>NodeDialog</code> for the "Dl4JModelWriter" Node.
- * 
+ *
  *
  * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
+ * creation of a simple dialog with standard components. If you need a more
+ * complex dialog please derive directly from
  * {@link org.knime.core.node.NodeDialogPane}.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class Dl4JModelWriterNodeDialog extends DefaultNodeSettingsPane {
@@ -66,19 +66,19 @@ public class Dl4JModelWriterNodeDialog extends DefaultNodeSettingsPane {
     /**
      * New pane for configuring the Dl4JModelWriter node.
      */
-    protected Dl4JModelWriterNodeDialog() { 	
-    	addDialogComponent(new DialogComponentFileChooser(
-    			createFileModel(), 
-    			"dl4j.model.writer.history", 
-    			JFileChooser.SAVE_DIALOG, 
-    			false,
-                createFlowVariableModel(createFileModel()), 
+    protected Dl4JModelWriterNodeDialog() {
+        addDialogComponent(new DialogComponentFileChooser(
+            createFileModel(),
+            "dl4j.model.writer.history",
+            JFileChooser.SAVE_DIALOG,
+            false,
+            createFlowVariableModel(createFileModel()),
                 ".dl4j"));
         addDialogComponent(new DialogComponentBoolean(
-        		createOverwriteOKModel(), 
-        		"Overwrite existing file?"));
+            createOverwriteOKModel(),
+                "Overwrite existing file?"));
     }
-    
+
     static SettingsModelString createFileModel() {
         return new SettingsModelString("dl4j_model_writer_file", "");
     }

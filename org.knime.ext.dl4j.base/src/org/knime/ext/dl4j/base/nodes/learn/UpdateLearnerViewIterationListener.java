@@ -54,43 +54,43 @@ import org.deeplearning4j.optimize.api.IterationListener;
  */
 public class UpdateLearnerViewIterationListener implements IterationListener {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 825931436593012325L;
-	private boolean m_invoked = false;
-	private final AbstractDLLearnerNodeModel m_nodeModel;
-	
-	/**
-	 * Constructor for class UpdateLearnerViewIterationListener specifying the 
-	 * {@link AbstractDLLearnerNodeModel} it should use for updating the view.
-	 * After each iteration the method {@link AbstractDLLearnerNodeModel#passObjToView(Object)}
-	 * is called which in turn calls notifyView on the NodeModel.
-	 * 
-	 * @param nodeModel
-	 */
-	public UpdateLearnerViewIterationListener(AbstractDLLearnerNodeModel nodeModel) {
-		m_nodeModel = nodeModel;
-	}
-	
-	@Override
-	public boolean invoked() {		
-		return m_invoked;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 825931436593012325L;
+    private boolean m_invoked = false;
+    private final AbstractDLLearnerNodeModel m_nodeModel;
 
-	@Override
-	public void invoke() {
-		m_invoked = true;
-	}
+    /**
+     * Constructor for class UpdateLearnerViewIterationListener specifying the
+     * {@link AbstractDLLearnerNodeModel} it should use for updating the view.
+     * After each iteration the method {@link AbstractDLLearnerNodeModel#passObjToView(Object)}
+     * is called which in turn calls notifyView on the NodeModel.
+     *
+     * @param nodeModel
+     */
+    public UpdateLearnerViewIterationListener(final AbstractDLLearnerNodeModel nodeModel) {
+        m_nodeModel = nodeModel;
+    }
 
-	@Override
-	public void iterationDone(Model model, int iteration) {
-		invoke();
-        double result = model.score();
+    @Override
+    public boolean invoked() {
+        return m_invoked;
+    }
+
+    @Override
+    public void invoke() {
+        m_invoked = true;
+    }
+
+    @Override
+    public void iterationDone(final Model model, final int iteration) {
+        invoke();
+        final double result = model.score();
         //pass the current score to the view
         m_nodeModel.passObjToView(result + "");
         //update score in node model
         m_nodeModel.setScore(result);
-	}
+    }
 
 }

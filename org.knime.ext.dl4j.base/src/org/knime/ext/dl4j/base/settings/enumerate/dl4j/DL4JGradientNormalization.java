@@ -47,36 +47,36 @@ import org.deeplearning4j.nn.conf.GradientNormalization;
 /**
  * Wrapper for {@link GradientNormalization} for better String representation
  * of values.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JGradientNormalization {
-	/** Rescale gradients by dividing by the L2 norm of all gradients for the layer */
-	RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
-	/** 
-	 * <p> Rescale gradients by dividing by the L2 norm of the gradients, separately for
-	 * each type of parameter within the layer.<br>
-	 * This differs from RenormalizeL2PerLayer in that here, each parameter type (weight, bias etc) is normalized separately.<br>
-	 * For example, in a MLP/FeedForward network (where G is the gradient vector), the output is as follows:
-	 * <ul style="list-style-type:none">
-	 *     <li>GOut_weight = G_weight / l2(G_weight)</li>
-	 *     <li>GOut_bias = G_bias / l2(G_bias)</li>
-	 * </ul>
-	 * </p> 
-	 * */
+    /** Rescale gradients by dividing by the L2 norm of all gradients for the layer */
+    RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
+    /**
+     * <p> Rescale gradients by dividing by the L2 norm of the gradients, separately for
+     * each type of parameter within the layer.<br>
+     * This differs from RenormalizeL2PerLayer in that here, each parameter type (weight, bias etc) is normalized separately.<br>
+     * For example, in a MLP/FeedForward network (where G is the gradient vector), the output is as follows:
+     * <ul style="list-style-type:none">
+     *     <li>GOut_weight = G_weight / l2(G_weight)</li>
+     *     <li>GOut_bias = G_bias / l2(G_bias)</li>
+     * </ul>
+     * </p>
+     * */
     RenormalizeL2PerParamType(GradientNormalization.RenormalizeL2PerParamType),
     /**
-    *<p>Clip the gradients on a per-element basis.<br>
-    * For each gradient g, set g <- sign(g)*max(maxAllowedValue,|g|).<br>
-    * i.e., if a parameter gradient has absolute value greater than the threshold, truncate it.<br>
-    * For example, if threshold = 5, then values in range -5&lt;g&lt;5 are unmodified; values &lt;-5 are set
-    * to -5; values &gt;5 are set to 5.<br>
-    * This was proposed by Mikolov (2012), <i>Statistical Language Models Based on Neural Networks</i> (thesis),
-    * <a href="http://www.fit.vutbr.cz/~imikolov/rnnlm/thesis.pdf">http://www.fit.vutbr.cz/~imikolov/rnnlm/thesis.pdf</a>
-    * in the context of learning recurrent neural networks.<br>
-    * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)
-    * </p> 
-    * */
+     *<p>Clip the gradients on a per-element basis.<br>
+     * For each gradient g, set g <- sign(g)*max(maxAllowedValue,|g|).<br>
+     * i.e., if a parameter gradient has absolute value greater than the threshold, truncate it.<br>
+     * For example, if threshold = 5, then values in range -5&lt;g&lt;5 are unmodified; values &lt;-5 are set
+     * to -5; values &gt;5 are set to 5.<br>
+     * This was proposed by Mikolov (2012), <i>Statistical Language Models Based on Neural Networks</i> (thesis),
+     * <a href="http://www.fit.vutbr.cz/~imikolov/rnnlm/thesis.pdf">http://www.fit.vutbr.cz/~imikolov/rnnlm/thesis.pdf</a>
+     * in the context of learning recurrent neural networks.<br>
+     * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)
+     * </p>
+     * */
     ClipElementWiseAbsoluteValue(GradientNormalization.ClipElementWiseAbsoluteValue),
     /**
      * <p>Conditional renormalization. Somewhat similar to RenormalizeL2PerLayer, this strategy
@@ -102,22 +102,22 @@ public enum DL4JGradientNormalization {
      * Threshold for clipping can be set in Layer configuration, using gradientNormalizationThreshold(double threshold)</p>
      */
     ClipL2PerParamType(GradientNormalization.ClipL2PerParamType),;
-	
-	/** the corresponding dl4j value of this enum */
-	private GradientNormalization m_DL4JValue;
-	
-	private DL4JGradientNormalization(GradientNormalization norm) {
-		m_DL4JValue = norm;
-	}
-	
-	/**
+
+    /** the corresponding dl4j value of this enum */
+    private GradientNormalization m_DL4JValue;
+
+    private DL4JGradientNormalization(final GradientNormalization norm) {
+        m_DL4JValue = norm;
+    }
+
+    /**
      * Converts string representation of this enum back to this enum
-     * 
+     *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
      */
-	public static DL4JGradientNormalization fromToString(String toString){
-        for(DL4JGradientNormalization e : DL4JGradientNormalization.values()){
+    public static DL4JGradientNormalization fromToString(final String toString){
+        for(final DL4JGradientNormalization e : DL4JGradientNormalization.values()){
             if(e.toString().equals(toString)){
                 return e;
             }
@@ -126,29 +126,30 @@ public enum DL4JGradientNormalization {
     }
 
 
-	/**
-	 * Get the in dl4j usable {@link GradientNormalization} corresponding to this enum
-	 * 
-	 * @return dl4j usable {@link GradientNormalization}
-	 */
+    /**
+     * Get the in dl4j usable {@link GradientNormalization} corresponding to this enum
+     *
+     * @return dl4j usable {@link GradientNormalization}
+     */
     public GradientNormalization getDL4JValue(){
         return m_DL4JValue;
-    } 
-	
-	public String toString(){
-		switch (this) {
-		case ClipElementWiseAbsoluteValue:
-			return "Clip Element Wise Absolute Value";
-		case ClipL2PerLayer:
-			return "Clip L2 Per Layer";
-		case ClipL2PerParamType:
-			return "Clip L2 Per Param Type";
-		case RenormalizeL2PerLayer:
-			return "Renormalize L2 Per Layer";
-		case RenormalizeL2PerParamType:
-			return "Renormalize L2 Per Param Type";
-		default:
-			return super.toString();
-		}
-	}
+    }
+
+    @Override
+    public String toString(){
+        switch (this) {
+            case ClipElementWiseAbsoluteValue:
+                return "Clip Element Wise Absolute Value";
+            case ClipL2PerLayer:
+                return "Clip L2 Per Layer";
+            case ClipL2PerParamType:
+                return "Clip L2 Per Param Type";
+            case RenormalizeL2PerLayer:
+                return "Renormalize L2 Per Layer";
+            case RenormalizeL2PerParamType:
+                return "Renormalize L2 Per Param Type";
+            default:
+                return super.toString();
+        }
+    }
 }
