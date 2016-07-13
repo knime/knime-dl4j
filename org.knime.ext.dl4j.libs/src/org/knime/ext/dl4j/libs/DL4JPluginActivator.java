@@ -59,99 +59,96 @@ import org.osgi.framework.BundleContext;
  */
 public class DL4JPluginActivator extends AbstractUIPlugin {
 
-	private static final Logger LOGGER = Logger.getLogger(DL4JPluginActivator.class);
+    private static final Logger LOGGER = Logger.getLogger(DL4JPluginActivator.class);
 
-	private static DL4JPluginActivator plugin;
+    private static DL4JPluginActivator plugin;
 
-	private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu.*";
-	private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu.*";
+    private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu.*";
 
-	private enum BackendType {
-		GPU, CPU
-	}
+    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu.*";
 
-	public DL4JPluginActivator() {
-		plugin = this;
-	}
+    private enum BackendType {
+        GPU, CPU
+    }
 
-	@SuppressWarnings("restriction")
-	@Override
-	public void start(BundleContext context) throws Exception {
-		boolean useGPU = plugin.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+    public DL4JPluginActivator() {
+        plugin = this;
+    }
 
-		BackendType backendType = BackendType.CPU;
-		if (useGPU) {
-			backendType = BackendType.GPU;
-		}
+    @SuppressWarnings("restriction")
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        final boolean useGPU = plugin.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
 
-		EquinoxClassLoader el = (EquinoxClassLoader) getClass().getClassLoader();
-		ClasspathManager manager = el.getClasspathManager();
+        BackendType backendType = BackendType.CPU;
+        if (useGPU) {
+            backendType = BackendType.GPU;
+        }
 
-		// manually remove either cpu or gpu fragment from EquinoxClassLoader
-		// cp must contain only one backend at a time
-		Field f = manager.getClass().getDeclaredField("fragments");
-		f.setAccessible(true);
-		FragmentClasspath[] frags = (FragmentClasspath[]) f.get(manager);
-		FragmentClasspath fragmentOverwrite = findBackendFragment(frags, backendType);
-		if (fragmentOverwrite != null) {
-			f.set(manager, new FragmentClasspath[] { fragmentOverwrite });
-		} else {
-			throw new Exception("Backend Fragment for: " + backendType + " could not be found.");
-		}
+        final EquinoxClassLoader el = (EquinoxClassLoader)getClass().getClassLoader();
+        final ClasspathManager manager = el.getClasspathManager();
 
-		f.setAccessible(false);
+        // manually remove either cpu or gpu fragment from EquinoxClassLoader
+        // cp must contain only one backend at a time
+        final Field f = manager.getClass().getDeclaredField("fragments");
+        f.setAccessible(true);
+        final FragmentClasspath[] frags = (FragmentClasspath[])f.get(manager);
+        final FragmentClasspath fragmentOverwrite = findBackendFragment(frags, backendType);
+        if (fragmentOverwrite != null) {
+            f.set(manager, new FragmentClasspath[]{fragmentOverwrite});
+        } else {
+            throw new Exception("Backend Fragment for: " + backendType + " could not be found.");
+        }
 
-	}
+        f.setAccessible(false);
 
-	/**
-	 * Searches for a fragment corresponding to the specified
-	 * {@link BackendType} in the specified array of {@link FragmentClasspath}s.
-	 * Fragment is searched via base file name that needs to match a static
-	 * member regex of this class. If no matching fragment can be found null is
-	 * returned.
-	 * 
-	 * @param frags
-	 *            the fragments to search
-	 * @param backend
-	 *            the backend fragment type to search for
-	 * @return found fragment or null if not found
-	 */
-	@SuppressWarnings("restriction")
-	private FragmentClasspath findBackendFragment(FragmentClasspath[] frags, BackendType backend) {
-		String regex;
-		switch (backend) {
-		case CPU:
-			regex = CPU_FRAG_REGEX;
-			break;
-		case GPU:
-			regex = GPU_FRAG_REGEX;
-			break;
-		default:
-			throw new IllegalStateException("No case for backend type: " + backend + " defined.");
-		}
-		for (FragmentClasspath fcp : frags) {
-			String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
-			if (fragmentFileName.matches(regex)) {
-				return fcp;
-			} else {
-				LOGGER.debug(fragmentFileName + " does not match " + regex);
-			}
-		}
-		return null;
-	}
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		// nothing to do here
-	}
+    /**
+     * Searches for a fragment corresponding to the specified {@link BackendType} in the specified array of
+     * {@link FragmentClasspath}s. Fragment is searched via base file name that needs to match a static member regex of
+     * this class. If no matching fragment can be found null is returned.
+     *
+     * @param frags the fragments to search
+     * @param backend the backend fragment type to search for
+     * @return found fragment or null if not found
+     */
+    @SuppressWarnings("restriction")
+    private FragmentClasspath findBackendFragment(final FragmentClasspath[] frags, final BackendType backend) {
+        String regex;
+        switch (backend) {
+            case CPU:
+                regex = CPU_FRAG_REGEX;
+                break;
+            case GPU:
+                regex = GPU_FRAG_REGEX;
+                break;
+            default:
+                throw new IllegalStateException("No case for backend type: " + backend + " defined.");
+        }
+        for (final FragmentClasspath fcp : frags) {
+            final String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
+            if (fragmentFileName.matches(regex)) {
+                return fcp;
+            } else {
+                LOGGER.debug(fragmentFileName + " does not match " + regex);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Returns the shared instance.
-	 *
-	 * @return Singleton instance of the Plugin
-	 */
-	public static DL4JPluginActivator getDefault() {
-		return plugin;
-	}
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        // nothing to do here
+    }
+
+    /**
+     * Returns the shared instance.
+     *
+     * @return Singleton instance of the Plugin
+     */
+    public static DL4JPluginActivator getDefault() {
+        return plugin;
+    }
 
 }

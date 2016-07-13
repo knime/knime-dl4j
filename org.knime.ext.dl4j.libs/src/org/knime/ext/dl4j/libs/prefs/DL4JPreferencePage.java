@@ -59,57 +59,58 @@ import org.knime.ext.dl4j.libs.DL4JPluginActivator;
  */
 public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-	public static final String P_BACKEND_TYPE = "backendType";
-	private boolean m_useGPU;
+    public static final String P_BACKEND_TYPE = "backendType";
 
-	public DL4JPreferencePage() {
-		super(GRID);
-		setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
-		setDescription("Preferences for the KNIME Deeplearning4J Integration.");
-		m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
-	}
+    private boolean m_useGPU;
 
-	@Override
-	public void init(IWorkbench workbench) {
-		getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
-	}
+    public DL4JPreferencePage() {
+        super(GRID);
+        setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
+        setDescription("Preferences for the KNIME Deeplearning4J Integration.");
+        m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+    }
 
-	@Override
-	protected void createFieldEditors() {
-		addField(new LabelField(getFieldEditorParent(),
-				"By default CPU is used for calculations. For GPU usage you \n"
-						+ "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
-						+ "installed on your system. A change in this option requires a restart \n"
-						+ "of the KNIME Analytics Platform in order to take effect."));
-		addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", BooleanFieldEditor.SEPARATE_LABEL,
-				getFieldEditorParent()));
+    @Override
+    public void init(final IWorkbench workbench) {
+        getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
+    }
 
-	}
+    @Override
+    protected void createFieldEditors() {
+        addField(new LabelField(getFieldEditorParent(),
+            "By default CPU is used for calculations. For GPU usage you \n"
+                    + "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
+                    + "installed on your system. A change in this option requires a restart \n"
+                    + "of the KNIME Analytics Platform in order to take effect."));
+        addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", BooleanFieldEditor.SEPARATE_LABEL,
+            getFieldEditorParent()));
 
-	@Override
-	public boolean performOk() {
-		boolean result = super.performOk();
-		checkChanges();
-		return result;
-	}
+    }
 
-	private void checkChanges() {
-		boolean currentUseGPU = DL4JPluginActivator.getDefault().getPreferenceStore()
-				.getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
-		boolean useGPUChanged = m_useGPU != currentUseGPU;
+    @Override
+    public boolean performOk() {
+        final boolean result = super.performOk();
+        checkChanges();
+        return result;
+    }
 
-		if (useGPUChanged) {
-			m_useGPU = currentUseGPU;
-			MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-			mb.setText("Restart workbench...");
-			mb.setMessage("Changes of the used backend become " + "first available after restarting the workbench.\n"
-					+ "Do you want to restart the workbench now?");
-			if (mb.open() != SWT.YES) {
-				return;
-			}
+    private void checkChanges() {
+        final boolean currentUseGPU =
+                DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+        final boolean useGPUChanged = m_useGPU != currentUseGPU;
 
-			PlatformUI.getWorkbench().restart();
-		}
-	}
+        if (useGPUChanged) {
+            m_useGPU = currentUseGPU;
+            final MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+            mb.setText("Restart workbench...");
+            mb.setMessage("Changes of the used backend become " + "first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?");
+            if (mb.open() != SWT.YES) {
+                return;
+            }
+
+            PlatformUI.getWorkbench().restart();
+        }
+    }
 
 }
