@@ -224,7 +224,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         //if several learners are used in sequence the spec already contains a output layer
         final List<DNNLayerType> newLayerTypes = new ArrayList<DNNLayerType>();
         newLayerTypes.addAll(specWithoutLabels.getLayerTypes());
-        if (!newLayerTypes.get(newLayerTypes.size() - 1).equals(DNNLayerType.OUTPUT_LAYER)) {
+        if (newLayerTypes.isEmpty()
+                || !newLayerTypes.get(newLayerTypes.size() - 1).equals(DNNLayerType.OUTPUT_LAYER)) {
             newLayerTypes.add(DNNLayerType.OUTPUT_LAYER);
         }
 
@@ -456,6 +457,9 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
      * @return true if the last layer is of type {@link OutputLayer}, false if not
      */
     private boolean checkOutputLayer(final List<Layer> layers) {
+        if (layers.isEmpty()) {
+            return false;
+        }
         if (layers.get(layers.size() - 1) instanceof OutputLayer) {
             logger.debug("Last layer is output layer. Should be replaced in Learner Node for uptraining.");
             return true;
