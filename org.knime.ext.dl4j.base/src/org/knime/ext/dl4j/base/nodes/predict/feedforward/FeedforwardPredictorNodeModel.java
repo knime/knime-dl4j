@@ -160,7 +160,8 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
         }
         if (appendPrediction && !outputActivationIsSoftmax) {
             logger.warn("Output Layer activation is not softmax. Label prediction column will be empty.");
-        } else if (appendPrediction && outputActivationIsSoftmax && !containsLabels()) {
+        }
+        if (appendPrediction && outputActivationIsSoftmax && !containsLabels()) {
             logger
             .warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
         }
