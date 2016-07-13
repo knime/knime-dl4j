@@ -107,10 +107,6 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
-        if (modelSpec.getLayerTypes().isEmpty()) {
-            throw new InvalidSettingsException("Can't learn without layers in network.");
-        }
-
         final List<DNNLayerType> dnnLayerTypes = modelSpec.getLayerTypes();
         if (dnnLayerTypes.contains(DNNLayerType.CONVOLUTION_LAYER)) {
             isConvolutional = true;
