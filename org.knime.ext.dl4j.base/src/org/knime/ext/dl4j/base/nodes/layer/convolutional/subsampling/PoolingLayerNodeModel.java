@@ -65,7 +65,6 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
-
 /**
  * Pooling layer for Deeplearning4J integration.
  *
@@ -74,11 +73,10 @@ import org.knime.ext.dl4j.base.util.ParameterUtils;
 public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(PoolingLayerNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(PoolingLayerNodeModel.class);
 
-    private static final List<DNNType> DNNTYPES =
-            Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
+
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.SUBSAMPLING_LAYER;
 
     /* SettingsModels */
@@ -88,8 +86,7 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
      * Constructor for the node model.
      */
     protected PoolingLayerNodeModel() {
-        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-            DLModelPortObject.TYPE });
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     @Override
@@ -99,23 +96,20 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
         final List<Layer> newLayers = portObject.getLayers();
 
         //parameters
-        final SubsamplingLayer.PoolingType poolingType = SubsamplingLayer.
-                PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
-        final int[] kernelSize = ParameterUtils.convertStringsToInts(
-            m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
-        final int[] stride = ParameterUtils.convertStringsToInts(
-            m_dnnParameterSettings.getStride().getStringValue().split(","));
+        final SubsamplingLayer.PoolingType poolingType =
+                SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
+        final int[] kernelSize =
+                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+        final int[] stride =
+                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
 
         //build layer
-        final Layer subsamplingLayer = new SubsamplingLayer.Builder(poolingType)
-                .kernelSize(kernelSize)
-                .stride(stride)
-                .build();
+        final Layer subsamplingLayer =
+                new SubsamplingLayer.Builder(poolingType).kernelSize(kernelSize).stride(stride).build();
         newLayers.add(subsamplingLayer);
 
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
-            m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
     }
 
@@ -126,7 +120,7 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE .toString().toLowerCase());
+        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase());
         final String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
 
         ParameterUtils.validateKernelSizeParameter(kernel);
@@ -148,8 +142,4 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
         return settings;
     }
 
-
-
-
 }
-

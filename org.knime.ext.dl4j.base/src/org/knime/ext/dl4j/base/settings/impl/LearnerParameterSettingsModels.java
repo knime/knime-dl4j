@@ -54,48 +54,70 @@ import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 
 /**
- * Implementation of {@link IParameterSettingsModels} to store
- * and create {@link SettingsModel}s for {@link LearnerParameter}s.
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link LearnerParameter}s.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class LearnerParameterSettingsModels implements IParameterSettingsModels<LearnerParameter> {
 
     private SettingsModelIntegerBounded m_seed;
+
     private SettingsModelIntegerBounded m_trainingIterations;
 
     private SettingsModelString m_optimizationAlgorithm;
+
     private SettingsModelString m_gradientNormalization;
+
     private SettingsModelString m_updater;
+
     private SettingsModelString m_momentumAfter;
+
     private SettingsModelString m_trainingsMode;
+
     private SettingsModelString m_globalWeightInit;
 
     private SettingsModelDoubleBounded m_globalDropOut;
+
     private SettingsModelDoubleBounded m_globalLearningRate;
+
     private SettingsModelDoubleBounded m_L1;
+
     private SettingsModelDoubleBounded m_L2;
+
     private SettingsModelDoubleBounded m_gradientNormalizationThreshold;
+
     private SettingsModelDoubleBounded m_momentum;
 
     private SettingsModelBoolean m_useSeed;
+
     private SettingsModelBoolean m_useRegularization;
+
     private SettingsModelBoolean m_useGradientNormalization;
+
     private SettingsModelBoolean m_usePretrain;
+
     private SettingsModelBoolean m_useBackprop;
+
     private SettingsModelBoolean m_useFinetune;
+
     private SettingsModelBoolean m_useMomentum;
+
     private SettingsModelBoolean m_useDropConnect;
+
     private SettingsModelBoolean m_usePretrainedUpdater;
+
     private SettingsModelBoolean m_useGlobalDropOut;
+
     private SettingsModelBoolean m_useGlobalWeightInit;
+
     private SettingsModelBoolean m_useGlobalLearningRate;
 
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
     public SettingsModel createParameter(final LearnerParameter enumerate) throws IllegalStateException {
-        switch(enumerate){
+        switch (enumerate) {
             //Integer parameters
             case SEED:
                 return new SettingsModelIntegerBounded("seed", LearnerParameter.DEFAULT_INT, Integer.MIN_VALUE,
@@ -122,16 +144,17 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case GLOBAL_DROP_OUT:
                 return new SettingsModelDoubleBounded("global_drop_out", LearnerParameter.DEFAULT_DOUBLE, 0, 1);
             case GLOBAL_LEARNING_RATE:
-                return new SettingsModelDoubleBounded("global_learning_rate", LearnerParameter.DEFAULT_LEARNING_RATE, 0, Double.MAX_VALUE);
+                return new SettingsModelDoubleBounded("global_learning_rate", LearnerParameter.DEFAULT_LEARNING_RATE, 0,
+                    Double.MAX_VALUE);
             case L1:
                 return new SettingsModelDoubleBounded("l1", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
             case L2:
                 return new SettingsModelDoubleBounded("l2", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
             case GRADIENT_NORMALIZATION_THRESHOLD:
-                return new SettingsModelDoubleBounded("gradient_normalization_threshold", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
+                return new SettingsModelDoubleBounded("gradient_normalization_threshold",
+                    LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
             case MOMENTUM:
                 return new SettingsModelDoubleBounded("momentum", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
-
 
                 //boolean parameters
             case USE_SEED:
@@ -159,109 +182,106 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case USE_GLOBAL_LEARNING_RATE:
                 return new SettingsModelBoolean("use_global_learning_rate", LearnerParameter.DEFAULT_BOOLEAN);
             default:
-                throw new IllegalStateException(
-                    "LearnerParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("LearnerParameter does not exist: " + enumerate.toString());
         }
     }
-
 
     @Override
     public void setParameter(final LearnerParameter enumerate) throws IllegalStateException {
         switch (enumerate) {
             case GLOBAL_DROP_OUT:
                 m_globalDropOut = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_globalDropOut)) {
+                if (!m_allInitializedSettings.contains(m_globalDropOut)) {
                     m_allInitializedSettings.add(m_globalDropOut);
                 }
                 break;
             case GRADIENT_NORMALIZATION:
                 m_gradientNormalization = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_gradientNormalization)) {
+                if (!m_allInitializedSettings.contains(m_gradientNormalization)) {
                     m_allInitializedSettings.add(m_gradientNormalization);
                 }
                 break;
             case GRADIENT_NORMALIZATION_THRESHOLD:
                 m_gradientNormalizationThreshold = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_gradientNormalizationThreshold)) {
+                if (!m_allInitializedSettings.contains(m_gradientNormalizationThreshold)) {
                     m_allInitializedSettings.add(m_gradientNormalizationThreshold);
                 }
                 break;
             case L1:
                 m_L1 = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_L1)) {
+                if (!m_allInitializedSettings.contains(m_L1)) {
                     m_allInitializedSettings.add(m_L1);
                 }
                 break;
             case L2:
                 m_L2 = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_L2)) {
+                if (!m_allInitializedSettings.contains(m_L2)) {
                     m_allInitializedSettings.add(m_L2);
                 }
                 break;
             case GLOBAL_LEARNING_RATE:
                 m_globalLearningRate = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_globalLearningRate)) {
+                if (!m_allInitializedSettings.contains(m_globalLearningRate)) {
                     m_allInitializedSettings.add(m_globalLearningRate);
                 }
                 break;
             case MOMENTUM:
                 m_momentum = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_momentum)) {
+                if (!m_allInitializedSettings.contains(m_momentum)) {
                     m_allInitializedSettings.add(m_momentum);
                 }
                 break;
             case MOMENTUM_AFTER:
                 m_momentumAfter = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_momentumAfter)) {
+                if (!m_allInitializedSettings.contains(m_momentumAfter)) {
                     m_allInitializedSettings.add(m_momentumAfter);
                 }
                 break;
             case OPTIMIZATION_ALGORITHM:
                 m_optimizationAlgorithm = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_optimizationAlgorithm)) {
+                if (!m_allInitializedSettings.contains(m_optimizationAlgorithm)) {
                     m_allInitializedSettings.add(m_optimizationAlgorithm);
                 }
                 break;
             case SEED:
                 m_seed = (SettingsModelIntegerBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_seed)) {
+                if (!m_allInitializedSettings.contains(m_seed)) {
                     m_allInitializedSettings.add(m_seed);
                 }
                 break;
             case TRAINING_ITERATIONS:
                 m_trainingIterations = (SettingsModelIntegerBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_trainingIterations)) {
+                if (!m_allInitializedSettings.contains(m_trainingIterations)) {
                     m_allInitializedSettings.add(m_trainingIterations);
                 }
                 break;
             case UPDATER:
                 m_updater = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_updater)) {
+                if (!m_allInitializedSettings.contains(m_updater)) {
                     m_allInitializedSettings.add(m_updater);
                 }
                 break;
             case USE_BACKPROP:
                 m_useBackprop = (SettingsModelBoolean)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_useBackprop)) {
+                if (!m_allInitializedSettings.contains(m_useBackprop)) {
                     m_allInitializedSettings.add(m_useBackprop);
                 }
                 break;
             case USE_DROP_CONNECT:
                 m_useDropConnect = (SettingsModelBoolean)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_useDropConnect)) {
+                if (!m_allInitializedSettings.contains(m_useDropConnect)) {
                     m_allInitializedSettings.add(m_useDropConnect);
                 }
                 break;
             case USE_GRADIENT_NORMALIZATION:
                 m_useGradientNormalization = (SettingsModelBoolean)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_useGradientNormalization)) {
+                if (!m_allInitializedSettings.contains(m_useGradientNormalization)) {
                     m_allInitializedSettings.add(m_useGradientNormalization);
                 }
                 break;
             case USE_MOMENTUM:
                 m_useMomentum = (SettingsModelBoolean)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_useMomentum)) {
+                if (!m_allInitializedSettings.contains(m_useMomentum)) {
                     m_allInitializedSettings.add(m_useMomentum);
                 }
                 break;
@@ -283,7 +303,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 break;
             case USE_PRETRAINED_UPDATER:
                 m_usePretrainedUpdater = (SettingsModelBoolean)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_usePretrainedUpdater)) {
+                if (!m_allInitializedSettings.contains(m_usePretrainedUpdater)) {
                     m_allInitializedSettings.add(m_usePretrainedUpdater);
                 }
                 break;
@@ -308,34 +328,31 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 addToSet(m_useGlobalLearningRate);
                 break;
             default:
-                throw new IllegalStateException(
-                    "LearnerParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("LearnerParameter does not exist: " + enumerate.toString());
         }
     }
 
-    private void addToSet(final SettingsModel model){
-        if(!m_allInitializedSettings.contains(model)){
+    private void addToSet(final SettingsModel model) {
+        if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
     }
 
-    public SettingsModelBoolean getUseGlobalLearningRate(){
+    public SettingsModelBoolean getUseGlobalLearningRate() {
         return m_useGlobalLearningRate;
     }
 
-    public SettingsModelString getTrainingsMode(){
+    public SettingsModelString getTrainingsMode() {
         return m_trainingsMode;
     }
 
-    public SettingsModelBoolean getUsePretrainedUpdater(){
+    public SettingsModelBoolean getUsePretrainedUpdater() {
         return m_usePretrainedUpdater;
     }
 
     public SettingsModelIntegerBounded getSeed() {
         return m_seed;
     }
-
 
     public SettingsModelIntegerBounded getTrainingIterations() {
         return m_trainingIterations;
@@ -345,86 +362,69 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
         return m_optimizationAlgorithm;
     }
 
-
     public SettingsModelString getGradientNormalization() {
         return m_gradientNormalization;
     }
-
 
     public SettingsModelString getUpdater() {
         return m_updater;
     }
 
-
     public SettingsModelString getMomentumAfter() {
         return m_momentumAfter;
     }
-
-
 
     public SettingsModelDoubleBounded getGlobalDropOut() {
         return m_globalDropOut;
     }
 
-
     public SettingsModelDoubleBounded getGlobalLearningRate() {
         return m_globalLearningRate;
     }
-
 
     public SettingsModelDoubleBounded getL1() {
         return m_L1;
     }
 
-
     public SettingsModelDoubleBounded getL2() {
         return m_L2;
     }
-
 
     public SettingsModelDoubleBounded getGradientNormalizationThreshold() {
         return m_gradientNormalizationThreshold;
     }
 
-
     public SettingsModelDoubleBounded getMomentum() {
         return m_momentum;
     }
-
 
     public SettingsModelBoolean getUseSeed() {
         return m_useSeed;
     }
 
-
     public SettingsModelBoolean getUseRegularization() {
         return m_useRegularization;
     }
-
 
     public SettingsModelBoolean getUseGradientNormalization() {
         return m_useGradientNormalization;
     }
 
-
     public SettingsModelBoolean getUsePretrain() {
         return m_usePretrain;
     }
-
 
     public SettingsModelBoolean getUseBackprop() {
         return m_useBackprop;
     }
 
-    public SettingsModelBoolean getUseFinetune(){
+    public SettingsModelBoolean getUseFinetune() {
         return m_useFinetune;
     }
-
 
     public SettingsModelBoolean getUseMomentum() {
         return m_useMomentum;
     }
-
 
     public SettingsModelBoolean getUseDropConnect() {
         return m_useDropConnect;
@@ -434,19 +434,16 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
         return m_globalWeightInit;
     }
 
-
     public SettingsModelBoolean getUseGlobalDropOut() {
         return m_useGlobalDropOut;
     }
-
 
     public SettingsModelBoolean getUseGlobalWeightInit() {
         return m_useGlobalWeightInit;
     }
 
-
     @Override
-    public List<SettingsModel> getAllInitializedSettings(){
+    public List<SettingsModel> getAllInitializedSettings() {
         return m_allInitializedSettings;
     }
 

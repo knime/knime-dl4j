@@ -73,13 +73,14 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
 
     private SettingsModelString m_infile;
+
     private DLModelPortObjectSpec m_outSpec;
 
     /**
      * Constructor for the node model.
      */
     protected Dl4JModelReaderNodeModel() {
-        super(new PortType[] {}, new PortType[] { DLModelPortObject.TYPE });
+        super(new PortType[]{}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     @Override
@@ -112,8 +113,8 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
             fileIn.close();
         }
 
-        return new PortObject[]{new DLModelPortObject(portObjectOnly.getLayers(),
-            portObjectOnly.getMultilayerLayerNetwork(), m_outSpec)};
+        return new PortObject[]{
+            new DLModelPortObject(portObjectOnly.getLayers(), portObjectOnly.getMultilayerLayerNetwork(), m_outSpec)};
     }
 
     @Override
@@ -142,16 +143,17 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
      * @return the loaded spec
      * @throws Exception
      */
-    private DLModelPortObjectSpec loadSpec() throws Exception{
+    private DLModelPortObjectSpec loadSpec() throws Exception {
         final String warning = CheckUtils.checkSourceFile(m_infile.getStringValue());
-        if(warning != null){
+        if (warning != null) {
             throw new IOException("Unable to load Spec from file. Reason: " + warning);
         }
 
         final URL url = FileUtil.toURL(m_infile.getStringValue());
         final File file = FileUtil.getFileFromURL(url);
 
-        final FileInputStream fileIn = new FileInputStream(file);;
+        final FileInputStream fileIn = new FileInputStream(file);
+        ;
         final ZipInputStream zipIn = new ZipInputStream(fileIn);
 
         final DLModelPortObjectSpec spec = DLModelPortObjectUtils.loadSpecFromZip(zipIn);
@@ -162,7 +164,4 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
         return spec;
     }
 
-
-
 }
-

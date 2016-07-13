@@ -49,75 +49,61 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  */
 public enum LearnerParameter {
     /** whether a seed or not */
-    USE_SEED,
-    /** seed used for reproducibility between runs */
-    SEED,
-    /** number of training iterations */
-    TRAINING_ITERATIONS,
-    /** the type of optimization algorithm to use */
-    OPTIMIZATION_ALGORITHM,
-    /** the global learning rate to use */
-    GLOBAL_LEARNING_RATE,
-    /** whether to use global learning or not */
-    USE_GLOBAL_LEARNING_RATE,
-    /** whether to use regularization or not */
-    USE_REGULARIZATION,
-    /** l1 regularization coefficient */
-    L1,
-    /** l2 regularization coefficient */
-    L2,
-    /** whether to use gradient normalization or not */
-    USE_GRADIENT_NORMALIZATION,
-    /** gradient normalization strategy */
-    GRADIENT_NORMALIZATION,
-    /**
-     * Threshold for gradient normalization, only used for
-     * GradientNormalization.ClipL2PerLayer, GradientNormalization.ClipL2PerParamType,
-     * and GradientNormalization.ClipElementWiseAbsoluteValue. Not used otherwise.
-     * L2 threshold for first two types of clipping, or absolute value threshold for
-     * last type of clipping.
+    USE_SEED, /** seed used for reproducibility between runs */
+    SEED, /** number of training iterations */
+    TRAINING_ITERATIONS, /** the type of optimization algorithm to use */
+    OPTIMIZATION_ALGORITHM, /** the global learning rate to use */
+    GLOBAL_LEARNING_RATE, /** whether to use global learning or not */
+    USE_GLOBAL_LEARNING_RATE, /** whether to use regularization or not */
+    USE_REGULARIZATION, /** l1 regularization coefficient */
+    L1, /** l2 regularization coefficient */
+    L2, /** whether to use gradient normalization or not */
+    USE_GRADIENT_NORMALIZATION, /** gradient normalization strategy */
+    GRADIENT_NORMALIZATION, /**
+     * Threshold for gradient normalization, only used for GradientNormalization.ClipL2PerLayer,
+     * GradientNormalization.ClipL2PerParamType, and
+     * GradientNormalization.ClipElementWiseAbsoluteValue. Not used otherwise. L2 threshold for
+     * first two types of clipping, or absolute value threshold for last type of clipping.
      */
-    GRADIENT_NORMALIZATION_THRESHOLD,
-    /** whether to do pretraining or not, only applies for RBMs and states whether to run
-     * contrastive divergence or not */
-    USE_PRETRAIN,
-    /** whether to do finetuning or not */
-    USE_FINETUNE,
-    /** whether to do backpropagation or not */
-    USE_BACKPROP,
-    /** the kind of updater to use */
-    UPDATER,
-    /** whether a momentum or not */
-    USE_MOMENTUM,
-    /** the momentum rate */
-    MOMENTUM,
-    /** the momentum rate to use for every iteration */
-    MOMENTUM_AFTER,
-    /** whether to use drop connect or not */
-    USE_DROP_CONNECT,
-    /** drop out rate */
-    GLOBAL_DROP_OUT,
-    /** whether to overwrite the drop out rate of each layer*/
-    USE_GLOBAL_DROP_OUT,
-    /** whether to use the updater of a previously trained net or create a new one */
-    USE_PRETRAINED_UPDATER,
-    /** the kind of training to do. e.g. supervised, unsupervised */
-    TRAINING_MODE,
-    /** global weight initialization strategy */
-    GLOBAL_WEIGHT_INIT,
-    /** whether to overwrite weight initialization strategy of each layer*/
+    GRADIENT_NORMALIZATION_THRESHOLD, /**
+     * whether to do pretraining or not, only applies for RBMs and states whether to
+     * run contrastive divergence or not
+     */
+    USE_PRETRAIN, /** whether to do finetuning or not */
+    USE_FINETUNE, /** whether to do backpropagation or not */
+    USE_BACKPROP, /** the kind of updater to use */
+    UPDATER, /** whether a momentum or not */
+    USE_MOMENTUM, /** the momentum rate */
+    MOMENTUM, /** the momentum rate to use for every iteration */
+    MOMENTUM_AFTER, /** whether to use drop connect or not */
+    USE_DROP_CONNECT, /** drop out rate */
+    GLOBAL_DROP_OUT, /** whether to overwrite the drop out rate of each layer */
+    USE_GLOBAL_DROP_OUT, /** whether to use the updater of a previously trained net or create a new one */
+    USE_PRETRAINED_UPDATER, /** the kind of training to do. e.g. supervised, unsupervised */
+    TRAINING_MODE, /** global weight initialization strategy */
+    GLOBAL_WEIGHT_INIT, /** whether to overwrite weight initialization strategy of each layer */
     USE_GLOBAL_WEIGHT_INIT;
 
     //default values for learner parameters
     public static final int DEFAULT_INT = 1;
+
     public static final Double DEFAULT_DOUBLE = 0.0;
+
     public static final Double DEFAULT_LEARNING_RATE = 0.1;
+
     public static final String DEFAULT_OPTIMIZATION = "Stochastic Gradient Descent";
+
     public static final String DEFAULT_GRADIENTNORM = "Clip Element Wise Absolute Value";
+
     public static final String DEFAULT_UPDATER = "NESTEROVS";
+
     public static final String DEFAULT_MAP = "0:0.0";
+
     public static final String DEFAULT_TRAININGS_MODE = "SUPERVISED";
+
     public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
+
     public static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";
+
     public static final boolean DEFAULT_BOOLEAN = false;
 }

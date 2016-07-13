@@ -51,8 +51,8 @@ import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
 
 /**
- * Implementation of {@link IParameterSettingsModels} to store
- * and create {@link SettingsModel}s for {@link PredictorPrameter}s.
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link PredictorPrameter}s.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -61,7 +61,9 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
     static final boolean DEFAULT_BOOLEAN = false;
 
     private SettingsModelBoolean m_appendPrediction;
+
     private SettingsModelBoolean m_predictSteps;
+
     private SettingsModelBoolean m_appendScore;
 
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
@@ -102,21 +104,21 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
 
     }
 
-    private void addToSet(final SettingsModel model){
-        if(!m_allInitializedSettings.contains(model)){
+    private void addToSet(final SettingsModel model) {
+        if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
     }
 
-    public SettingsModelBoolean getPredictSteps(){
+    public SettingsModelBoolean getPredictSteps() {
         return m_predictSteps;
     }
 
-    public SettingsModelBoolean getAppendPrediction(){
+    public SettingsModelBoolean getAppendPrediction() {
         return m_appendPrediction;
     }
 
-    public SettingsModelBoolean getAppendScore(){
+    public SettingsModelBoolean getAppendScore() {
         return m_appendScore;
     }
 

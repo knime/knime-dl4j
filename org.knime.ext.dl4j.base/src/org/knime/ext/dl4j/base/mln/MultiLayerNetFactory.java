@@ -68,44 +68,64 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
- * Factory class for creating {@link MultiLayerNetwork}s using {@link List} of
- * {@link Layer}s and {@link LearnerParameterSettingsModels}.
+ * Factory class for creating {@link MultiLayerNetwork}s using {@link List} of {@link Layer}s and
+ * {@link LearnerParameterSettingsModels}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class MultiLayerNetFactory {
 
     private int m_seed = LearnerParameter.DEFAULT_INT;
+
     private int m_iterations = LearnerParameter.DEFAULT_INT;
 
     private boolean m_useSeed = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useGradientNormalization = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useRegularization = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useMomentum = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useDropConnect = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useGlobalLearningRate = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useGlobalDropOut = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useGlobalWeightInit = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_useBackprop = LearnerParameter.DEFAULT_BOOLEAN;
+
     private boolean m_usePretrain = LearnerParameter.DEFAULT_BOOLEAN;
 
-    private GradientNormalization m_gradientNormalization = DL4JGradientNormalization
-            .fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();
-    private Map<Integer,Double> m_momentumAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
+    private GradientNormalization m_gradientNormalization =
+            DL4JGradientNormalization.fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();
+
+    private Map<Integer, Double> m_momentumAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
+
     private Updater m_updater = Updater.valueOf(LearnerParameter.DEFAULT_UPDATER);
-    private OptimizationAlgorithm m_optimization = DL4JOptimizationAlgorithm
-            .fromToString(LearnerParameter.DEFAULT_OPTIMIZATION).getDL4JValue();
+
+    private OptimizationAlgorithm m_optimization =
+            DL4JOptimizationAlgorithm.fromToString(LearnerParameter.DEFAULT_OPTIMIZATION).getDL4JValue();
+
     private WeightInit m_weightInit = WeightInit.valueOf(LearnerParameter.DEFAULT_WEIGHT_INIT);
 
     private double m_gradientNormalizationThreshold = LearnerParameter.DEFAULT_DOUBLE;
+
     private double m_l1 = LearnerParameter.DEFAULT_DOUBLE;
+
     private double m_l2 = LearnerParameter.DEFAULT_DOUBLE;
+
     private double m_momentum = LearnerParameter.DEFAULT_DOUBLE;
+
     private double m_learningRate = LearnerParameter.DEFAULT_DOUBLE;
+
     private double m_dropOut = LearnerParameter.DEFAULT_DOUBLE;
 
-    /** The number of inputs of the first layer of the network. Used to set up input/output
-     *  numbers of layers */
+    /**
+     * The number of inputs of the first layer of the network. Used to set up input/output numbers of layers
+     */
     private final int m_nIn;
 
     /**
@@ -118,17 +138,13 @@ public class MultiLayerNetFactory {
     }
 
     /**
-     * Creates a new {@link MultiLayerNetwork} based on the given list of
-     * {@link Layer}s and the given {@link IParameterSettingsModels}. If the
-     * second parameter is null the network will be created using the DL4J
+     * Creates a new {@link MultiLayerNetwork} based on the given list of {@link Layer}s and the given
+     * {@link IParameterSettingsModels}. If the second parameter is null the network will be created using the DL4J
      * default parameters.
      *
-     * @param layers
-     *            the layers of the network
-     * @param learnerParameters
-     *            the parameters of the learner
-     * @return {@link MultiLayerNetwork} consisting of the given layers and
-     *         parameters
+     * @param layers the layers of the network
+     * @param learnerParameters the parameters of the learner
+     * @return {@link MultiLayerNetwork} consisting of the given layers and parameters
      */
     public MultiLayerNetwork createMultiLayerNetwork(final List<Layer> layers,
         final LearnerParameterSettingsModels learnerParameters) {
@@ -140,24 +156,19 @@ public class MultiLayerNetFactory {
     }
 
     /**
-     * Creates a new {@link MultiLayerNetwork} based on the given list of
-     * {@link Layer}s without further specifying network hyper parameter. This
-     * means the default values defined by DL4J will be taken.
+     * Creates a new {@link MultiLayerNetwork} based on the given list of {@link Layer}s without further specifying
+     * network hyper parameter. This means the default values defined by DL4J will be taken.
      *
-     * @param layers
-     *            the layers of the network
-     * @param learnerParameters
-     *            the parameters of the learner
-     * @return {@link MultiLayerNetwork} consisting of the given layers and
-     *         parameters
+     * @param layers the layers of the network
+     * @param learnerParameters the parameters of the learner
+     * @return {@link MultiLayerNetwork} consisting of the given layers and parameters
      */
     public MultiLayerNetwork createMultiLayerNetwork(final List<Layer> layers) {
         return createMlnWithoutLearnerParameters(layers);
     }
 
     /**
-     * Helper method for creating a new {@link MultiLayerNetwork} using layers
-     * and parameters.
+     * Helper method for creating a new {@link MultiLayerNetwork} using layers and parameters.
      *
      * @param layers
      * @param learnerParameters
@@ -175,8 +186,8 @@ public class MultiLayerNetFactory {
     }
 
     /**
-     * Helper method for creating a new {@link MultiLayerNetwork} using only
-     * layers and no parameters, hence using DL4J default parameters.
+     * Helper method for creating a new {@link MultiLayerNetwork} using only layers and no parameters, hence using DL4J
+     * default parameters.
      *
      * @param layers
      * @param learnerParameters
@@ -203,8 +214,7 @@ public class MultiLayerNetFactory {
      * @param layers the layers which should be used to create the network
      * @return builder with set layers and parameters
      */
-    protected NeuralNetConfiguration.ListBuilder createListBuilderWithLearnerParameters(final List<Layer> layers){
-
+    protected NeuralNetConfiguration.ListBuilder createListBuilderWithLearnerParameters(final List<Layer> layers) {
 
         final NeuralNetConfiguration.Builder nnConfigBuilder = new NeuralNetConfiguration.Builder();
 
@@ -214,36 +224,36 @@ public class MultiLayerNetFactory {
          * specific layer. Hence, need to clone layers to not alter original layers.
          */
         final List<Layer> layersCopy = DLModelPortObjectUtils.cloneLayers(layers);
-        if(m_useGlobalDropOut){
+        if (m_useGlobalDropOut) {
             overwriteDropOut(layersCopy, m_dropOut);
         }
-        if(m_useGlobalWeightInit){
+        if (m_useGlobalWeightInit) {
             overwriteWeightInit(layersCopy, m_weightInit);
         }
-        if(m_useGlobalLearningRate){
+        if (m_useGlobalLearningRate) {
             overwriteLearningRate(layersCopy, m_learningRate);
         }
 
         //setup number of input and output neurons
         ConfigurationUtils.setupLayers(layersCopy, m_nIn);
 
-        if(m_useSeed) {
+        if (m_useSeed) {
             nnConfigBuilder.seed(m_seed);
         }
-        if(m_useGradientNormalization) {
+        if (m_useGradientNormalization) {
             nnConfigBuilder.gradientNormalization(m_gradientNormalization);
             nnConfigBuilder.gradientNormalizationThreshold(m_gradientNormalizationThreshold);
         }
-        if(m_useRegularization) {
+        if (m_useRegularization) {
             nnConfigBuilder.regularization(true);
             nnConfigBuilder.l1(m_l1);
             nnConfigBuilder.l2(m_l2);
         }
-        if(m_useMomentum) {
+        if (m_useMomentum) {
             nnConfigBuilder.momentum(m_momentum);
             nnConfigBuilder.momentumAfter(m_momentumAfter);
         }
-        if(m_useDropConnect) {
+        if (m_useDropConnect) {
             nnConfigBuilder.useDropConnect(true);
         }
 
@@ -269,166 +279,161 @@ public class MultiLayerNetFactory {
     }
 
     /**
-     * Iterates over specified list of layers and overwrites the DropOut
-     * parameter with the specified value.
+     * Iterates over specified list of layers and overwrites the DropOut parameter with the specified value.
      *
      * @param layers
      * @param newDropOut
      */
-    private void overwriteDropOut(final List<Layer> layers, final double newDropOut){
-        for(final Layer l : layers){
+    private void overwriteDropOut(final List<Layer> layers, final double newDropOut) {
+        for (final Layer l : layers) {
             l.setDropOut(newDropOut);
         }
     }
 
     /**
-     * Iterates over specified list of layers and overwrites the LearningRate
-     * parameter with the specified value.
+     * Iterates over specified list of layers and overwrites the LearningRate parameter with the specified value.
      *
      * @param layers
      * @param newDropOut
      */
-    private void overwriteLearningRate(final List<Layer> layers, final double newLearningRate){
-        for(final Layer l : layers){
+    private void overwriteLearningRate(final List<Layer> layers, final double newLearningRate) {
+        for (final Layer l : layers) {
             l.setLearningRate(newLearningRate);
         }
     }
 
     /**
-     * Iterates over specified list of layers and overwrites the WeightInit
-     * parameter with the specified value.
+     * Iterates over specified list of layers and overwrites the WeightInit parameter with the specified value.
      *
      * @param layers
      * @param newDropOut
      */
-    private void overwriteWeightInit(final List<Layer> layers, final WeightInit newWeightInit){
-        for(final Layer l : layers){
+    private void overwriteWeightInit(final List<Layer> layers, final WeightInit newWeightInit) {
+        for (final Layer l : layers) {
             l.setWeightInit(newWeightInit);
         }
     }
 
     /**
-     * Initialise members with values from {@link LearnerParameterSettingsModels}.
-     * {@link SettingsModel}s for some parameters may not be present, hence
-     * all models are checked for null. If null a default value is used.
+     * Initialise members with values from {@link LearnerParameterSettingsModels}. {@link SettingsModel}s for some
+     * parameters may not be present, hence all models are checked for null. If null a default value is used.
      *
      * @param learnerParameters the parameters to get the values from
      */
-    private void init(final LearnerParameterSettingsModels learnerParameters){
+    private void init(final LearnerParameterSettingsModels learnerParameters) {
         SettingsModelIntegerBounded intSettings = learnerParameters.getSeed();
-        if(intSettings != null) {
+        if (intSettings != null) {
             m_seed = intSettings.getIntValue();
         }
 
         intSettings = learnerParameters.getTrainingIterations();
-        if(intSettings != null) {
+        if (intSettings != null) {
             m_iterations = intSettings.getIntValue();
         }
 
         SettingsModelBoolean booleanSettings = learnerParameters.getUseSeed();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useSeed = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseGradientNormalization();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useGradientNormalization = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseRegularization();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useRegularization = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseMomentum();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useMomentum = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseDropConnect();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useDropConnect = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseGlobalLearningRate();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useGlobalLearningRate = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseGlobalDropOut();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useGlobalDropOut = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseGlobalWeightInit();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useGlobalWeightInit = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUseBackprop();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_useBackprop = booleanSettings.getBooleanValue();
         }
 
         booleanSettings = learnerParameters.getUsePretrain();
-        if(booleanSettings != null) {
+        if (booleanSettings != null) {
             m_usePretrain = booleanSettings.getBooleanValue();
         }
 
         SettingsModelString stringSettings = learnerParameters.getGradientNormalization();
-        if(stringSettings != null) {
+        if (stringSettings != null) {
             m_gradientNormalization =
                     DL4JGradientNormalization.fromToString(stringSettings.getStringValue()).getDL4JValue();
         }
 
         stringSettings = learnerParameters.getMomentumAfter();
-        if(stringSettings != null) {
+        if (stringSettings != null) {
             m_momentumAfter = ParameterUtils.convertStringToMap(stringSettings.getStringValue());
         }
 
         stringSettings = learnerParameters.getUpdater();
-        if(stringSettings != null) {
+        if (stringSettings != null) {
             m_updater = Updater.valueOf(stringSettings.getStringValue());
         }
 
         stringSettings = learnerParameters.getOptimizationAlgorithm();
-        if(stringSettings != null) {
-            m_optimization =
-                    DL4JOptimizationAlgorithm.fromToString(stringSettings.getStringValue()).getDL4JValue();
+        if (stringSettings != null) {
+            m_optimization = DL4JOptimizationAlgorithm.fromToString(stringSettings.getStringValue()).getDL4JValue();
         }
 
         stringSettings = learnerParameters.getGobalWeightInit();
-        if(stringSettings != null) {
+        if (stringSettings != null) {
             m_weightInit = WeightInit.valueOf(stringSettings.getStringValue());
         }
 
         SettingsModelDoubleBounded doubleSettings = learnerParameters.getGradientNormalizationThreshold();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_gradientNormalizationThreshold = doubleSettings.getDoubleValue();
         }
 
         doubleSettings = learnerParameters.getL1();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_l1 = doubleSettings.getDoubleValue();
         }
 
         doubleSettings = learnerParameters.getL2();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_l2 = doubleSettings.getDoubleValue();
         }
 
         doubleSettings = learnerParameters.getMomentum();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_momentum = doubleSettings.getDoubleValue();
         }
 
         doubleSettings = learnerParameters.getGlobalLearningRate();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_learningRate = doubleSettings.getDoubleValue();
         }
 
         doubleSettings = learnerParameters.getGlobalDropOut();
-        if(doubleSettings != null) {
+        if (doubleSettings != null) {
             m_dropOut = doubleSettings.getDoubleValue();
         }
     }

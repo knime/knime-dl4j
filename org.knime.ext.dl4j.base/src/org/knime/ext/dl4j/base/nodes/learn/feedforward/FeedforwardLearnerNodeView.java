@@ -61,19 +61,20 @@ import org.knime.core.node.NodeView;
 import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
 
 /**
- * NodeView for feedforward learne node. Displays current training method, epoch
- * information and score. Has button for early stopping.
+ * NodeView for feedforward learne node. Displays current training method, epoch information and score. Has button for
+ * early stopping.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeModel> {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(FeedforwardLearnerNodeView.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardLearnerNodeView.class);
 
     private final JLabel m_scoreDisplay = new JLabel("Not available");
+
     private final JLabel m_learningInfo = new JLabel("No data available");
+
     private final JButton m_stopButton = new JButton("Stop Learning");
 
     /**
@@ -92,14 +93,12 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
 
         //create top label showing epoch information and training method
         final JPanel p_top = new JPanel(new GridLayout(0, 1));
-        p_top.setBorder(
-            BorderFactory.createTitledBorder("Learning Information:"));
+        p_top.setBorder(BorderFactory.createTitledBorder("Learning Information:"));
         p_top.add(m_learningInfo);
 
         //create middle label showing score
         final JPanel p_middle = new JPanel(new GridLayout(0, 1));
-        p_middle.setBorder(
-            BorderFactory.createTitledBorder("Current Loss:"));
+        p_middle.setBorder(BorderFactory.createTitledBorder("Current Loss:"));
         p_middle.add(m_scoreDisplay);
 
         //create bottom button for stopping
@@ -127,7 +126,7 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
         c.ipadx = 350;
         c.insets = new Insets(20, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
-        p_wrapper.add(p_top,c);
+        p_wrapper.add(p_top, c);
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
@@ -135,23 +134,23 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
         c.weightx = 1;
         c.weighty = 1;
         c.insets = new Insets(20, 5, 0, 5);
-        p_wrapper.add(p_middle,c);
+        p_wrapper.add(p_middle, c);
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(20, 5, 20, 5);
-        p_wrapper.add(p_bottom,c);
+        p_wrapper.add(p_bottom, c);
 
         setComponent(p_wrapper);
 
         //get last values from model if available
-        if(nodeModel.getScore() == null){
+        if (nodeModel.getScore() == null) {
             m_scoreDisplay.setText("Not available");
         } else {
             m_scoreDisplay.setText(nodeModel.getScore() + "");
         }
-        if(nodeModel.getLearningStatus() == null){
+        if (nodeModel.getLearningStatus() == null) {
             m_learningInfo.setText("No data available");
         } else {
             m_learningInfo.setText(nodeModel.getLearningStatus().getEpochDescription());
@@ -159,21 +158,20 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
     }
 
     /**
-     * Updates the label fields of the view. Expects either a String containing the current score
-     * or a {@link LearningStatus} object. If the passed argument is null the view will be reset.
+     * Updates the label fields of the view. Expects either a String containing the current score or a
+     * {@link LearningStatus} object. If the passed argument is null the view will be reset.
      */
     @Override
     protected void updateModel(final Object arg) {
-        if(arg == null){
+        if (arg == null) {
             resetView();
-        } else if(arg instanceof String){
+        } else if (arg instanceof String) {
             m_scoreDisplay.setText((String)arg);
         } else if (arg instanceof LearningStatus) {
             final LearningStatus status = (LearningStatus)arg;
             m_learningInfo.setText(status.getEpochDescription());
         } else {
-            logger.coding("Unrecognized argument passed to view during execution: "
-                    + arg.getClass().getSimpleName());
+            logger.coding("Unrecognized argument passed to view during execution: " + arg.getClass().getSimpleName());
             setShowNODATALabel(true);
         }
     }
@@ -181,7 +179,7 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
     /**
      * Resets view labels to default values.
      */
-    private void resetView(){
+    private void resetView() {
         m_scoreDisplay.setText("Not available");
         m_learningInfo.setText("No data available");
     }
@@ -211,4 +209,3 @@ public class FeedforwardLearnerNodeView extends NodeView<FeedforwardLearnerNodeM
     }
 
 }
-

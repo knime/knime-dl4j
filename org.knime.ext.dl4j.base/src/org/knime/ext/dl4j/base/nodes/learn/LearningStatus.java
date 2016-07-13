@@ -49,8 +49,11 @@ package org.knime.ext.dl4j.base.nodes.learn;
  */
 public class LearningStatus {
     private final int m_currentEpoch;
+
     private final int m_maxEpochs;
+
     private final String m_trainingMethod;
+
     private final Double m_score;
 
     /**
@@ -61,49 +64,49 @@ public class LearningStatus {
      * @param score the current score
      * @param trainingMethod string describing training method
      */
-    public LearningStatus(final int currentEpoch, final int maxEpochs, final Double score, final String trainingMethod) {
+    public LearningStatus(final int currentEpoch, final int maxEpochs, final Double score,
+        final String trainingMethod) {
         m_currentEpoch = currentEpoch;
         m_maxEpochs = maxEpochs;
         m_score = score;
         m_trainingMethod = trainingMethod;
     }
 
-    public int getCurrentEpoch(){
+    public int getCurrentEpoch() {
         return m_currentEpoch;
     }
 
-    public int getMaxEpochs(){
+    public int getMaxEpochs() {
         return m_maxEpochs;
     }
 
-    public String getTrainingsMethod(){
+    public String getTrainingsMethod() {
         return m_trainingMethod;
     }
 
-    public Double getScore(){
+    public Double getScore() {
         return m_score;
     }
 
     /**
-     * Creates string description of this learning status containing training method, current epoch,
-     * maximum number of epochs and current score.
+     * Creates string description of this learning status containing training method, current epoch, maximum number of
+     * epochs and current score.
      *
      * @return description of this learning status
      */
-    public String getStatusDescription(){
-        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of "
-                + m_maxEpochs + " epochs with score: " + m_score;
+    public String getStatusDescription() {
+        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of " + m_maxEpochs + " epochs with score: "
+                + m_score;
     }
 
     /**
-     * Creates string description of the current epoch status containing what training method is used and
-     * how many epochs there are to go.
+     * Creates string description of the current epoch status containing what training method is used and how many
+     * epochs there are to go.
      *
      * @return description of this epoch status
      */
-    public String getEpochDescription(){
-        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of "
-                + m_maxEpochs + " epochs";
+    public String getEpochDescription() {
+        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of " + m_maxEpochs + " epochs";
     }
 
 }

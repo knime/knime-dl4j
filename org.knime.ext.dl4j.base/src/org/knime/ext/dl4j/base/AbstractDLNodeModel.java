@@ -63,17 +63,13 @@ import org.knime.core.node.port.PortType;
  */
 public abstract class AbstractDLNodeModel extends NodeModel {
     /**
-     * Instantiates a new abstract node model for nodes of
-     * KNIME Deeplearning4J integration.
+     * Instantiates a new abstract node model for nodes of KNIME Deeplearning4J integration.
      *
-     * @param inPortTypes
-     *            Input Port Types
-     * @param outPortTypes
-     *            Output Port Types
+     * @param inPortTypes Input Port Types
+     * @param outPortTypes Output Port Types
      * @see NodeModel#NodeModel(PortType[], PortType[])
      */
-    protected AbstractDLNodeModel(final PortType[] inPortTypes,
-        final PortType[] outPortTypes) {
+    protected AbstractDLNodeModel(final PortType[] inPortTypes, final PortType[] outPortTypes) {
         super(inPortTypes, outPortTypes);
         m_settingsModels = initSettingsModels();
     }
@@ -81,24 +77,20 @@ public abstract class AbstractDLNodeModel extends NodeModel {
     /** The list of Settings Models. */
     private List<SettingsModel> m_settingsModels;
 
-
     /**
-     * Initialises member settings models of the current node. Will be called
-     * when the NodeModel is created.
+     * Initialises member settings models of the current node. Will be called when the NodeModel is created.
      */
     protected abstract List<SettingsModel> initSettingsModels();
 
     /**
      * Logs warnings.
      *
-     * @param logger
-     * 			the logger instance
-     * @param warnings
-     * 			warnings as list of strings
+     * @param logger the logger instance
+     * @param warnings warnings as list of strings
      */
-    protected void logWarnings(final NodeLogger logger, final List<String> warnings){
-        for(final String w : warnings){
-            if((w != null) && !w.isEmpty()){
+    protected void logWarnings(final NodeLogger logger, final List<String> warnings) {
+        for (final String w : warnings) {
+            if ((w != null) && !w.isEmpty()) {
                 logger.warn(w);
             }
         }
@@ -107,14 +99,12 @@ public abstract class AbstractDLNodeModel extends NodeModel {
     /**
      * Logs debugs.
      *
-     * @param logger
-     * 			the logger instance
-     * @param warnings
-     * 			debug messages as list of strings
+     * @param logger the logger instance
+     * @param warnings debug messages as list of strings
      */
-    protected void logDebug(final NodeLogger logger, final List<String> debug){
-        for(final String w : debug){
-            if((w != null) && !w.isEmpty()){
+    protected void logDebug(final NodeLogger logger, final List<String> debug) {
+        for (final String w : debug) {
+            if ((w != null) && !w.isEmpty()) {
                 logger.debug(w);
             }
         }
@@ -134,8 +124,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      * {@inheritDoc}
      */
     @Override
-    protected void validateSettings(final NodeSettingsRO settings)
-            throws InvalidSettingsException {
+    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
         for (final SettingsModel model : m_settingsModels) {
             model.validateSettings(settings);
         }
@@ -145,8 +134,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      * {@inheritDoc}
      */
     @Override
-    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
-            throws InvalidSettingsException {
+    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
         for (final SettingsModel model : m_settingsModels) {
             model.loadSettingsFrom(settings);
         }
@@ -155,38 +143,28 @@ public abstract class AbstractDLNodeModel extends NodeModel {
     /**
      * No-op version of {@link NodeModel#loadInternals}.
      *
-     * @param nodeInternDir
-     *            the node intern dir
-     * @param exec
-     *            the exec
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
-     * @throws CanceledExecutionException
-     *             the canceled execution exception
+     * @param nodeInternDir the node intern dir
+     * @param exec the exec
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws CanceledExecutionException the canceled execution exception
      */
     @Override
-    protected void loadInternals(final File nodeInternDir,
-        final ExecutionMonitor exec)
-                throws IOException, CanceledExecutionException {
+    protected void loadInternals(final File nodeInternDir, final ExecutionMonitor exec)
+            throws IOException, CanceledExecutionException {
         // nothing to do here
     }
 
     /**
      * No-op version of {@link NodeModel#saveInternals}.
      *
-     * @param nodeInternDir
-     *            the node intern dir
-     * @param exec
-     *            the exec
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
-     * @throws CanceledExecutionException
-     *             the canceled execution exception
+     * @param nodeInternDir the node intern dir
+     * @param exec the exec
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws CanceledExecutionException the canceled execution exception
      */
     @Override
-    protected void saveInternals(final File nodeInternDir,
-        final ExecutionMonitor exec)
-                throws IOException, CanceledExecutionException {
+    protected void saveInternals(final File nodeInternDir, final ExecutionMonitor exec)
+            throws IOException, CanceledExecutionException {
         // nothing to do here
     }
 
@@ -206,7 +184,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
         this.m_settingsModels = m_settingsModels;
     }
 
-    protected void addToSettingsModels(final SettingsModel setting){
+    protected void addToSettingsModels(final SettingsModel setting) {
         m_settingsModels.add(setting);
     }
 

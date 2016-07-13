@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class RBMLayerNodeFactory
-extends NodeFactory<RBMLayerNodeModel> {
+public class RBMLayerNodeFactory extends NodeFactory<RBMLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -75,8 +74,7 @@ extends NodeFactory<RBMLayerNodeModel> {
      * {@inheritDoc}
      */
     @Override
-    public NodeView<RBMLayerNodeModel> createNodeView(final int viewIndex,
-        final RBMLayerNodeModel nodeModel) {
+    public NodeView<RBMLayerNodeModel> createNodeView(final int viewIndex, final RBMLayerNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +95,3 @@ extends NodeFactory<RBMLayerNodeModel> {
     }
 
 }
-

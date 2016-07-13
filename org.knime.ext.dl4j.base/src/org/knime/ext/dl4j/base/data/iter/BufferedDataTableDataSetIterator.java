@@ -64,29 +64,32 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.util.FeatureUtil;
 
 /**
- * Implementation of {@link DataSetIterator}, which iterates a {@link BufferedDataTable}
- * and converts the specified number of rows to {@link DataSet} on the fly when calling
- * next(). DataSets are used as input for DL4J network training. Conversion is done using
- * the DataCellTojavaConverter extension point, hence, all {@link DataType}s which can be
- * converted to {@link INDArray} are supported.
+ * Implementation of {@link DataSetIterator}, which iterates a {@link BufferedDataTable} and converts the specified
+ * number of rows to {@link DataSet} on the fly when calling next(). DataSets are used as input for DL4J network
+ * training. Conversion is done using the DataCellTojavaConverter extension point, hence, all {@link DataType}s which
+ * can be converted to {@link INDArray} are supported.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class BufferedDataTableDataSetIterator implements DataSetIterator{
+public class BufferedDataTableDataSetIterator implements DataSetIterator {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(BufferedDataTableDataSetIterator.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(BufferedDataTableDataSetIterator.class);
 
     private static final long serialVersionUID = 1L;
 
     private final BufferedDataTable m_table;
+
     private final int m_labelColumnIndex;
+
     private final int m_batchSize;
+
     private final List<String> m_distinctLabels;
 
     private final int m_recordLength;
+
     private CloseableRowIterator m_tableIterator;
+
     private int m_cursor;
 
     private final boolean m_isTrain;
@@ -96,8 +99,8 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
      *
      * @param table the table to iterate
      * @param labelColumnName name of possible label column
-     * @param batchSize the number of rows to return for next next() call, hence the number
-     * 					of examples contained in the returned DataSet of next()
+     * @param batchSize the number of rows to return for next next() call, hence the number of examples contained in the
+     *            returned DataSet of next()
      * @param distinctLabels list of all distinct labels
      * @param isTrain flag if test or train mode, meaning whether to expect labels or not
      * @throws Exception
@@ -107,14 +110,14 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
         m_table = table;
         m_batchSize = batchSize;
 
-        if(distinctLabels != null){
+        if (distinctLabels != null) {
             m_distinctLabels = distinctLabels;
         } else {
             m_distinctLabels = new ArrayList<String>();
         }
 
         m_isTrain = isTrain;
-        if(isTrain){
+        if (isTrain) {
             m_labelColumnIndex = table.getSpec().findColumnIndex(labelColumnName);
         } else {
             m_labelColumnIndex = -1;
@@ -129,8 +132,8 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
      * Constructor for class BufferedDataTableDataSetIterator if no labels are available, hence, test mode is used.
      *
      * @param table the table to iterate
-     * @param batchSize the number of rows to return for next next() call, hence the number
-     * 					of examples contained in the returned DataSet of next()
+     * @param batchSize the number of rows to return for next next() call, hence the number of examples contained in the
+     *            returned DataSet of next()
      * @throws Exception
      */
     public BufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize) throws Exception {
@@ -143,11 +146,11 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
     }
 
     /**
-     * Returns a DataSet containing two INDArrays. One array for the features and one for the labels. Both arrays
-     * have batchSize number of rows. In the feature array each row contains the corresponding row of the table
-     * converted to INDArray. Conversion method is specified by {@link DataCellToJavaConverterFactory}s which
-     * convert to INDArray registered in converter extension point. In the label array each row contains the label
-     * for each feature row converted to one-hot representation. If test mode this array will only contain zeroes.
+     * Returns a DataSet containing two INDArrays. One array for the features and one for the labels. Both arrays have
+     * batchSize number of rows. In the feature array each row contains the corresponding row of the table converted to
+     * INDArray. Conversion method is specified by {@link DataCellToJavaConverterFactory}s which convert to INDArray
+     * registered in converter extension point. In the label array each row contains the label for each feature row
+     * converted to one-hot representation. If test mode this array will only contain zeroes.
      */
     @Override
     public DataSet next() {
@@ -155,7 +158,7 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
         final long numberOfRows = Math.min(m_batchSize, m_table.size() - m_cursor);
         final INDArray dataMatrix = Nd4j.create((int)numberOfRows, inputColumns());
         INDArray labelsMatrix = null;
-        if(m_isTrain){
+        if (m_isTrain) {
             labelsMatrix = Nd4j.create((int)numberOfRows, m_distinctLabels.size());
         } else {
             labelsMatrix = Nd4j.create((int)numberOfRows, 1);
@@ -166,31 +169,33 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator{
             //list of arrays which will be concatenated into one row
             final List<INDArray> dataRow = new ArrayList<>();
             //loop over cells of current row
-            for(int i = 0; i < row.getNumCells(); i++){
+            for (int i = 0; i < row.getNumCells(); i++) {
                 try {
                     final DataCell cell = row.getCell(i);
                     //if label convert to one hot vector
-                    if((i == m_labelColumnIndex) && m_isTrain){
+                    if ((i == m_labelColumnIndex) && m_isTrain) {
                         //first convert nominal value to string
                         final String label = ConverterUtils.convertDataCellToJava(cell, String.class);
-                        final INDArray labelOutcomeVector = FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
+                        final INDArray labelOutcomeVector =
+                                FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
                         labelsMatrix.putRow(k, labelOutcomeVector);
                         //if collection convert every entry using existing converters
-                    } else if (cell.getType().isCollectionType()){
-                        final INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
+                    } else if (cell.getType().isCollectionType()) {
+                        final INDArray[] convertedCollction =
+                                ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
                         dataRow.addAll(Arrays.asList(convertedCollction));
                         //else convert directly
                     } else {
                         dataRow.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
                     }
                 } catch (final Exception e) {
-                    logger.coding("Problem with input conversion",e);
+                    logger.coding("Problem with input conversion", e);
                 }
             }
             final INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
-            if(linearConcat.length() != inputColumns()){
-                logger.error("Length of current input in row: " + row.getKey() + " does not match expected length. Possible images or collections "
-                        + "may not be of same size.");
+            if (linearConcat.length() != inputColumns()) {
+                logger.error("Length of current input in row: " + row.getKey()
+                + " does not match expected length. Possible images or collections " + "may not be of same size.");
             }
             dataMatrix.putRow(k, linearConcat);
             m_cursor++;

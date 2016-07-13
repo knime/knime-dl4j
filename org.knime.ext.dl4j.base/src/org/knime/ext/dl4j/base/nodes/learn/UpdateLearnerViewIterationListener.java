@@ -46,9 +46,8 @@ import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.optimize.api.IterationListener;
 
 /**
- * Implementation of {@link IterationListener} using a {@link AbstractDLLearnerNodeModel}
- * for score reporting and view communication. Also updates the score of the learner node
- * model.
+ * Implementation of {@link IterationListener} using a {@link AbstractDLLearnerNodeModel} for score reporting and view
+ * communication. Also updates the score of the learner node model.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -58,14 +57,16 @@ public class UpdateLearnerViewIterationListener implements IterationListener {
      *
      */
     private static final long serialVersionUID = 825931436593012325L;
+
     private boolean m_invoked = false;
+
     private final AbstractDLLearnerNodeModel m_nodeModel;
 
     /**
-     * Constructor for class UpdateLearnerViewIterationListener specifying the
-     * {@link AbstractDLLearnerNodeModel} it should use for updating the view.
-     * After each iteration the method {@link AbstractDLLearnerNodeModel#passObjToView(Object)}
-     * is called which in turn calls notifyView on the NodeModel.
+     * Constructor for class UpdateLearnerViewIterationListener specifying the {@link AbstractDLLearnerNodeModel} it
+     * should use for updating the view. After each iteration the method
+     * {@link AbstractDLLearnerNodeModel#passObjToView(Object)} is called which in turn calls notifyView on the
+     * NodeModel.
      *
      * @param nodeModel
      */

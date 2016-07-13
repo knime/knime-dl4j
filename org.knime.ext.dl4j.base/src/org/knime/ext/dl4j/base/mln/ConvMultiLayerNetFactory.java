@@ -51,8 +51,8 @@ import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
 /**
- * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional
- * networks. Uses additional information about image dimensionality.
+ * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional networks. Uses additional
+ * information about image dimensionality.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -60,14 +60,16 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
 
     /** Image height in pixel. */
     private int m_height;
+
     /** Image width in pixel. */
     private int m_width;
+
     /** Number of channels of image. */
     private int m_channels;
 
     /**
-     * Constructor for class ConvMultiLayerNetFactory specifying image dimensionality of images
-     * the created networks of this factory should be used for.
+     * Constructor for class ConvMultiLayerNetFactory specifying image dimensionality of images the created networks of
+     * this factory should be used for.
      *
      * @param height the height of expected images in pixel
      * @param width the width of expected images in pixel
@@ -100,7 +102,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
             currentLayerIndex++;
         }
 
-        new ConvolutionLayerSetup(listBuilder,m_height,m_width,m_channels);
+        new ConvolutionLayerSetup(listBuilder, m_height, m_width, m_channels);
 
         final MultiLayerConfiguration layerConf = listBuilder.build();
         final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
@@ -113,7 +115,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
      *
      * @param height in pixel
      */
-    public void setImageHeight(final int height){
+    public void setImageHeight(final int height) {
         m_height = height;
     }
 
@@ -122,7 +124,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
      *
      * @param width in pixel
      */
-    public void setImageWidth(final int width){
+    public void setImageWidth(final int width) {
         m_width = width;
     }
 
@@ -131,7 +133,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
      *
      * @param numberOfChannels
      */
-    public void setImageChannels(final int numberOfChannels){
+    public void setImageChannels(final int numberOfChannels) {
         m_channels = numberOfChannels;
     }
 }

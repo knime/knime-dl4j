@@ -53,32 +53,37 @@ import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 
 /**
- * Implementation of {@link IParameterSettingsModels} to store
- * and create {@link SettingsModel}s for {@link DataParameter}s.
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link DataParameter}s.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class DataParameterSettingsModels implements IParameterSettingsModels<DataParameter>{
+public class DataParameterSettingsModels implements IParameterSettingsModels<DataParameter> {
 
     private SettingsModelIntegerBounded m_batchSize;
+
     private SettingsModelIntegerBounded m_epochs;
+
     private SettingsModelString m_labelColumn;
+
     private SettingsModelFilterString m_columnSelection;
+
     private SettingsModelString m_imageSize;
+
     private SettingsModelString m_documentColumn;
+
     private SettingsModelString m_sequenceColumn;
 
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
-    public SettingsModel createParameter(final DataParameter enumerate) throws IllegalStateException{
+    public SettingsModel createParameter(final DataParameter enumerate) throws IllegalStateException {
         switch (enumerate) {
             case BATCH_SIZE:
                 return new SettingsModelIntegerBounded("batch_size", DataParameter.DEFAULT_BATCH_SIZE, 1,
                     Integer.MAX_VALUE);
             case EPOCHS:
-                return new SettingsModelIntegerBounded("epochs", DataParameter.DEFAULT_EPOCHS, 1,
-                    Integer.MAX_VALUE);
+                return new SettingsModelIntegerBounded("epochs", DataParameter.DEFAULT_EPOCHS, 1, Integer.MAX_VALUE);
             case COLUMN_SELECTION:
                 return new SettingsModelFilterString("column_selection");
             case LABEL_COLUMN:
@@ -90,9 +95,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
             case SEQUENCE_COLUMN:
                 return new SettingsModelString("sequence_column", "");
             default:
-                throw new IllegalStateException(
-                    "DataParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
         }
     }
 
@@ -101,7 +104,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
         switch (enumerate) {
             case BATCH_SIZE:
                 m_batchSize = (SettingsModelIntegerBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_batchSize)) {
+                if (!m_allInitializedSettings.contains(m_batchSize)) {
                     m_allInitializedSettings.add(m_batchSize);
                 }
                 break;
@@ -111,19 +114,19 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 break;
             case COLUMN_SELECTION:
                 m_columnSelection = (SettingsModelFilterString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_columnSelection)) {
+                if (!m_allInitializedSettings.contains(m_columnSelection)) {
                     m_allInitializedSettings.add(m_columnSelection);
                 }
                 break;
             case LABEL_COLUMN:
                 m_labelColumn = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_labelColumn)) {
+                if (!m_allInitializedSettings.contains(m_labelColumn)) {
                     m_allInitializedSettings.add(m_labelColumn);
                 }
                 break;
             case IMAGE_SIZE:
                 m_imageSize = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_imageSize)) {
+                if (!m_allInitializedSettings.contains(m_imageSize)) {
                     m_allInitializedSettings.add(m_imageSize);
                 }
                 break;
@@ -136,9 +139,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 addToSet(m_sequenceColumn);
                 break;
             default:
-                throw new IllegalStateException(
-                    "DataParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
         }
     }
 
@@ -158,15 +159,15 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
         return m_columnSelection;
     }
 
-    public SettingsModelString getImageSize(){
+    public SettingsModelString getImageSize() {
         return m_imageSize;
     }
 
-    public SettingsModelString getDocumentColumn(){
+    public SettingsModelString getDocumentColumn() {
         return m_documentColumn;
     }
 
-    public SettingsModelString getSequenceColumn(){
+    public SettingsModelString getSequenceColumn() {
         return m_sequenceColumn;
     }
 
@@ -175,8 +176,8 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
         return m_allInitializedSettings;
     }
 
-    private void addToSet(final SettingsModel model){
-        if(!m_allInitializedSettings.contains(model)){
+    private void addToSet(final SettingsModel model) {
+        if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
     }

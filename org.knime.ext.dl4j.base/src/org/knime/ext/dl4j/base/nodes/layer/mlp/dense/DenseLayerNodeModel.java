@@ -73,58 +73,48 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(DenseLayerNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(DenseLayerNodeModel.class);
 
     // dense layer may be part of multiple deep networks
-    private static final List<DNNType> DNNTYPES =
-            Arrays.asList(DNNType.MLP, DNNType.DEEPCONVOLUTIONAL);
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.MLP, DNNType.DEEPCONVOLUTIONAL);
+
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.DENSE_LAYER;
 
     /* SettingsModels */
     private LayerParameterSettingsModels m_dnnParameterSettings;
 
-
     /**
      * Constructor for the node model.
      */
     protected DenseLayerNodeModel() {
-        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-            DLModelPortObject.TYPE });
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     @Override
-    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec)
-            throws Exception {
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
         final DLModelPortObject portObject = (DLModelPortObject)inData[0];
         final List<Layer> newLayers = portObject.getLayers();
 
         //parameters
         final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        final String activation = DL4JActivationFunction.fromToString(
-            m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+        final String activation =
+                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
 
         //build layer
-        final Layer denseLayer = new DenseLayer.Builder()
-                .nOut(nOut)
-                .activation(activation)
-                .weightInit(weight)
-                .learningRate(learningRate)
-                .build();
+        final Layer denseLayer = new DenseLayer.Builder().nOut(nOut).activation(activation).weightInit(weight)
+                .learningRate(learningRate).build();
         newLayers.add(denseLayer);
 
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
-            m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
     }
 
     @Override
-    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs)
-            throws InvalidSettingsException {
-        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE,m_dnnParameterSettings, logger);
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
     }
 
     @Override
@@ -141,6 +131,4 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
         return settings;
     }
 
-
 }
-

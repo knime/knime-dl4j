@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class FeedforwardPredictorNodeFactory
-extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ extends NodeFactory<FeedforwardPredictorNodeModel> {
     }
 
 }
-

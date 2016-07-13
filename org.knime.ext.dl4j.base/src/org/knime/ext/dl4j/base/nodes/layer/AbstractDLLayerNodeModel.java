@@ -55,15 +55,14 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
 /**
- * Abstract superclass for layer node models of Deeplearning4J integration,
- * contains default implementations for configure method.
+ * Abstract superclass for layer node models of Deeplearning4J integration, contains default implementations for
+ * configure method.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
 
-    protected AbstractDLLayerNodeModel(final PortType[] inPortTypes,
-        final PortType[] outPortTypes) {
+    protected AbstractDLLayerNodeModel(final PortType[] inPortTypes, final PortType[] outPortTypes) {
         super(inPortTypes, outPortTypes);
     }
 
@@ -71,8 +70,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
     protected DLModelPortObjectSpec m_outputSpec;
 
     /**
-     * Updates the spec with information of the current layer and performs some
-     * checks on the spec.
+     * Updates the spec with information of the current layer and performs some checks on the spec.
      *
      * @param inSpecs the spec to extend and check
      * @param dnnTypes the network types the current layer can be part of
@@ -83,15 +81,15 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
      * @throws InvalidSettingsException
      */
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs, final List<DNNType> dnnTypes,
-        final DNNLayerType dnnLayerType, final LayerParameterSettingsModels parameterSettings,
-        final NodeLogger logger) throws InvalidSettingsException{
+        final DNNLayerType dnnLayerType, final LayerParameterSettingsModels parameterSettings, final NodeLogger logger)
+                throws InvalidSettingsException {
         final DLModelPortObjectSpec spec = (DLModelPortObjectSpec)inSpecs[0];
 
         List<DNNType> newType;
         /* this is the first layer of the net so we need to set the DNNType.
          * It is assumed that the architecture(DNNType) of the first layer is
          * the architecture of the network. */
-        if (spec.getNeuralNetworkTypes().contains(DNNType.EMPTY)){
+        if (spec.getNeuralNetworkTypes().contains(DNNType.EMPTY)) {
             newType = dnnTypes;
         } else {
             newType = spec.getNeuralNetworkTypes();
@@ -102,7 +100,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
         newLayerTypes.addAll(spec.getLayerTypes());
         newLayerTypes.add(dnnLayerType);
 
-        m_outputSpec = new DLModelPortObjectSpec(newType, newLayerTypes,false);
+        m_outputSpec = new DLModelPortObjectSpec(newType, newLayerTypes, false);
 
         //check for spec sanity
         logWarnings(logger, ConfigurationUtils.validateSpec(m_outputSpec, dnnTypes));

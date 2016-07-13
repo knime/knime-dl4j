@@ -49,7 +49,6 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  */
 public enum TrainingMode {
     /** supervised training with labels */
-    SUPERVISED,
-    /** unsupervised training without labels*/
+    SUPERVISED, /** unsupervised training without labels */
     UNSUPERVISED
 }

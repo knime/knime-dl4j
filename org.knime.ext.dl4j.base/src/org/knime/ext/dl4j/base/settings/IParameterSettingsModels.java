@@ -42,14 +42,13 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.settings;
 
-
 import java.util.List;
 
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 
 /**
- * Interface for classes which store and create {@link SettingsModel}s for parameters
- * that can be determined by an enumeration.
+ * Interface for classes which store and create {@link SettingsModel}s for parameters that can be determined by an
+ * enumeration.
  *
  * @author David Kolb, KNIME.com GmbH
  *
@@ -58,8 +57,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModel;
 public interface IParameterSettingsModels<E extends Enum<?>> {
 
     /**
-     * Creates a new {@link SettingsModel} corresponding to the passed
-     * enum.
+     * Creates a new {@link SettingsModel} corresponding to the passed enum.
      *
      * @param enumerate the enum corresponding to the parameter to create
      * @return a new {@link SettingsModel} with the suitable type and key for the parameter

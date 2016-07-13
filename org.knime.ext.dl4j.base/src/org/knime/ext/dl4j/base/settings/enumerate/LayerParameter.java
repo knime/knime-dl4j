@@ -47,51 +47,44 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public enum LayerParameter{
+public enum LayerParameter {
     /** number of output neurons */
-    NUMBER_OF_OUTPUTS,
-    /** number of contrastive divergence iterations */
-    RBM_ITERATIONS,
-    /** activation function */
-    ACTIVATION,
-    /** weight initialization strategy */
-    WEIGHT_INIT,
-    /** loss function type */
-    LOSS_FUNCTION,
-    /** hidden unit type */
-    HIDDEN_UNIT,
-    /** visible unit type */
-    VISIBLE_UNIT,
-    /** drop out rate */
-    DROP_OUT,
-    /** type of pooling for subsampling layer */
-    POOLING_TYPE,
-    /** size of kernel */
-    KERNEL_SIZE,
-    /** stride of kernel */
-    STRIDE,
-    /** whether to use specified input output numbers */
-    LEARNING_RATE,
-    /** hyper parameter for local response normalization */
-    LRN_ALPHA,
-    /** hyper parameter for local response normalization */
-    LRN_BETA,
-    /** hyper parameter for local response normalization */
-    LRN_K,
-    /** hyper parameter for local response normalization */
-    LRN_N,
-    /** amount of 'noise' or 'corruption' to use */
+    NUMBER_OF_OUTPUTS, /** number of contrastive divergence iterations */
+    RBM_ITERATIONS, /** activation function */
+    ACTIVATION, /** weight initialization strategy */
+    WEIGHT_INIT, /** loss function type */
+    LOSS_FUNCTION, /** hidden unit type */
+    HIDDEN_UNIT, /** visible unit type */
+    VISIBLE_UNIT, /** drop out rate */
+    DROP_OUT, /** type of pooling for subsampling layer */
+    POOLING_TYPE, /** size of kernel */
+    KERNEL_SIZE, /** stride of kernel */
+    STRIDE, /** whether to use specified input output numbers */
+    LEARNING_RATE, /** hyper parameter for local response normalization */
+    LRN_ALPHA, /** hyper parameter for local response normalization */
+    LRN_BETA, /** hyper parameter for local response normalization */
+    LRN_K, /** hyper parameter for local response normalization */
+    LRN_N, /** amount of 'noise' or 'corruption' to use */
     CORRUPTION_LEVEL;
 
     //default values for learner parameters
     public static final Double DEFAULT_LRN_ALPHA = 0.0001;
+
     public static final Double DEFAULT_LRN_BETA = 0.75;
+
     public static final int DEFAULT_LRN_K = 2;
+
     public static final int DEFAULT_LRN_N = 5;
+
     public static final String DEFAULT_ACTIVATION = "ReLU";
+
     public static final String DEFAULT_WEIGHT_INIT = "XAVIER";
+
     public static final String DEFAULT_LOSS = "Mean Squared Error";
+
     public static final String DEFAULT_TRANSFORMATION = "BINARY";
+
     public static final String DEFAULT_POOLING = "MAX";
+
     public static final String DEFAULT_MULTIINT = "2,2";
 }

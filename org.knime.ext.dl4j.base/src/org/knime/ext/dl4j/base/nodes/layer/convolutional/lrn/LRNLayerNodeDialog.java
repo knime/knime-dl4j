@@ -53,10 +53,8 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
  * <code>NodeDialog</code> for the "LRNLayer" Node.
  *
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more
- * complex dialog please derive directly from
- * {@link org.knime.core.node.NodeDialogPane}.
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -68,32 +66,14 @@ public class LRNLayerNodeDialog extends DefaultNodeSettingsPane {
     protected LRNLayerNodeDialog() {
         final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
 
-
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-                LayerParameter.LRN_K),
-            "k",
-            4
-                ));
+            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.LRN_K), "k", 4));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-                LayerParameter.LRN_N),
-            "n",
-            4
-                ));
+            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.LRN_N), "n", 4));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-                LayerParameter.LRN_ALPHA),
-            "alpha",
-            4
-                ));
+            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.LRN_ALPHA), "alpha", 4));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-                LayerParameter.LRN_BETA),
-            "beta",
-            4
-                ));
+            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.LRN_BETA), "beta", 4));
 
     }
 }
-

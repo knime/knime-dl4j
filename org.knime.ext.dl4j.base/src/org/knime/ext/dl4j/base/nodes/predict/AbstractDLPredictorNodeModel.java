@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.predict;
 
-
 import java.util.List;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
@@ -67,20 +66,19 @@ import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 
     private boolean m_inputTableContainsImg;
+
     private boolean m_containsLabels;
 
-
-    protected AbstractDLPredictorNodeModel(final PortType[] inPortTypes,
-        final PortType[] outPortTypes) {
+    protected AbstractDLPredictorNodeModel(final PortType[] inPortTypes, final PortType[] outPortTypes) {
         super(inPortTypes, outPortTypes);
     }
 
     /**
-     * Make basic checks before a predictor can be executed. Check if the feature columns that were
-     * used for learning are present in the table and if they have the same type. Sets predictor flags.
+     * Make basic checks before a predictor can be executed. Check if the feature columns that were used for learning
+     * are present in the table and if they have the same type. Sets predictor flags.
      *
-     * @param inSpecs the specs of the model to use for prediction (index 0) and the specs of the table
-     * 				  to get data for prediction (index 1)
+     * @param inSpecs the specs of the model to use for prediction (index 0) and the specs of the table to get data for
+     *            prediction (index 1)
      * @param logger a logger to log errors
      * @return
      * @throws InvalidSettingsException
@@ -90,13 +88,13 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
         final DataTableSpec predictTableSpec = (DataTableSpec)inSpecs[1];
 
-        if(!modelSpec.isTrained()){
+        if (!modelSpec.isTrained()) {
             throw new InvalidSettingsException("Model not yet trained. Can't predict with untrained model.");
         }
 
         m_inputTableContainsImg = ConfigurationUtils.containsImg(predictTableSpec);
 
-        if((modelSpec.getLabels() == null) || modelSpec.getLabels().isEmpty()){
+        if ((modelSpec.getLabels() == null) || modelSpec.getLabels().isEmpty()) {
             m_containsLabels = false;
         } else {
             m_containsLabels = true;
@@ -114,7 +112,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
         return m_inputTableContainsImg;
     }
 
-    protected boolean containsLabels(){
+    protected boolean containsLabels() {
         return m_containsLabels;
     }
 
@@ -123,18 +121,17 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      *
      * @param spec the table spec to check for feature columns
      * @param expectedCols the feature columns
-     * @throws InvalidSettingsException if spec does not contain a column of the feature columns
-     * 									if it contains the columns but one of it is not of the same type
+     * @throws InvalidSettingsException if spec does not contain a column of the feature columns if it contains the
+     *             columns but one of it is not of the same type
      */
-    private void checkInputTableForFeatureColumns(final DataTableSpec spec, final List<Pair<String,String>> expectedCols)
-            throws InvalidSettingsException {
-        for(final Pair<String,String> c : expectedCols){
-            if(spec.containsName(c.getFirst())){
+    private void checkInputTableForFeatureColumns(final DataTableSpec spec,
+        final List<Pair<String, String>> expectedCols) throws InvalidSettingsException {
+        for (final Pair<String, String> c : expectedCols) {
+            if (spec.containsName(c.getFirst())) {
                 final DataColumnSpec colSpec = spec.getColumnSpec(c.getFirst());
-                if(!colSpec.getType().getName().equals(c.getSecond())){
+                if (!colSpec.getType().getName().equals(c.getSecond())) {
                     throw new InvalidSettingsException("Table contains column: " + c.getFirst() + " but was "
-                            + "not of expected type. Expected: " + c.getSecond() + " but was: "
-                            + colSpec.getType());
+                            + "not of expected type. Expected: " + c.getSecond() + " but was: " + colSpec.getType());
                 }
             } else {
                 throw new InvalidSettingsException("Table does not contain expected input column: " + c.getFirst());
@@ -148,17 +145,17 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      * @param layers the list of layers to check
      * @return true if activation of the last layer is softmax, false if not
      */
-    protected boolean isOutActivationSoftmax(final List<Layer> layers){
-        final Layer outputLayer = layers.get(layers.size()-1);
-        if(outputLayer.getActivationFunction().equals("softmax")){
+    protected boolean isOutActivationSoftmax(final List<Layer> layers) {
+        final Layer outputLayer = layers.get(layers.size() - 1);
+        if (outputLayer.getActivationFunction().equals("softmax")) {
             return true;
         }
         return false;
     }
 
     /**
-     * Determines the number of outputs of a {@link MultiLayerNetwork}, hence the
-     * number of outputs of the last layer which must be a {@link OutputLayer}.
+     * Determines the number of outputs of a {@link MultiLayerNetwork}, hence the number of outputs of the last layer
+     * which must be a {@link OutputLayer}.
      *
      * @param mln the network to use
      * @return number of outputs of a network
@@ -166,8 +163,8 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
     protected int getNumberOfOutputs(final MultiLayerNetwork mln) {
         final int numberOfLayers = mln.getLayerWiseConfigurations().getConfs().size();
 
-        final Layer l = mln.getLayerWiseConfigurations().getConf(numberOfLayers-1).getLayer();
-        if(l instanceof OutputLayer){
+        final Layer l = mln.getLayerWiseConfigurations().getConf(numberOfLayers - 1).getLayer();
+        if (l instanceof OutputLayer) {
             return ((OutputLayer)l).getNOut();
         } else {
             new InvalidSettingsException("Last layer is not a Output Layer");

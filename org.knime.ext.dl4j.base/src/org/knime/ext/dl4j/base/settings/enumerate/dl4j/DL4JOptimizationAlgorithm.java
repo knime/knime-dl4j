@@ -45,15 +45,13 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 
 /**
- * Wrapper for {@link OptimizationAlgorithm} for better String representation
- * of values.
+ * Wrapper for {@link OptimizationAlgorithm} for better String representation of values.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JOptimizationAlgorithm {
     LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
-    CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT),
-    HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
+    CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT), HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
     LBFGS(OptimizationAlgorithm.LBFGS),
     STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
 
@@ -70,9 +68,9 @@ public enum DL4JOptimizationAlgorithm {
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
      */
-    public static DL4JOptimizationAlgorithm fromToString(final String toString){
-        for(final DL4JOptimizationAlgorithm e : DL4JOptimizationAlgorithm.values()){
-            if(e.toString().equals(toString)){
+    public static DL4JOptimizationAlgorithm fromToString(final String toString) {
+        for (final DL4JOptimizationAlgorithm e : DL4JOptimizationAlgorithm.values()) {
+            if (e.toString().equals(toString)) {
                 return e;
             }
         }
@@ -84,12 +82,12 @@ public enum DL4JOptimizationAlgorithm {
      *
      * @return dl4j usable {@link OptimizationAlgorithm}
      */
-    public OptimizationAlgorithm getDL4JValue(){
+    public OptimizationAlgorithm getDL4JValue() {
         return m_DL4JValue;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         switch (this) {
             case CONJUGATE_GRADIENT:
                 return "Conjugate Gradient Descent";

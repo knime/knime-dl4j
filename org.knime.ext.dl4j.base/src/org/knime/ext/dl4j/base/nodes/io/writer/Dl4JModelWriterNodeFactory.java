@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class Dl4JModelWriterNodeFactory
-extends NodeFactory<Dl4JModelWriterNodeModel> {
+public class Dl4JModelWriterNodeFactory extends NodeFactory<Dl4JModelWriterNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ extends NodeFactory<Dl4JModelWriterNodeModel> {
     }
 
 }
-

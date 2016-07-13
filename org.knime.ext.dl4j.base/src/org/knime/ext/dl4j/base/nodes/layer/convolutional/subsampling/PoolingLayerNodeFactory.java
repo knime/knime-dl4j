@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class PoolingLayerNodeFactory
-extends NodeFactory<PoolingLayerNodeModel> {
+public class PoolingLayerNodeFactory extends NodeFactory<PoolingLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -75,8 +74,7 @@ extends NodeFactory<PoolingLayerNodeModel> {
      * {@inheritDoc}
      */
     @Override
-    public NodeView<PoolingLayerNodeModel> createNodeView(final int viewIndex,
-        final PoolingLayerNodeModel nodeModel) {
+    public NodeView<PoolingLayerNodeModel> createNodeView(final int viewIndex, final PoolingLayerNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +95,3 @@ extends NodeFactory<PoolingLayerNodeModel> {
     }
 
 }
-

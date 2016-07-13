@@ -67,7 +67,6 @@ import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
-
 /**
  * Restricted Boltzmann Machine layer for Deeplearning4J integration.
  *
@@ -76,11 +75,10 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(RBMLayerNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(RBMLayerNodeModel.class);
 
-    private static final List<DNNType> DNNTYPES =
-            Arrays.asList(DNNType.DEEPBELIEF);
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.DEEPBELIEF);
+
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.RBM_LAYER;
 
     /* SettingsModels */
@@ -90,16 +88,14 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
      * Constructor for the node model.
      */
     protected RBMLayerNodeModel() {
-        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-            DLModelPortObject.TYPE });
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected DLModelPortObject[] execute(final PortObject[] inData,
-        final ExecutionContext exec) throws Exception {
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
 
         final DLModelPortObject portObject = (DLModelPortObject)inData[0];
         final List<Layer> newLayers = portObject.getLayers();
@@ -108,30 +104,23 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         final int k = m_dnnParameterSettings.getRbmIterations().getIntValue();
         final RBM.HiddenUnit hidden = RBM.HiddenUnit.valueOf(m_dnnParameterSettings.getHiddenUnit().getStringValue());
-        final RBM.VisibleUnit visible = RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getVisibleUnit().getStringValue());
+        final RBM.VisibleUnit visible =
+                RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getVisibleUnit().getStringValue());
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
-        final String activation = DL4JActivationFunction.fromToString(
-            m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
-        final LossFunction loss = DL4JLossFunction.fromToString(
-            m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
+        final String activation =
+                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+        final LossFunction loss =
+                DL4JLossFunction.fromToString(m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
         final double drop = m_dnnParameterSettings.getDropOut().getDoubleValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
 
         //build layer
-        final Layer rbmLayer = new RBM.Builder(hidden, visible)
-                .nOut(nOut)
-                .weightInit(weight)
-                .k(k)
-                .activation(activation)
-                .lossFunction(loss)
-                .dropOut(drop)
-                .learningRate(learningRate)
-                .build();
+        final Layer rbmLayer = new RBM.Builder(hidden, visible).nOut(nOut).weightInit(weight).k(k)
+                .activation(activation).lossFunction(loss).dropOut(drop).learningRate(learningRate).build();
         newLayers.add(rbmLayer);
 
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
-            m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
     }
 
@@ -139,8 +128,7 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
      * {@inheritDoc}
      */
     @Override
-    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs)
-            throws InvalidSettingsException {
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
     }
 
@@ -163,6 +151,4 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         return settings;
     }
 
-
 }
-

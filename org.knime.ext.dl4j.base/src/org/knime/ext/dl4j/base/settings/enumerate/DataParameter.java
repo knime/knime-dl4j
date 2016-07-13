@@ -47,24 +47,20 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public enum DataParameter{
+public enum DataParameter {
     /** the number of examples to use for gradient estimation */
-    BATCH_SIZE,
-    /** number of epochs to train */
-    EPOCHS,
-    /** the columns holding the data to train on */
-    COLUMN_SELECTION,
-    /** the column holding the labels */
-    LABEL_COLUMN,
-    /** the size of the input image */
-    IMAGE_SIZE,
-    /** the column holding the documents */
-    DOCUMENT_COLUMN,
-    /** the column holding the sequence to train on */
+    BATCH_SIZE, /** number of epochs to train */
+    EPOCHS, /** the columns holding the data to train on */
+    COLUMN_SELECTION, /** the column holding the labels */
+    LABEL_COLUMN, /** the size of the input image */
+    IMAGE_SIZE, /** the column holding the documents */
+    DOCUMENT_COLUMN, /** the column holding the sequence to train on */
     SEQUENCE_COLUMN;
 
     //default values for learner parameters
     public static final String DEFAULT_IMAGE_SIZE = "0,0,0";
+
     public static final int DEFAULT_BATCH_SIZE = 1;
+
     public static final int DEFAULT_EPOCHS = 1;
 }

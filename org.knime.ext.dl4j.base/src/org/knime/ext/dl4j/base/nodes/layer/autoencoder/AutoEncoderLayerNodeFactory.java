@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class AutoEncoderLayerNodeFactory
-extends NodeFactory<AutoEncoderLayerNodeModel> {
+public class AutoEncoderLayerNodeFactory extends NodeFactory<AutoEncoderLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ extends NodeFactory<AutoEncoderLayerNodeModel> {
     }
 
 }
-

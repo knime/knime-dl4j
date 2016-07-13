@@ -52,10 +52,8 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
  * <code>NodeDialog</code> for the "Dl4JModelReader" Node.
  *
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more
- * complex dialog please derive directly from
- * {@link org.knime.core.node.NodeDialogPane}.
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -65,17 +63,11 @@ public class Dl4JModelReaderNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the Dl4JModelReader node.
      */
     protected Dl4JModelReaderNodeDialog() {
-        addDialogComponent(new DialogComponentFileChooser(
-            createFileModel(),
-            "dl4j.model.reader.history",
-            JFileChooser.OPEN_DIALOG,
-            false,
-            createFlowVariableModel(createFileModel()),
-                ".dl4j"));
+        addDialogComponent(new DialogComponentFileChooser(createFileModel(), "dl4j.model.reader.history",
+            JFileChooser.OPEN_DIALOG, false, createFlowVariableModel(createFileModel()), ".dl4j"));
     }
 
     static SettingsModelString createFileModel() {
         return new SettingsModelString("dl4j_model_reader_file", "");
     }
 }
-

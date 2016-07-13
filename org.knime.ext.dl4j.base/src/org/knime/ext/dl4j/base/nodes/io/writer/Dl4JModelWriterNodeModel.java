@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.io.writer;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
@@ -75,20 +74,18 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  */
 public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
 
-    private static final NodeLogger logger = NodeLogger.getLogger(
-        Dl4JModelWriterNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(Dl4JModelWriterNodeModel.class);
 
     private SettingsModelString m_outfile;
+
     private SettingsModelBoolean m_overwrite;
 
     /**
      * Constructor for the node model.
      */
     protected Dl4JModelWriterNodeModel() {
-        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {});
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{});
     }
-
-
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
@@ -121,14 +118,15 @@ public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
             fileOut.close();
         }
 
-        return new PortObject[] {};
+        return new PortObject[]{};
     }
 
     @Override
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-        final String warning = CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
+        final String warning =
+                CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
         logWarnings(logger, Arrays.asList(warning));
-        return new DLModelPortObjectSpec[] {};
+        return new DLModelPortObjectSpec[]{};
     }
 
     @Override
@@ -141,4 +139,3 @@ public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
         super.validateSettings(settings);
     }
 }
-

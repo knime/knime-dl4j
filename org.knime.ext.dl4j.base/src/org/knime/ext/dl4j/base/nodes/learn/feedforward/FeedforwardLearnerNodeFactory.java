@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author
  */
-public class FeedforwardLearnerNodeFactory
-extends NodeFactory<FeedforwardLearnerNodeModel> {
+public class FeedforwardLearnerNodeFactory extends NodeFactory<FeedforwardLearnerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ extends NodeFactory<FeedforwardLearnerNodeModel> {
     }
 
 }
-

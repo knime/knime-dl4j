@@ -66,21 +66,20 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  */
 public class DLModelPortObject extends AbstractPortObject {
 
-    public static final class Serializer
-    extends AbstractPortObjectSerializer<DLModelPortObject> {
+    public static final class Serializer extends AbstractPortObjectSerializer<DLModelPortObject> {
     }
 
     /**
      * Define port type of objects of this class when used as PortObjects.
      */
-    public static final PortType TYPE =
-            PortTypeRegistry.getInstance().getPortType(DLModelPortObject.class);
+    public static final PortType TYPE = PortTypeRegistry.getInstance().getPortType(DLModelPortObject.class);
 
-    private static final String SUMMARY =
-            "Deep Learning Model";
+    private static final String SUMMARY = "Deep Learning Model";
 
     private List<Layer> m_layers;
+
     private MultiLayerNetwork m_multiLayerNet;
+
     private DLModelPortObjectSpec m_spec;
 
     /**
@@ -90,13 +89,11 @@ public class DLModelPortObject extends AbstractPortObject {
 
     }
 
-    public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln,
-        final DLModelPortObjectSpec spec){
+    public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln, final DLModelPortObjectSpec spec) {
         this.m_layers = layers;
         this.m_spec = spec;
         this.m_multiLayerNet = mln;
     }
-
 
     @Override
     protected void save(final PortObjectZipOutputStream out, final ExecutionMonitor exec)
@@ -111,7 +108,7 @@ public class DLModelPortObject extends AbstractPortObject {
 
         final DLModelPortObject port = DLModelPortObjectUtils.loadPortFromZip(in);
 
-        this.m_spec = (DLModelPortObjectSpec) spec;
+        this.m_spec = (DLModelPortObjectSpec)spec;
         this.m_layers = port.getLayers();
         this.m_multiLayerNet = port.getMultilayerLayerNetwork();
     }
@@ -126,17 +123,17 @@ public class DLModelPortObject extends AbstractPortObject {
         return m_spec;
     }
 
-    public List<Layer> getLayers(){
+    public List<Layer> getLayers() {
         return m_layers;
     }
 
-    public MultiLayerNetwork getMultilayerLayerNetwork(){
+    public MultiLayerNetwork getMultilayerLayerNetwork() {
         return m_multiLayerNet;
     }
 
     @Override
     public JComponent[] getViews() {
-        return new JComponent[] {};
+        return new JComponent[]{};
     }
 
     @Override
@@ -153,15 +150,15 @@ public class DLModelPortObject extends AbstractPortObject {
         final DLModelPortObject other = (DLModelPortObject)obj;
 
         final int i = 0;
-        for(final Layer l : other.getLayers()){
-            if(!m_layers.get(i).equals(l)){
+        for (final Layer l : other.getLayers()) {
+            if (!m_layers.get(i).equals(l)) {
                 return false;
             }
         }
-        if(!m_multiLayerNet.equals(other.getMultilayerLayerNetwork())){
+        if (!m_multiLayerNet.equals(other.getMultilayerLayerNetwork())) {
             return false;
         }
-        if(!m_spec.equals(other.getSpec())){
+        if (!m_spec.equals(other.getSpec())) {
             return false;
         }
         return true;

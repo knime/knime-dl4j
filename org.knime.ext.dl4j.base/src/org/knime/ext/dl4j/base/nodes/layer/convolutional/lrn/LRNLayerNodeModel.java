@@ -70,11 +70,10 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 public class LRNLayerNodeModel extends AbstractDLLayerNodeModel {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(LRNLayerNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(LRNLayerNodeModel.class);
 
-    private static final List<DNNType> DNNTYPES =
-            Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
+
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.LOCAL_RESPONSE_NORMALIZATION;
 
     /* SettingsModels */
@@ -84,8 +83,7 @@ public class LRNLayerNodeModel extends AbstractDLLayerNodeModel {
      * Constructor for the node model.
      */
     protected LRNLayerNodeModel() {
-        super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-            DLModelPortObject.TYPE });
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     @Override
@@ -105,8 +103,7 @@ public class LRNLayerNodeModel extends AbstractDLLayerNodeModel {
         newLayers.add(lrnLayer);
 
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(),
-            m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
     }
 
@@ -123,13 +120,10 @@ public class LRNLayerNodeModel extends AbstractDLLayerNodeModel {
         m_dnnParameterSettings.setParameter(LayerParameter.LRN_K);
         m_dnnParameterSettings.setParameter(LayerParameter.LRN_N);
 
-
         final List<SettingsModel> settings = new ArrayList<>();
         settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
 
         return settings;
     }
 
-
 }
-

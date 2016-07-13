@@ -65,8 +65,7 @@ import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
- * Utility class containing helper methods for {@link BufferedDataTable} related
- * types.
+ * Utility class containing helper methods for {@link BufferedDataTable} related types.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -82,9 +81,9 @@ public class TableUtils {
      * @param row the row to convert
      * @return the list of cells
      */
-    public static List<DataCell> toListOfCells(final DataRow row){
+    public static List<DataCell> toListOfCells(final DataRow row) {
         final List<DataCell> cells = new ArrayList<>();
-        for(int i = 0; i < row.getNumCells(); i++){
+        for (int i = 0; i < row.getNumCells(); i++) {
             cells.add(row.getCell(i));
         }
         return cells;
@@ -96,9 +95,9 @@ public class TableUtils {
      * @param spec the spec to convert
      * @return the list of column spec
      */
-    public static List<DataColumnSpec> toListOfColumnSpec(final DataTableSpec spec){
+    public static List<DataColumnSpec> toListOfColumnSpec(final DataTableSpec spec) {
         final List<DataColumnSpec> columnSpecs = new ArrayList<>();
-        for(int i = 0; i < spec.getNumColumns(); i++){
+        for (int i = 0; i < spec.getNumColumns(); i++) {
             columnSpecs.add(spec.getColumnSpec(i));
         }
         return columnSpecs;
@@ -112,7 +111,8 @@ public class TableUtils {
      * @param dataType the type of the column to append
      * @return new {@link DataTableSpec} containing one more column spec
      */
-    public static DataTableSpec appendColumnSpec(final DataTableSpec tableSpec, final String columnName, final DataType dataType){
+    public static DataTableSpec appendColumnSpec(final DataTableSpec tableSpec, final String columnName,
+        final DataType dataType) {
         final List<DataColumnSpec> columnSpecs = toListOfColumnSpec(tableSpec);
         final DataColumnSpecCreator listColSpecCreator = new DataColumnSpecCreator(columnName, dataType);
         columnSpecs.add(listColSpecCreator.createSpec());
@@ -120,28 +120,29 @@ public class TableUtils {
     }
 
     /**
-     * Calculate the resulting feature vector length if the specified {@link DataRow} is converted into
-     * vector format for deep learning. The cell with the specified index will be skipped (normally a
-     * label column contained in the input table).
+     * Calculate the resulting feature vector length if the specified {@link DataRow} is converted into vector format
+     * for deep learning. The cell with the specified index will be skipped (normally a label column contained in the
+     * input table).
      *
      * @param cells the {@link DataRow} which is expected for conversion
      * @param labelColumnIndex the index of a possible label column
      * @return the calculated feature vector length
      * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
      */
-    public static int calculateFeatureVectorLength(final DataRow cells, final int labelColumnIndex) throws UnsupportedDataTypeException{
+    public static int calculateFeatureVectorLength(final DataRow cells, final int labelColumnIndex)
+            throws UnsupportedDataTypeException {
         int recordLength = 0;
 
         int i = 0;
-        for(final DataCell cell : cells){
-            if(i == labelColumnIndex){
+        for (final DataCell cell : cells) {
+            if (i == labelColumnIndex) {
                 i++;
                 continue;
             }
 
-            if (cell.getType().isCollectionType()){
+            if (cell.getType().isCollectionType()) {
                 final INDArray[] arrs = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-                for(final INDArray arr : arrs){
+                for (final INDArray arr : arrs) {
                     recordLength += arr.length();
                 }
             } else {
@@ -154,8 +155,8 @@ public class TableUtils {
     }
 
     /**
-     * Determine the maximum length of the collections contained in a collection type column, meaning searching
-     * for the row with the longest collection and returning its size.
+     * Determine the maximum length of the collections contained in a collection type column, meaning searching for the
+     * row with the longest collection and returning its size.
      *
      * @param table the table containing the collection type column
      * @param sequenceColumnIndex the index of the collection type column in the table
@@ -163,17 +164,17 @@ public class TableUtils {
      * @throws UnsupportedDataTypeException if column in table with specified index is no collection type
      */
     public static int calculateMaximumSequenceLength(final BufferedDataTable table, final int sequenceColumnIndex)
-            throws UnsupportedDataTypeException{
+            throws UnsupportedDataTypeException {
         final CloseableRowIterator tableIter = table.iterator();
         int maxLength = 0;
-        while(tableIter.hasNext()){
+        while (tableIter.hasNext()) {
             final DataCell cell = tableIter.next().getCell(sequenceColumnIndex);
-            if(!cell.getType().isCollectionType()){
-                throw new UnsupportedDataTypeException("Expected type of sequence column to be collection but was: "
-                        + cell.getType().getName());
+            if (!cell.getType().isCollectionType()) {
+                throw new UnsupportedDataTypeException(
+                    "Expected type of sequence column to be collection but was: " + cell.getType().getName());
             }
             final CollectionDataValue sequenceCell = (CollectionDataValue)cell;
-            if(sequenceCell.size() > maxLength) {
+            if (sequenceCell.size() > maxLength) {
                 maxLength = sequenceCell.size();
             }
         }
@@ -186,25 +187,25 @@ public class TableUtils {
      * @param table the table containing the collection type column containing Strings
      * @param labelColumnIndex the index of the collection type column containing strings in the table
      * @return {@link List} containing all possible String values
-     * @throws UnsupportedDataTypeException if column in table with specified index is no collection type or
-     * 										if the element type of the collection type column is not String
+     * @throws UnsupportedDataTypeException if column in table with specified index is no collection type or if the
+     *             element type of the collection type column is not String
      */
-    public static List<String> determineDistinctLabelsInCollectionColumn(final BufferedDataTable table, final int labelColumnIndex)
-            throws UnsupportedDataTypeException{
+    public static List<String> determineDistinctLabelsInCollectionColumn(final BufferedDataTable table,
+        final int labelColumnIndex) throws UnsupportedDataTypeException {
         final Set<String> labels = new HashSet<>();
         final CloseableRowIterator iter = table.iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             final DataCell cell = iter.next().getCell(labelColumnIndex);
-            if(!cell.getType().isCollectionType()){
-                throw new UnsupportedDataTypeException("Expected type of label column to be collection but was: "
-                        + cell.getType().getName());
-            } else if(!((CollectionDataValue)cell).getElementType().isCompatible(StringValue.class)){
+            if (!cell.getType().isCollectionType()) {
+                throw new UnsupportedDataTypeException(
+                    "Expected type of label column to be collection but was: " + cell.getType().getName());
+            } else if (!((CollectionDataValue)cell).getElementType().isCompatible(StringValue.class)) {
                 throw new UnsupportedDataTypeException("Expected element type of label column to be String but was: "
                         + ((CollectionDataValue)cell).getElementType().getName());
             }
             final CollectionDataValue collectionCell = (CollectionDataValue)cell;
             final Iterator<DataCell> collectionCellIter = collectionCell.iterator();
-            while(collectionCellIter.hasNext()){
+            while (collectionCellIter.hasNext()) {
                 final StringCell labelCell = (StringCell)collectionCellIter.next();
                 labels.add(labelCell.getStringValue());
             }
@@ -212,17 +213,3 @@ public class TableUtils {
         return new ArrayList<String>(labels);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

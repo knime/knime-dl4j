@@ -43,20 +43,11 @@
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
 /**
- * Activation function types supported by DL4J.
- * Enumeration wrapper as there is no enum in DL4J.
+ * Activation function types supported by DL4J. Enumeration wrapper as there is no enum in DL4J.
  */
-public enum DL4JActivationFunction{
-    relu("relu"),
-    tanh("tanh"),
-    sigmoid("sigmoid"),
-    softmax("softmax"),
-    hardtanh("hardtanh"),
-    leakyrelu("leakyrelu"),
-    maxout("maxout"),
-    softsign("softsign"),
-    softplus("softplus"),
-    identity("identity");
+public enum DL4JActivationFunction {
+    relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),
+    leakyrelu("leakyrelu"), maxout("maxout"), softsign("softsign"), softplus("softplus"), identity("identity");
 
     /** the corresponding dl4j value of this enum */
     private String m_DL4JValue;
@@ -71,9 +62,9 @@ public enum DL4JActivationFunction{
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
      */
-    public static DL4JActivationFunction fromToString(final String toString){
-        for(final DL4JActivationFunction e : DL4JActivationFunction.values()){
-            if(e.toString().equals(toString)){
+    public static DL4JActivationFunction fromToString(final String toString) {
+        for (final DL4JActivationFunction e : DL4JActivationFunction.values()) {
+            if (e.toString().equals(toString)) {
                 return e;
             }
         }
@@ -85,7 +76,7 @@ public enum DL4JActivationFunction{
      *
      * @return dl4j usable activation function string
      */
-    public String getDL4JValue(){
+    public String getDL4JValue() {
         return m_DL4JValue;
     }
 

@@ -53,7 +53,7 @@ public class LearningMonitor {
     /**
      * Set early stopping flag
      */
-    public void stopLearning(){
+    public void stopLearning() {
         m_earlyStopping = true;
     }
 
@@ -62,14 +62,14 @@ public class LearningMonitor {
      *
      * @return
      */
-    public boolean checkStopLearning(){
+    public boolean checkStopLearning() {
         return m_earlyStopping;
     }
 
     /**
      * Set early stopping flag to false
      */
-    public void reset(){
+    public void reset() {
         m_earlyStopping = false;
     }
 }

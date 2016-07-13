@@ -53,55 +53,65 @@ import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 
 /**
- * Implementation of {@link IParameterSettingsModels} to store
- * and create {@link SettingsModel}s for {@link LayerParameter}s.
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link LayerParameter}s.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class LayerParameterSettingsModels implements IParameterSettingsModels<LayerParameter>{
+public class LayerParameterSettingsModels implements IParameterSettingsModels<LayerParameter> {
 
     static final int DEFAULT_INT = 1;
+
     static final Double DEFAULT_DOUBLE = 0.0;
 
     private SettingsModelIntegerBounded m_numberOfOutputs;
+
     private SettingsModelIntegerBounded m_rbmIterations;
+
     private SettingsModelIntegerBounded m_lrnK;
+
     private SettingsModelIntegerBounded m_lrnN;
 
     private SettingsModelString m_kernelSize;
+
     private SettingsModelString m_stride;
 
     private SettingsModelString m_activation;
+
     private SettingsModelString m_weightInit;
+
     private SettingsModelString m_lossFunction;
+
     private SettingsModelString m_hiddenUnit;
+
     private SettingsModelString m_visibleUnit;
+
     private SettingsModelString m_poolingType;
 
     private SettingsModelDoubleBounded m_dropOut;
+
     private SettingsModelDoubleBounded m_learningRate;
+
     private SettingsModelDoubleBounded m_lrnAlpha;
+
     private SettingsModelDoubleBounded m_lrnBeta;
+
     private SettingsModelDoubleBounded m_corruption_level;
 
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
     public SettingsModel createParameter(final LayerParameter enumerate) throws IllegalStateException {
-        switch(enumerate){
+        switch (enumerate) {
             //Integer parameters
             case NUMBER_OF_OUTPUTS:
-                return new SettingsModelIntegerBounded("number_of_outputs", DEFAULT_INT, 1,
-                    Integer.MAX_VALUE);
+                return new SettingsModelIntegerBounded("number_of_outputs", DEFAULT_INT, 1, Integer.MAX_VALUE);
             case RBM_ITERATIONS:
-                return new SettingsModelIntegerBounded("rbm_iterations", DEFAULT_INT, 1,
-                    Integer.MAX_VALUE);
+                return new SettingsModelIntegerBounded("rbm_iterations", DEFAULT_INT, 1, Integer.MAX_VALUE);
             case LRN_K:
-                return new SettingsModelIntegerBounded("lrn_k", LayerParameter.DEFAULT_LRN_K, 0 ,
-                    Integer.MAX_VALUE);
+                return new SettingsModelIntegerBounded("lrn_k", LayerParameter.DEFAULT_LRN_K, 0, Integer.MAX_VALUE);
             case LRN_N:
-                return new SettingsModelIntegerBounded("lrn_n", LayerParameter.DEFAULT_LRN_N, 0 ,
-                    Integer.MAX_VALUE);
+                return new SettingsModelIntegerBounded("lrn_n", LayerParameter.DEFAULT_LRN_N, 0, Integer.MAX_VALUE);
 
                 //multi Integer parameter
             case KERNEL_SIZE:
@@ -129,85 +139,83 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
             case LEARNING_RATE:
                 return new SettingsModelDoubleBounded("learning_rate", DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
             case LRN_ALPHA:
-                return new SettingsModelDoubleBounded("lrn_alpha", LayerParameter.DEFAULT_LRN_ALPHA, 0, Double.MAX_VALUE);
+                return new SettingsModelDoubleBounded("lrn_alpha", LayerParameter.DEFAULT_LRN_ALPHA, 0,
+                    Double.MAX_VALUE);
             case LRN_BETA:
                 return new SettingsModelDoubleBounded("lrn_beta", LayerParameter.DEFAULT_LRN_BETA, 0, Double.MAX_VALUE);
             case CORRUPTION_LEVEL:
                 return new SettingsModelDoubleBounded("corruption_level", DEFAULT_DOUBLE, 0, 1);
             default:
-                throw new IllegalStateException(
-                    "LayerParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("LayerParameter does not exist: " + enumerate.toString());
         }
     }
-
 
     @Override
     public void setParameter(final LayerParameter enumerate) throws IllegalStateException {
         switch (enumerate) {
             case ACTIVATION:
                 m_activation = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_activation)) {
+                if (!m_allInitializedSettings.contains(m_activation)) {
                     m_allInitializedSettings.add(m_activation);
                 }
                 break;
             case DROP_OUT:
                 m_dropOut = (SettingsModelDoubleBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_dropOut)) {
+                if (!m_allInitializedSettings.contains(m_dropOut)) {
                     m_allInitializedSettings.add(m_dropOut);
                 }
                 break;
             case HIDDEN_UNIT:
                 m_hiddenUnit = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_hiddenUnit)) {
+                if (!m_allInitializedSettings.contains(m_hiddenUnit)) {
                     m_allInitializedSettings.add(m_hiddenUnit);
                 }
                 break;
             case KERNEL_SIZE:
                 m_kernelSize = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_kernelSize)) {
+                if (!m_allInitializedSettings.contains(m_kernelSize)) {
                     m_allInitializedSettings.add(m_kernelSize);
                 }
                 break;
             case LOSS_FUNCTION:
                 m_lossFunction = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_lossFunction)) {
+                if (!m_allInitializedSettings.contains(m_lossFunction)) {
                     m_allInitializedSettings.add(m_lossFunction);
                 }
                 break;
             case NUMBER_OF_OUTPUTS:
                 m_numberOfOutputs = (SettingsModelIntegerBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_numberOfOutputs)) {
+                if (!m_allInitializedSettings.contains(m_numberOfOutputs)) {
                     m_allInitializedSettings.add(m_numberOfOutputs);
                 }
                 break;
             case POOLING_TYPE:
                 m_poolingType = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_poolingType)) {
+                if (!m_allInitializedSettings.contains(m_poolingType)) {
                     m_allInitializedSettings.add(m_poolingType);
                 }
                 break;
             case RBM_ITERATIONS:
                 m_rbmIterations = (SettingsModelIntegerBounded)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_rbmIterations)) {
+                if (!m_allInitializedSettings.contains(m_rbmIterations)) {
                     m_allInitializedSettings.add(m_rbmIterations);
                 }
                 break;
             case STRIDE:
                 m_stride = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_stride)) {
+                if (!m_allInitializedSettings.contains(m_stride)) {
                     m_allInitializedSettings.add(m_stride);
                 }
                 break;
             case VISIBLE_UNIT:
                 m_visibleUnit = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_visibleUnit)) {
+                if (!m_allInitializedSettings.contains(m_visibleUnit)) {
                     m_allInitializedSettings.add(m_visibleUnit);
                 }
                 break;
             case WEIGHT_INIT:
                 m_weightInit = (SettingsModelString)createParameter(enumerate);
-                if(!m_allInitializedSettings.contains(m_weightInit)) {
+                if (!m_allInitializedSettings.contains(m_weightInit)) {
                     m_allInitializedSettings.add(m_weightInit);
                 }
                 break;
@@ -236,23 +244,21 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
                 addToSet(m_corruption_level);
                 break;
             default:
-                throw new IllegalStateException(
-                    "LayerParameter does not exist: "
-                            + enumerate.toString());
+                throw new IllegalStateException("LayerParameter does not exist: " + enumerate.toString());
         }
     }
 
-    private void addToSet(final SettingsModel model){
-        if(!m_allInitializedSettings.contains(model)){
+    private void addToSet(final SettingsModel model) {
+        if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
     }
 
-    public SettingsModelDoubleBounded getCorruptionLevel(){
+    public SettingsModelDoubleBounded getCorruptionLevel() {
         return m_corruption_level;
     }
 
-    public SettingsModelDoubleBounded getLearningRate(){
+    public SettingsModelDoubleBounded getLearningRate() {
         return m_learningRate;
     }
 
@@ -264,11 +270,9 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
         return m_lrnN;
     }
 
-
     public SettingsModelIntegerBounded getNumberOfOutputs() {
         return m_numberOfOutputs;
     }
-
 
     public SettingsModelIntegerBounded getRbmIterations() {
         return m_rbmIterations;
@@ -278,36 +282,29 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
         return m_kernelSize;
     }
 
-
     public SettingsModelString getStride() {
         return m_stride;
     }
-
 
     public SettingsModelString getActivation() {
         return m_activation;
     }
 
-
     public SettingsModelString getWeightInit() {
         return m_weightInit;
     }
-
 
     public SettingsModelString getLossFunction() {
         return m_lossFunction;
     }
 
-
     public SettingsModelString getHiddenUnit() {
         return m_hiddenUnit;
     }
 
-
     public SettingsModelString getVisibleUnit() {
         return m_visibleUnit;
     }
-
 
     public SettingsModelString getPoolingType() {
         return m_poolingType;
@@ -326,7 +323,7 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
     }
 
     @Override
-    public List<SettingsModel> getAllInitializedSettings(){
+    public List<SettingsModel> getAllInitializedSettings() {
         return m_allInitializedSettings;
     }
 }

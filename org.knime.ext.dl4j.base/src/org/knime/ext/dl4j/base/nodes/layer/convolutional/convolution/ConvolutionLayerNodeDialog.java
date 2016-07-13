@@ -58,10 +58,8 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  * <code>NodeDialog</code> for the "ConvolutionLayer" Node.
  *
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more
- * complex dialog please derive directly from
- * {@link org.knime.core.node.NodeDialogPane}.
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -75,43 +73,24 @@ public class ConvolutionLayerNodeDialog extends DefaultNodeSettingsPane {
 
         createNewGroup("Kernel Options");
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-                LayerParameter.NUMBER_OF_OUTPUTS),
-            "Number of Kernels",
-            4
-                ));
+            (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS),
+            "Number of Kernels", 4));
         addDialogComponent(new DialogComponentString(
-            (SettingsModelString)dnnSettingsModels.createParameter(
-                LayerParameter.KERNEL_SIZE),
-            "Kernel Size"
-                ));
+            (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.KERNEL_SIZE), "Kernel Size"));
         addDialogComponent(new DialogComponentString(
-            (SettingsModelString)dnnSettingsModels.createParameter(
-                LayerParameter.STRIDE),
-            "Stride"
-                ));
+            (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.STRIDE), "Stride"));
         closeCurrentGroup();
         createNewGroup("General Options");
         addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)dnnSettingsModels.createParameter(
-                LayerParameter.ACTIVATION),
-            "Activation Function",
-            EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
-                ));
+            (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.ACTIVATION), "Activation Function",
+            EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-                LayerParameter.LEARNING_RATE),
-            "Learning Rate",
-            4
-                ));
+            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
+            "Learning Rate", 4));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-                LayerParameter.DROP_OUT),
-            "Drop Out Rate",
-            4
-                ));
+            (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.DROP_OUT), "Drop Out Rate",
+            4));
         closeCurrentGroup();
 
     }
 }
-

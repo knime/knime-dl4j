@@ -52,8 +52,7 @@ import org.knime.core.node.NodeView;
  *
  * @author KNIME
  */
-public class ConvolutionLayerNodeFactory
-extends NodeFactory<ConvolutionLayerNodeModel> {
+public class ConvolutionLayerNodeFactory extends NodeFactory<ConvolutionLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ extends NodeFactory<ConvolutionLayerNodeModel> {
     }
 
 }
-

@@ -45,8 +45,7 @@ package org.knime.ext.dl4j.base.exception;
 import org.knime.core.data.DataType;
 
 /**
- * This exception is thrown if a special {@link DataType} is not supported by a
- * method.
+ * This exception is thrown if a special {@link DataType} is not supported by a method.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -54,11 +53,9 @@ public class UnsupportedDataTypeException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified
-     * detail message. Use a helpful message here as it will be displayed to the
-     * user, and it is the only hint ones understands to actual the problem.
+     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message. Use a helpful message
+     * here as it will be displayed to the user, and it is the only hint ones understands to actual the problem.
      *
      * @param s the detail message.
      */
@@ -66,10 +63,8 @@ public class UnsupportedDataTypeException extends Exception {
         super(s);
     }
 
-
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified
-     * cause.
+     * Constructs an <code>UnsupportedDataTypeException</code> with the specified cause.
      *
      * @param cause the original cause of the execption
      */
@@ -77,13 +72,11 @@ public class UnsupportedDataTypeException extends Exception {
         super(cause);
     }
 
-
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified
-     * detail message and a cause. Use a helpful message here as it will be
-     * displayed to the user, and it is the only hint ones understands to actual
-     * the problem.
-
+     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message and a cause. Use a
+     * helpful message here as it will be displayed to the user, and it is the only hint ones understands to actual the
+     * problem.
+     *
      * @param msg the detail message
      * @param cause the root cause
      */

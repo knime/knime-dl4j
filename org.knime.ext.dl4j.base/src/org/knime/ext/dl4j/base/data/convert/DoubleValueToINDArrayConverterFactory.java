@@ -51,17 +51,15 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from
- * DoubleValue to INDArray.
+ * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to INDArray.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, INDArray> {
 
     /**
-     * Create a new converter from {@link DoubleValue} to {@link INDArray}.
-     * The convert method will return an INDArray containing
-     * {@link DoubleValue#getDoubleValue()}.
+     * Create a new converter from {@link DoubleValue} to {@link INDArray}. The convert method will return an INDArray
+     * containing {@link DoubleValue#getDoubleValue()}.
      */
     @Override
     public DataCellToJavaConverter<DoubleValue, INDArray> create() {
@@ -80,7 +78,7 @@ public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConv
 
     @Override
     public String getIdentifier() {
-        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + "," + ""
-                + ")";
+        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + ","
+                + "" + ")";
     }
 }

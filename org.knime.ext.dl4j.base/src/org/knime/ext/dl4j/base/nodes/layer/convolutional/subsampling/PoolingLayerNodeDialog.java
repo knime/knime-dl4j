@@ -56,18 +56,15 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  * <code>NodeDialog</code> for the "SubsamplingLayer" Node.
  *
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more
- * complex dialog please derive directly from
- * {@link org.knime.core.node.NodeDialogPane}.
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class PoolingLayerNodeDialog extends DefaultNodeSettingsPane {
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(PoolingLayerNodeModel.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(PoolingLayerNodeModel.class);
 
     /**
      * New pane for configuring the SubsamplingLayer node.
@@ -77,25 +74,15 @@ public class PoolingLayerNodeDialog extends DefaultNodeSettingsPane {
 
         try {
             addDialogComponent(new DialogComponentStringSelection(
-                (SettingsModelString)dnnSettingsModels.createParameter(
-                    LayerParameter.POOLING_TYPE),
-                "Pooling Type",
-                EnumUtils.getStringCollectionFromToString(SubsamplingLayer.PoolingType.values())
-                    ));
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.POOLING_TYPE), "Pooling Type",
+                EnumUtils.getStringCollectionFromToString(SubsamplingLayer.PoolingType.values())));
             addDialogComponent(new DialogComponentString(
-                (SettingsModelString)dnnSettingsModels.createParameter(
-                    LayerParameter.KERNEL_SIZE),
-                "Kernel Size"
-                    ));
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.KERNEL_SIZE), "Kernel Size"));
             addDialogComponent(new DialogComponentString(
-                (SettingsModelString)dnnSettingsModels.createParameter(
-                    LayerParameter.STRIDE),
-                "Stride"
-                    ));
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.STRIDE), "Stride"));
         } catch (final IllegalStateException e) {
             logger.error(e.getMessage());
             e.printStackTrace();
         }
     }
 }
-
