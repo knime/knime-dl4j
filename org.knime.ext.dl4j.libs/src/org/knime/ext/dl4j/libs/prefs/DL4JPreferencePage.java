@@ -79,9 +79,9 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
     protected void createFieldEditors() {
         addField(new LabelField(getFieldEditorParent(),
             "By default CPU is used for calculations. For GPU usage you \n"
-                    + "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
-                    + "installed on your system. A change in this option requires a restart \n"
-                    + "of the KNIME Analytics Platform in order to take effect."));
+                + "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
+                + "installed on your system. A change in this option requires a restart \n"
+                + "of the KNIME Analytics Platform in order to take effect."));
         addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", BooleanFieldEditor.SEPARATE_LABEL,
             getFieldEditorParent()));
 
@@ -96,15 +96,16 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 
     private void checkChanges() {
         final boolean currentUseGPU =
-                DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+            DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
         final boolean useGPUChanged = m_useGPU != currentUseGPU;
 
         if (useGPUChanged) {
             m_useGPU = currentUseGPU;
-            final MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+            final MessageBox mb =
+                new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
             mb.setText("Restart workbench...");
             mb.setMessage("Changes of the used backend become " + "first available after restarting the workbench.\n"
-                    + "Do you want to restart the workbench now?");
+                + "Do you want to restart the workbench now?");
             if (mb.open() != SWT.YES) {
                 return;
             }

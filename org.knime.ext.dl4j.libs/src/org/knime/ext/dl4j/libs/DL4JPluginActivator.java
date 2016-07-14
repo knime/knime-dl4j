@@ -68,7 +68,7 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
     private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu.*";
 
     private enum BackendType {
-        GPU, CPU
+            GPU, CPU
     }
 
     public DL4JPluginActivator() {
