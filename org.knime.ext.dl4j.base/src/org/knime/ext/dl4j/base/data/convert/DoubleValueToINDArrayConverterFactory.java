@@ -79,6 +79,6 @@ public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConv
     @Override
     public String getIdentifier() {
         return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + ","
-                + "" + ")";
+            + "" + ")";
     }
 }

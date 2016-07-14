@@ -113,13 +113,13 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
             case LRN_N:
                 return new SettingsModelIntegerBounded("lrn_n", LayerParameter.DEFAULT_LRN_N, 0, Integer.MAX_VALUE);
 
-                //multi Integer parameter
+            //multi Integer parameter
             case KERNEL_SIZE:
                 return new SettingsModelString("kernel_size", LayerParameter.DEFAULT_MULTIINT);
             case STRIDE:
                 return new SettingsModelString("stride", LayerParameter.DEFAULT_MULTIINT);
 
-                //String parameters
+            //String parameters
             case ACTIVATION:
                 return new SettingsModelString("activation", LayerParameter.DEFAULT_ACTIVATION);
             case WEIGHT_INIT:
@@ -133,7 +133,7 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
             case POOLING_TYPE:
                 return new SettingsModelString("pooling_type", LayerParameter.DEFAULT_POOLING);
 
-                //Double parameters
+            //Double parameters
             case DROP_OUT:
                 return new SettingsModelDoubleBounded("drop_out", DEFAULT_DOUBLE, 0, 1);
             case LEARNING_RATE:

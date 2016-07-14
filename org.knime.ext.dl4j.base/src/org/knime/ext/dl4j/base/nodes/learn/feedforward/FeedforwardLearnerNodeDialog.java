@@ -102,13 +102,13 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 
         setDefaultTabTitle("Learning Parameters");
         final SettingsModelString trainingModeSettings =
-                (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_MODE);
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_MODE);
         final SettingsModelString labelColumnSettings =
-                (SettingsModelString)dataSettingsModels.createParameter(DataParameter.LABEL_COLUMN);
+            (SettingsModelString)dataSettingsModels.createParameter(DataParameter.LABEL_COLUMN);
         final SettingsModelFilterString columnSelectionSettings =
-                (SettingsModelFilterString)dataSettingsModels.createParameter(DataParameter.COLUMN_SELECTION);
+            (SettingsModelFilterString)dataSettingsModels.createParameter(DataParameter.COLUMN_SELECTION);
         final SettingsModelIntegerBounded numberOfOutputs =
-                (SettingsModelIntegerBounded)layerSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS);
+            (SettingsModelIntegerBounded)layerSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS);
 
         trainingModeSettings.addChangeListener(new ChangeListener() {
             @Override
@@ -152,20 +152,20 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_BACKPROP),
-                "Do Backpropagation"));
+            "Do Backpropagation"));
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAIN),
-                "Do Pretraining"));
+            "Do Pretraining"));
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_FINETUNE),
-                "Do Finetuning"));
+            "Do Finetuning"));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
         createNewGroup("Updater");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAINED_UPDATER),
-                "Use Pretrained Updater"));
+            "Use Pretrained Updater"));
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.UPDATER), "Updater Type",
             EnumUtils.getStringCollectionFromToString(DL4JUpdater.values())));
@@ -174,7 +174,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         createNewGroup("Regularization");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_REGULARIZATION),
-                "Use Regularization"));
+            "Use Regularization"));
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L1),
@@ -188,7 +188,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         createNewGroup("Gradient Normalization");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GRADIENT_NORMALIZATION),
-                "Use Gradient Normalization"));
+            "Use Gradient Normalization"));
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GRADIENT_NORMALIZATION),
@@ -196,7 +196,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
             EnumUtils.getStringCollectionFromToString(DL4JGradientNormalization.values())));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels
-            .createParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
+                .createParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
             "Gradient Normalization Threshold", 4));
         setHorizontalPlacement(false);
         closeCurrentGroup();
@@ -204,7 +204,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         createNewGroup("Momentum");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_MOMENTUM),
-                "Use Momentum"));
+            "Use Momentum"));
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM),
@@ -218,7 +218,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         createNewGroup("Drop Connect");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_DROP_CONNECT),
-                "Use Drop Connect"));
+            "Use Drop Connect"));
         closeCurrentGroup();
 
         createNewTab("Global Parameters");
@@ -227,7 +227,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_LEARNING_RATE),
-                "Use Global Learning Rate"));
+            "Use Global Learning Rate"));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_LEARNING_RATE),
             "Global Learning Rate", 4));
@@ -238,7 +238,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_DROP_OUT),
-                "Use Global Drop Out Rate"));
+            "Use Global Drop Out Rate"));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_DROP_OUT),
             "Global Drop Our Rate", 4));
@@ -249,7 +249,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT),
-                "Use Global Weight Initialization Strategy"));
+            "Use Global Weight Initialization Strategy"));
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_WEIGHT_INIT),
             "Global Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
@@ -284,7 +284,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
 
         //get all types from where we can convert to INDArray
         final Set<Class<?>> possibleTypes =
-                DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
+            DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
                 // Get the destination type of factories which can handle mySourceType
                 .stream().map((factory) -> factory.getSourceType())
                 // Put all the destination types into a set
@@ -292,7 +292,7 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         //we can also convert collections
         possibleTypes.add(CollectionDataValue.class);
         final Class<? extends DoubleValue>[] possibleTypesArray =
-                (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
+            (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
 
         createNewTab("Column Selection");
         addDialogComponent(

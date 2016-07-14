@@ -46,8 +46,8 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
  * Activation function types supported by DL4J. Enumeration wrapper as there is no enum in DL4J.
  */
 public enum DL4JActivationFunction {
-    relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),
-    leakyrelu("leakyrelu"), maxout("maxout"), softsign("softsign"), softplus("softplus"), identity("identity");
+        relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),
+        leakyrelu("leakyrelu"), maxout("maxout"), softsign("softsign"), softplus("softplus"), identity("identity");
 
     /** the corresponding dl4j value of this enum */
     private String m_DL4JValue;

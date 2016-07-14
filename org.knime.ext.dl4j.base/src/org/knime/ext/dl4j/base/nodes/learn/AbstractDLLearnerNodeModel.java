@@ -131,7 +131,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 
         //create list of input types of selected columns for column validation in predictor
         final List<Pair<String, String>> inputs =
-                ConfigurationUtils.createNameTypeListOfSelectedCols(selectedColumns, tableSpec);
+            ConfigurationUtils.createNameTypeListOfSelectedCols(selectedColumns, tableSpec);
 
         m_outputSpec = new DLModelPortObjectSpec(modelSpec.getNeuralNetworkTypes(), modelSpec.getLayerTypes(), inputs,
             new ArrayList<>(), true);
@@ -183,12 +183,12 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
                 try {
                     layer.setParams(oldWeights.get(i));
                     messages.add("Successfully transfered weights from layer: " + (i + 1) + " ("
-                            + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
-                            + layer.getClass().getName() + ") of new network");
+                        + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
+                        + layer.getClass().getName() + ") of new network");
                 } catch (final Exception e) {
                     messages.add("Could not transfer weights from layer: " + (i + 1) + " ("
-                            + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
-                            + layer.getClass().getName() + ") of new network");
+                        + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
+                        + layer.getClass().getName() + ") of new network");
                     messages.add("Reason: " + e.getMessage());
                 }
                 i++;

@@ -81,7 +81,7 @@ public class ConfigurationUtils {
      * @return warning messages giving possible problems of spec, returns empty list if no problems were discovered
      */
     public static List<String> validateSpec(final DLModelPortObjectSpec spec, final List<DNNType> types)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         final List<String> warnings = new ArrayList<>();
 
         warnings.addAll(validateType(spec, types));
@@ -113,7 +113,7 @@ public class ConfigurationUtils {
      * @throws InvalidSettingsException if no columns are selected if selected columns are not available in the table
      */
     public static void validateColumnSelection(final DataTableSpec tableSpec, final SettingsModelString columnSelection)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         final String selectedColumn = columnSelection.getStringValue();
         validateColumnSelection(tableSpec, selectedColumn);
     }
@@ -127,7 +127,7 @@ public class ConfigurationUtils {
      * @throws InvalidSettingsException if no columns are selected if selected columns are not available in the table
      */
     public static void validateColumnSelection(final DataTableSpec tableSpec, final String columnSelection)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         if (columnSelection.isEmpty()) {
             throw new InvalidSettingsException("No input columns selected");
         }
@@ -145,7 +145,7 @@ public class ConfigurationUtils {
      * @throws InvalidSettingsException if no columns are selected if selected columns are not available in the table
      */
     public static void validateColumnSelection(final DataTableSpec tableSpec, final String[] columnSelection)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         for (final String columnName : columnSelection) {
             validateColumnSelection(tableSpec, columnName);
         }
@@ -166,8 +166,8 @@ public class ConfigurationUtils {
         intersectOfTypes.retainAll(types);
         if (intersectOfTypes.isEmpty() && !spec.getNeuralNetworkTypes().contains(DNNType.EMPTY)) {
             warnings.add(typesToString(types) + " may be incompatible with the " + "current network architecture. "
-                    + "this architecture: " + typesToString(types) + " current architecture: "
-                    + typesToString(spec.getNeuralNetworkTypes()));
+                + "this architecture: " + typesToString(types) + " current architecture: "
+                + typesToString(spec.getNeuralNetworkTypes()));
         }
         return warnings;
     }

@@ -130,7 +130,7 @@ public class TableUtils {
      * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
      */
     public static int calculateFeatureVectorLength(final DataRow cells, final int labelColumnIndex)
-            throws UnsupportedDataTypeException {
+        throws UnsupportedDataTypeException {
         int recordLength = 0;
 
         int i = 0;
@@ -164,7 +164,7 @@ public class TableUtils {
      * @throws UnsupportedDataTypeException if column in table with specified index is no collection type
      */
     public static int calculateMaximumSequenceLength(final BufferedDataTable table, final int sequenceColumnIndex)
-            throws UnsupportedDataTypeException {
+        throws UnsupportedDataTypeException {
         final CloseableRowIterator tableIter = table.iterator();
         int maxLength = 0;
         while (tableIter.hasNext()) {
@@ -201,7 +201,7 @@ public class TableUtils {
                     "Expected type of label column to be collection but was: " + cell.getType().getName());
             } else if (!((CollectionDataValue)cell).getElementType().isCompatible(StringValue.class)) {
                 throw new UnsupportedDataTypeException("Expected element type of label column to be String but was: "
-                        + ((CollectionDataValue)cell).getElementType().getName());
+                    + ((CollectionDataValue)cell).getElementType().getName());
             }
             final CollectionDataValue collectionCell = (CollectionDataValue)cell;
             final Iterator<DataCell> collectionCellIter = collectionCell.iterator();

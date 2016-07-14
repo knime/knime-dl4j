@@ -97,15 +97,15 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
         //parameters
         final SubsamplingLayer.PoolingType poolingType =
-                SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
+            SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
         final int[] kernelSize =
-                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
         final int[] stride =
-                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
 
         //build layer
         final Layer subsamplingLayer =
-                new SubsamplingLayer.Builder(poolingType).kernelSize(kernelSize).stride(stride).build();
+            new SubsamplingLayer.Builder(poolingType).kernelSize(kernelSize).stride(stride).build();
         newLayers.add(subsamplingLayer);
 
         DLModelPortObject newPortObject;

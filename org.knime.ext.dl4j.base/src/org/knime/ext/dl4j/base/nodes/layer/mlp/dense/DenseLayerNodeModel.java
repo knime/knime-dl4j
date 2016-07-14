@@ -99,12 +99,12 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
         final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
         final String activation =
-                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+            DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
 
         //build layer
         final Layer denseLayer = new DenseLayer.Builder().nOut(nOut).activation(activation).weightInit(weight)
-                .learningRate(learningRate).build();
+            .learningRate(learningRate).build();
         newLayers.add(denseLayer);
 
         DLModelPortObject newPortObject;

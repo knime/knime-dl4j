@@ -111,7 +111,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
         //select feature columns from table used for prediction
         final String[] predictCols = DLModelPortObjectUtils.getFirsts(portSpec.getLearnedColumns(), String.class);
         final BufferedDataTable filteredTable =
-                exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
+            exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
 
         //create iterator and prediction
         final BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, 1);
@@ -140,7 +140,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
             final INDArray prediction = predict(mln, next.getFeatureMatrix());
 
             final ListCell outputVector =
-                    CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
+                CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
             cells.add(outputVector);
             if (appendScore) {
                 final double score = mln.score(new DataSet(next.getFeatureMatrix(), prediction), false);
@@ -163,7 +163,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
         }
         if (appendPrediction && outputActivationIsSoftmax && !containsLabels()) {
             logger
-            .warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
+                .warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
         }
 
         container.close();

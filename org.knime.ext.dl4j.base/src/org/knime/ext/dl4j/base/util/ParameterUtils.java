@@ -90,15 +90,15 @@ public class ParameterUtils {
      * @throws InvalidSettingsException if string doesn't match regex
      */
     public static void validateImageSizeParameter(final String imageSize, final boolean isConv)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         if (isConv) {
             if (imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)) {
                 throw new InvalidSettingsException("Image size needs to be set for convolutional"
-                        + " networks. Set image size in learner dialog -> Data Parameters.");
+                    + " networks. Set image size in learner dialog -> Data Parameters.");
             }
             if (!imageSize.matches(imageSizePattern)) {
                 throw new InvalidSettingsException("string for image size is incorrect. "
-                        + "Has to be three Integers separated by a comma (x-size,y-size,channels)");
+                    + "Has to be three Integers separated by a comma (x-size,y-size,channels)");
             }
         }
     }
@@ -128,7 +128,7 @@ public class ParameterUtils {
         }
         if (!momentumAfter.matches(mapAsStringPattern)) {
             throw new InvalidSettingsException("string for parameter Momentum After is incorrect. "
-                    + "Has to be list of 'Integer:Double' separated by a comma");
+                + "Has to be list of 'Integer:Double' separated by a comma");
         }
     }
 

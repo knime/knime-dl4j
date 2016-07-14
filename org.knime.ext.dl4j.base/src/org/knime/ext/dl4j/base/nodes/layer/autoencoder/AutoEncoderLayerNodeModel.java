@@ -101,15 +101,15 @@ public class AutoEncoderLayerNodeModel extends AbstractDLLayerNodeModel {
         final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
         final String activation =
-                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+            DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
         final double corruptionLevel = m_dnnParameterSettings.getCorruptionLevel().getDoubleValue();
         final LossFunction loss =
-                DL4JLossFunction.fromToString(m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
+            DL4JLossFunction.fromToString(m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
 
         //build layer
         final AutoEncoder autoencoder = new AutoEncoder.Builder(corruptionLevel).nOut(nOut).activation(activation)
-                .weightInit(weight).lossFunction(loss).learningRate(learningRate).build();
+            .weightInit(weight).lossFunction(loss).learningRate(learningRate).build();
         newLayers.add(autoencoder);
 
         DLModelPortObject newPortObject;

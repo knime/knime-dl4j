@@ -70,10 +70,10 @@ public class ConverterUtils {
      *             errors during conversion
      */
     public static <T> T convertDataCellToJava(final DataCell cellToConvert, final Class<T> classOfResultType)
-            throws UnsupportedDataTypeException {
+        throws UnsupportedDataTypeException {
 
         final Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
-                .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
+            .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
 
         if (!converterFactory.isPresent()) {
             throw new UnsupportedDataTypeException(
@@ -85,7 +85,7 @@ public class ConverterUtils {
         } catch (final Exception e) {
             throw new UnsupportedDataTypeException(
                 "Conversion of DataCell of type: " + cellToConvert.getType().getName()
-                + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage());
+                    + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage());
         }
     }
 }

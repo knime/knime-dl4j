@@ -118,7 +118,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         final BufferedDataTable table = (BufferedDataTable)inData[1];
 
         final TrainingMode trainingMode =
-                TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
+            TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
         //select columns from input table
         final List<String> selectedColumns = new ArrayList<>();
         selectedColumns.addAll(m_dataParameterSettings.getColumnSelection().getIncludeList());
@@ -129,7 +129,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         }
 
         final FilterColumnTable selectedTable =
-                new FilterColumnTable(table, selectedColumns.toArray(new String[selectedColumns.size()]));
+            new FilterColumnTable(table, selectedColumns.toArray(new String[selectedColumns.size()]));
         final BufferedDataTable bufferedSelectedTable = exec.createBufferedDataTable(selectedTable, exec);
 
         //create input iterator
@@ -137,7 +137,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         DataSetIterator input;
         if (trainingMode.equals(TrainingMode.SUPERVISED)) {
             input =
-                    new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, batchSize, m_labels, true);
+                new BufferedDataTableDataSetIterator(bufferedSelectedTable, labelColumnName, batchSize, m_labels, true);
         } else {
             input = new BufferedDataTableDataSetIterator(bufferedSelectedTable, batchSize);
         }
@@ -194,7 +194,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
         final TrainingMode trainingMode =
-                TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
+            TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
         final String labelColumnName = m_dataParameterSettings.getLabelColumn().getStringValue();
 
         m_labels = new ArrayList<String>();
@@ -212,20 +212,19 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
             } catch (final NullPointerException e) {
                 throw new InvalidSettingsException(
                     "Label column not available or not yet selected for SUPERVISED training. "
-                            + "Domain of Label column may not be available.");
+                        + "Domain of Label column may not be available.");
             } catch (final UnsupportedDataTypeException e) {
                 throw new InvalidSettingsException(e);
             }
         }
 
         logger.info("Constructed network recognized as: "
-                + ConfigurationUtils.typesToString(specWithoutLabels.getNeuralNetworkTypes()));
+            + ConfigurationUtils.typesToString(specWithoutLabels.getNeuralNetworkTypes()));
 
         //if several learners are used in sequence the spec already contains a output layer
         final List<DNNLayerType> newLayerTypes = new ArrayList<DNNLayerType>();
         newLayerTypes.addAll(specWithoutLabels.getLayerTypes());
-        if (newLayerTypes.isEmpty()
-                || !newLayerTypes.get(newLayerTypes.size() - 1).equals(DNNLayerType.OUTPUT_LAYER)) {
+        if (newLayerTypes.isEmpty() || !newLayerTypes.get(newLayerTypes.size() - 1).equals(DNNLayerType.OUTPUT_LAYER)) {
             newLayerTypes.add(DNNLayerType.OUTPUT_LAYER);
         }
 
@@ -428,7 +427,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
      */
     private OutputLayer createOutputLayer(final LayerParameterSettingsModels settings) throws InvalidSettingsException {
         final TrainingMode trainingMode =
-                TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
+            TrainingMode.valueOf(m_learnerParameterSettings.getTrainingsMode().getStringValue());
         int nOut;
         if (trainingMode.equals(TrainingMode.SUPERVISED)) {
             if ((m_labels == null) || m_labels.isEmpty()) {
@@ -440,13 +439,13 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         }
         final WeightInit weight = WeightInit.valueOf(settings.getWeightInit().getStringValue());
         final String activation =
-                DL4JActivationFunction.fromToString(settings.getActivation().getStringValue()).getDL4JValue();
+            DL4JActivationFunction.fromToString(settings.getActivation().getStringValue()).getDL4JValue();
         final LossFunction loss =
-                DL4JLossFunction.fromToString(settings.getLossFunction().getStringValue()).getDL4JValue();
+            DL4JLossFunction.fromToString(settings.getLossFunction().getStringValue()).getDL4JValue();
         final double learningRate = settings.getLearningRate().getDoubleValue();
 
         final OutputLayer outputLayer = new OutputLayer.Builder(loss).nOut(nOut).activation(activation)
-                .weightInit(weight).learningRate(learningRate).build();
+            .weightInit(weight).learningRate(learningRate).build();
         return outputLayer;
     }
 

@@ -177,12 +177,12 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
                         //first convert nominal value to string
                         final String label = ConverterUtils.convertDataCellToJava(cell, String.class);
                         final INDArray labelOutcomeVector =
-                                FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
+                            FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
                         labelsMatrix.putRow(k, labelOutcomeVector);
                         //if collection convert every entry using existing converters
                     } else if (cell.getType().isCollectionType()) {
                         final INDArray[] convertedCollction =
-                                ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
+                            ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
                         dataRow.addAll(Arrays.asList(convertedCollction));
                         //else convert directly
                     } else {
@@ -195,7 +195,7 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
             final INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
             if (linearConcat.length() != inputColumns()) {
                 logger.error("Length of current input in row: " + row.getKey()
-                + " does not match expected length. Possible images or collections " + "may not be of same size.");
+                    + " does not match expected length. Possible images or collections " + "may not be of same size.");
             }
             dataMatrix.putRow(k, linearConcat);
             m_cursor++;

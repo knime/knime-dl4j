@@ -96,7 +96,7 @@ public class LearningStatus {
      */
     public String getStatusDescription() {
         return m_trainingMethod + " on epoch: " + m_currentEpoch + " of " + m_maxEpochs + " epochs with score: "
-                + m_score;
+            + m_score;
     }
 
     /**

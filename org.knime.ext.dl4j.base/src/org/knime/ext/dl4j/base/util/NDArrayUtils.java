@@ -103,10 +103,10 @@ public class NDArrayUtils {
      * @throws Exception if number of labels doesn't match length of softmax activation array
      */
     public static String softmaxActivationToLabel(final List<String> labels, final INDArray softmaxActivation)
-            throws Exception {
+        throws Exception {
         if (labels.size() != softmaxActivation.length()) {
             throw new Exception("The number of labels: " + labels.size()
-            + " does not match the length of the softmaxActivation " + "vector: " + softmaxActivation.length());
+                + " does not match the length of the softmaxActivation " + "vector: " + softmaxActivation.length());
         }
         final List<Double> classProbabilities = new ArrayList<>();
         for (int i = 0; i < softmaxActivation.length(); i++) {

@@ -50,10 +50,10 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JOptimizationAlgorithm {
-    LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
-    CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT), HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
-    LBFGS(OptimizationAlgorithm.LBFGS),
-    STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
+        LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
+        CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT), HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
+        LBFGS(OptimizationAlgorithm.LBFGS),
+        STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
 
     /** the corresponding dl4j value of this enum */
     private OptimizationAlgorithm m_DL4JValue;

@@ -48,7 +48,7 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LayerParameter {
-    /** number of output neurons */
+        /** number of output neurons */
     NUMBER_OF_OUTPUTS, /** number of contrastive divergence iterations */
     RBM_ITERATIONS, /** activation function */
     ACTIVATION, /** weight initialization strategy */

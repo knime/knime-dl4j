@@ -82,7 +82,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
      */
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs, final List<DNNType> dnnTypes,
         final DNNLayerType dnnLayerType, final LayerParameterSettingsModels parameterSettings, final NodeLogger logger)
-                throws InvalidSettingsException {
+            throws InvalidSettingsException {
         final DLModelPortObjectSpec spec = (DLModelPortObjectSpec)inSpecs[0];
 
         List<DNNType> newType;

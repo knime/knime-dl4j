@@ -50,5 +50,5 @@ import org.deeplearning4j.nn.conf.Updater;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JUpdater {
-    SGD, ADAM, ADADELTA, NESTEROVS, ADAGRAD, RMSPROP;
+        SGD, ADAM, ADADELTA, NESTEROVS, ADAGRAD, RMSPROP;
 }

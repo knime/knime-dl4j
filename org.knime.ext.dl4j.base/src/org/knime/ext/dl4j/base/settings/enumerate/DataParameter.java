@@ -48,7 +48,7 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DataParameter {
-    /** the number of examples to use for gradient estimation */
+        /** the number of examples to use for gradient estimation */
     BATCH_SIZE, /** number of epochs to train */
     EPOCHS, /** the columns holding the data to train on */
     COLUMN_SELECTION, /** the column holding the labels */

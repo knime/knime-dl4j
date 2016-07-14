@@ -150,7 +150,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      */
     @Override
     protected void loadInternals(final File nodeInternDir, final ExecutionMonitor exec)
-            throws IOException, CanceledExecutionException {
+        throws IOException, CanceledExecutionException {
         // nothing to do here
     }
 
@@ -164,7 +164,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      */
     @Override
     protected void saveInternals(final File nodeInternDir, final ExecutionMonitor exec)
-            throws IOException, CanceledExecutionException {
+        throws IOException, CanceledExecutionException {
         // nothing to do here
     }
 

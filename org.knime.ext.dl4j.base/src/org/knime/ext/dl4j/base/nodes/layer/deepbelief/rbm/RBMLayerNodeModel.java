@@ -105,18 +105,18 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         final int k = m_dnnParameterSettings.getRbmIterations().getIntValue();
         final RBM.HiddenUnit hidden = RBM.HiddenUnit.valueOf(m_dnnParameterSettings.getHiddenUnit().getStringValue());
         final RBM.VisibleUnit visible =
-                RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getVisibleUnit().getStringValue());
+            RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getVisibleUnit().getStringValue());
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getWeightInit().getStringValue());
         final String activation =
-                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+            DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
         final LossFunction loss =
-                DL4JLossFunction.fromToString(m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
+            DL4JLossFunction.fromToString(m_dnnParameterSettings.getLossFunction().getStringValue()).getDL4JValue();
         final double drop = m_dnnParameterSettings.getDropOut().getDoubleValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
 
         //build layer
         final Layer rbmLayer = new RBM.Builder(hidden, visible).nOut(nOut).weightInit(weight).k(k)
-                .activation(activation).lossFunction(loss).dropOut(drop).learningRate(learningRate).build();
+            .activation(activation).lossFunction(loss).dropOut(drop).learningRate(learningRate).build();
         newLayers.add(rbmLayer);
 
         DLModelPortObject newPortObject;

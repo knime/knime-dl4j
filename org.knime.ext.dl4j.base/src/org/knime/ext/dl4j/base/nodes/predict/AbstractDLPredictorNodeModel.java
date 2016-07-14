@@ -84,7 +84,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      * @throws InvalidSettingsException
      */
     protected DataTableSpec[] configure(final PortObjectSpec[] inSpecs, final NodeLogger logger)
-            throws InvalidSettingsException {
+        throws InvalidSettingsException {
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
         final DataTableSpec predictTableSpec = (DataTableSpec)inSpecs[1];
 
@@ -131,7 +131,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
                 final DataColumnSpec colSpec = spec.getColumnSpec(c.getFirst());
                 if (!colSpec.getType().getName().equals(c.getSecond())) {
                     throw new InvalidSettingsException("Table contains column: " + c.getFirst() + " but was "
-                            + "not of expected type. Expected: " + c.getSecond() + " but was: " + colSpec.getType());
+                        + "not of expected type. Expected: " + c.getSecond() + " but was: " + colSpec.getType());
                 }
             } else {
                 throw new InvalidSettingsException("Table does not contain expected input column: " + c.getFirst());

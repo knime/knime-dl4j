@@ -156,7 +156,7 @@ public class DLModelPortObjectUtils {
         }
 
         final DLModelPortObjectSpec spec =
-                new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
+            new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
         return spec;
     }
 
@@ -218,7 +218,7 @@ public class DLModelPortObjectUtils {
     }
 
     private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
-            throws IOException {
+        throws IOException {
         final List<Layer> layers = portObject.getLayers();
         final MultiLayerNetwork mln = portObject.getMultilayerLayerNetwork();
 
@@ -269,7 +269,7 @@ public class DLModelPortObjectUtils {
     }
 
     private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out)
-            throws IOException {
+        throws IOException {
         ZipEntry entry;
         if (mln != null) {
             //write MultilayerNetwork, consists of configuration and network parameters
@@ -303,7 +303,7 @@ public class DLModelPortObjectUtils {
     }
 
     private static void writeLayerTypes(final List<DNNLayerType> layerTypes, final ZipOutputStream out)
-            throws IOException {
+        throws IOException {
         final String[] layerTypesString = EnumUtils.getStringListFromEnumCollection(layerTypes);
         ZipEntry entry;
 
@@ -398,7 +398,7 @@ public class DLModelPortObjectUtils {
     @SuppressWarnings("unchecked")
     public static <E, V> E[] getFirsts(final List<Pair<E, V>> pairs, final Class<E> c) {
         return pairs.stream().map(f -> f.getFirst()).collect(Collectors.toList())
-                .toArray((E[])Array.newInstance(c, pairs.size()));
+            .toArray((E[])Array.newInstance(c, pairs.size()));
     }
 
     /**
@@ -413,7 +413,7 @@ public class DLModelPortObjectUtils {
     @SuppressWarnings("unchecked")
     public static <E, V> V[] getSeconds(final List<Pair<E, V>> pairs, final Class<V> c) {
         return pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
-                .toArray((V[])Array.newInstance(c, pairs.size()));
+            .toArray((V[])Array.newInstance(c, pairs.size()));
     }
 
     /**

@@ -124,7 +124,7 @@ public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
     @Override
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         final String warning =
-                CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
+            CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
         logWarnings(logger, Arrays.asList(warning));
         return new DLModelPortObjectSpec[]{};
     }

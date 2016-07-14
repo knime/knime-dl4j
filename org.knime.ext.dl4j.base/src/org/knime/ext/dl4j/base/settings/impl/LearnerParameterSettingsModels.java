@@ -126,7 +126,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 return new SettingsModelIntegerBounded("training_iterations", LearnerParameter.DEFAULT_INT, 1,
                     Integer.MAX_VALUE);
 
-                //String parameters
+            //String parameters
             case OPTIMIZATION_ALGORITHM:
                 return new SettingsModelString("optimization_algorithm", LearnerParameter.DEFAULT_OPTIMIZATION);
             case GRADIENT_NORMALIZATION:
@@ -140,7 +140,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case GLOBAL_WEIGHT_INIT:
                 return new SettingsModelString("global_weight_init", LearnerParameter.DEFAULT_WEIGHT_INIT);
 
-                //Double parameters
+            //Double parameters
             case GLOBAL_DROP_OUT:
                 return new SettingsModelDoubleBounded("global_drop_out", LearnerParameter.DEFAULT_DOUBLE, 0, 1);
             case GLOBAL_LEARNING_RATE:
@@ -156,7 +156,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case MOMENTUM:
                 return new SettingsModelDoubleBounded("momentum", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
 
-                //boolean parameters
+            //boolean parameters
             case USE_SEED:
                 return new SettingsModelBoolean("use_seed", LearnerParameter.DEFAULT_BOOLEAN);
             case USE_REGULARIZATION:

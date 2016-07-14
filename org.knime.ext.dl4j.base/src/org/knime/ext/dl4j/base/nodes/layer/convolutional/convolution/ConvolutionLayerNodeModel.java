@@ -99,17 +99,17 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
         //parameters
         final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
         final int[] kernelSize =
-                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
         final int[] stride =
-                ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
         final String activation =
-                DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
+            DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
         final double dropOut = m_dnnParameterSettings.getDropOut().getDoubleValue();
         final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
 
         //build layer
         final Layer convolutionLayer = new ConvolutionLayer.Builder().nOut(nOut).activation(activation).stride(stride)
-                .kernelSize(kernelSize).dropOut(dropOut).learningRate(learningRate).build();
+            .kernelSize(kernelSize).dropOut(dropOut).learningRate(learningRate).build();
         newLayers.add(convolutionLayer);
 
         DLModelPortObject newPortObject;

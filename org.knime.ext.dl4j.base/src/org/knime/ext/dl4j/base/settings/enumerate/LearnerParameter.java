@@ -48,7 +48,7 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LearnerParameter {
-    /** whether a seed or not */
+        /** whether a seed or not */
     USE_SEED, /** seed used for reproducibility between runs */
     SEED, /** number of training iterations */
     TRAINING_ITERATIONS, /** the type of optimization algorithm to use */
@@ -60,15 +60,15 @@ public enum LearnerParameter {
     L2, /** whether to use gradient normalization or not */
     USE_GRADIENT_NORMALIZATION, /** gradient normalization strategy */
     GRADIENT_NORMALIZATION, /**
-     * Threshold for gradient normalization, only used for GradientNormalization.ClipL2PerLayer,
-     * GradientNormalization.ClipL2PerParamType, and
-     * GradientNormalization.ClipElementWiseAbsoluteValue. Not used otherwise. L2 threshold for
-     * first two types of clipping, or absolute value threshold for last type of clipping.
-     */
+                             * Threshold for gradient normalization, only used for GradientNormalization.ClipL2PerLayer,
+                             * GradientNormalization.ClipL2PerParamType, and
+                             * GradientNormalization.ClipElementWiseAbsoluteValue. Not used otherwise. L2 threshold for
+                             * first two types of clipping, or absolute value threshold for last type of clipping.
+                             */
     GRADIENT_NORMALIZATION_THRESHOLD, /**
-     * whether to do pretraining or not, only applies for RBMs and states whether to
-     * run contrastive divergence or not
-     */
+                                       * whether to do pretraining or not, only applies for RBMs and states whether to
+                                       * run contrastive divergence or not
+                                       */
     USE_PRETRAIN, /** whether to do finetuning or not */
     USE_FINETUNE, /** whether to do backpropagation or not */
     USE_BACKPROP, /** the kind of updater to use */

@@ -97,14 +97,14 @@ public class DLModelPortObject extends AbstractPortObject {
 
     @Override
     protected void save(final PortObjectZipOutputStream out, final ExecutionMonitor exec)
-            throws IOException, CanceledExecutionException {
+        throws IOException, CanceledExecutionException {
 
         DLModelPortObjectUtils.saveModelToZip(this, true, false, out);
     }
 
     @Override
     protected void load(final PortObjectZipInputStream in, final PortObjectSpec spec, final ExecutionMonitor exec)
-            throws IOException, CanceledExecutionException {
+        throws IOException, CanceledExecutionException {
 
         final DLModelPortObject port = DLModelPortObjectUtils.loadPortFromZip(in);
 

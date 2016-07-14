@@ -100,14 +100,14 @@ public class MultiLayerNetFactory {
     private boolean m_usePretrain = LearnerParameter.DEFAULT_BOOLEAN;
 
     private GradientNormalization m_gradientNormalization =
-            DL4JGradientNormalization.fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();
+        DL4JGradientNormalization.fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();
 
     private Map<Integer, Double> m_momentumAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
 
     private Updater m_updater = Updater.valueOf(LearnerParameter.DEFAULT_UPDATER);
 
     private OptimizationAlgorithm m_optimization =
-            DL4JOptimizationAlgorithm.fromToString(LearnerParameter.DEFAULT_OPTIMIZATION).getDL4JValue();
+        DL4JOptimizationAlgorithm.fromToString(LearnerParameter.DEFAULT_OPTIMIZATION).getDL4JValue();
 
     private WeightInit m_weightInit = WeightInit.valueOf(LearnerParameter.DEFAULT_WEIGHT_INIT);
 
@@ -384,7 +384,7 @@ public class MultiLayerNetFactory {
         SettingsModelString stringSettings = learnerParameters.getGradientNormalization();
         if (stringSettings != null) {
             m_gradientNormalization =
-                    DL4JGradientNormalization.fromToString(stringSettings.getStringValue()).getDL4JValue();
+                DL4JGradientNormalization.fromToString(stringSettings.getStringValue()).getDL4JValue();
         }
 
         stringSettings = learnerParameters.getMomentumAfter();

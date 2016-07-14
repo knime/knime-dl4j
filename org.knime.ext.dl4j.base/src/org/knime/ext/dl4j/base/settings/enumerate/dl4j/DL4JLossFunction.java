@@ -51,7 +51,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JLossFunction {
-    /** Mean Squared Error: Linear Regression */
+        /** Mean Squared Error: Linear Regression */
     MSE(LossFunction.MSE), /** Exponential log likelihood: Poisson Regression */
     EXPLL(LossFunction.EXPLL), /** Cross Entropy: Binary Classification */
     XENT(LossFunction.XENT), /** Multiclass Cross Entropy */
