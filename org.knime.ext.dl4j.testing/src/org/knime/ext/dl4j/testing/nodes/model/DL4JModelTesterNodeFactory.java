@@ -6,12 +6,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "DL4JModelTester" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class DL4JModelTesterNodeFactory 
-        extends NodeFactory<DL4JModelTesterNodeModel> {
+public class DL4JModelTesterNodeFactory extends NodeFactory<DL4JModelTesterNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -34,7 +33,7 @@ public class DL4JModelTesterNodeFactory
      */
     @Override
     public NodeView<DL4JModelTesterNodeModel> createNodeView(final int viewIndex,
-            final DL4JModelTesterNodeModel nodeModel) {
+        final DL4JModelTesterNodeModel nodeModel) {
         return null;
     }
 
@@ -55,4 +54,3 @@ public class DL4JModelTesterNodeFactory
     }
 
 }
-
