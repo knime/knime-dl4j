@@ -51,87 +51,89 @@ import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
 /**
- * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional
- * networks. Uses additional information about image dimensionality.
+ * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional networks. Uses additional
+ * information about image dimensionality.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
-	
-	/** Image height in pixel. */
-	private int m_height;
-	/** Image width in pixel. */
-	private int m_width;
-	/** Number of channels of image. */
-	private int m_channels;
-	
-	/**
-	 * Constructor for class ConvMultiLayerNetFactory specifying image dimensionality of images
-	 * the created networks of this factory should be used for.
-	 * 
-	 * @param height the height of expected images in pixel
-	 * @param width the width of expected images in pixel
-	 * @param channels the number of channels of expected images
-	 */
-	public ConvMultiLayerNetFactory(final int height, final int width, final int channels) {
-		super(0);
-		m_channels = channels;
-		m_height = height;
-		m_width = width;
-	}
-	
-	@Override
-	protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
-		NeuralNetConfiguration.ListBuilder listBuilder = createListBuilderWithLearnerParameters(layers);		
-		listBuilder.cnnInputSize(m_height, m_width, m_channels);
 
-		MultiLayerConfiguration layerConf = listBuilder.build();
-		MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
-		mln.init();
-		return mln;
-	}
-	
-	@Override
-	protected MultiLayerNetwork createMlnWithoutLearnerParameters(final List<Layer> layers) {
-		NeuralNetConfiguration.ListBuilder listBuilder = new NeuralNetConfiguration.Builder().list();
-		int currentLayerIndex = 0;
-		for (Layer layer : layers) {
-			listBuilder.layer(currentLayerIndex, layer);
-			currentLayerIndex++;
-		}
-		
-		new ConvolutionLayerSetup(listBuilder,m_height,m_width,m_channels);
-		
-		MultiLayerConfiguration layerConf = listBuilder.build();
-		MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
-		mln.init();
-		return mln;
-	}
-	
-	/**
-	 * Set height of images the network should expect.
-	 * 
-	 * @param height in pixel
-	 */
-	public void setImageHeight(int height){
-		m_height = height;
-	}
-	
-	/**
-	 * Set width of images the network should expect.
-	 * 
-	 * @param width in pixel
-	 */
-	public void setImageWidth(int width){
-		m_width = width;
-	}
-	
-	/**
-	 * Set the number of channels of images the network should expect.
-	 * 
-	 * @param numberOfChannels
-	 */
-	public void setImageChannels(int numberOfChannels){
-		m_channels = numberOfChannels;
-	}
+    /** Image height in pixel. */
+    private int m_height;
+
+    /** Image width in pixel. */
+    private int m_width;
+
+    /** Number of channels of image. */
+    private int m_channels;
+
+    /**
+     * Constructor for class ConvMultiLayerNetFactory specifying image dimensionality of images the created networks of
+     * this factory should be used for.
+     *
+     * @param height the height of expected images in pixel
+     * @param width the width of expected images in pixel
+     * @param channels the number of channels of expected images
+     */
+    public ConvMultiLayerNetFactory(final int height, final int width, final int channels) {
+        super(0);
+        m_channels = channels;
+        m_height = height;
+        m_width = width;
+    }
+
+    @Override
+    protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
+        final NeuralNetConfiguration.ListBuilder listBuilder = createListBuilderWithLearnerParameters(layers);
+        listBuilder.cnnInputSize(m_height, m_width, m_channels);
+
+        final MultiLayerConfiguration layerConf = listBuilder.build();
+        final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
+        mln.init();
+        return mln;
+    }
+
+    @Override
+    protected MultiLayerNetwork createMlnWithoutLearnerParameters(final List<Layer> layers) {
+        final NeuralNetConfiguration.ListBuilder listBuilder = new NeuralNetConfiguration.Builder().list();
+        int currentLayerIndex = 0;
+        for (final Layer layer : layers) {
+            listBuilder.layer(currentLayerIndex, layer);
+            currentLayerIndex++;
+        }
+
+        new ConvolutionLayerSetup(listBuilder, m_height, m_width, m_channels);
+
+        final MultiLayerConfiguration layerConf = listBuilder.build();
+        final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
+        mln.init();
+        return mln;
+    }
+
+    /**
+     * Set height of images the network should expect.
+     *
+     * @param height in pixel
+     */
+    public void setImageHeight(final int height) {
+        m_height = height;
+    }
+
+    /**
+     * Set width of images the network should expect.
+     *
+     * @param width in pixel
+     */
+    public void setImageWidth(final int width) {
+        m_width = width;
+    }
+
+    /**
+     * Set the number of channels of images the network should expect.
+     *
+     * @param numberOfChannels
+     */
+    public void setImageChannels(final int numberOfChannels) {
+        m_channels = numberOfChannels;
+    }
 }

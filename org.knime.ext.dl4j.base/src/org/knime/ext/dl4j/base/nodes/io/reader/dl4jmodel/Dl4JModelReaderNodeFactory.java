@@ -48,12 +48,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "Dl4JModelReader" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class Dl4JModelReaderNodeFactory 
-        extends NodeFactory<Dl4JModelReaderNodeModel> {
+public class Dl4JModelReaderNodeFactory extends NodeFactory<Dl4JModelReaderNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,7 +75,7 @@ public class Dl4JModelReaderNodeFactory
      */
     @Override
     public NodeView<Dl4JModelReaderNodeModel> createNodeView(final int viewIndex,
-            final Dl4JModelReaderNodeModel nodeModel) {
+        final Dl4JModelReaderNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +96,3 @@ public class Dl4JModelReaderNodeFactory
     }
 
 }
-

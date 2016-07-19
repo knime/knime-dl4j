@@ -50,13 +50,11 @@ import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels;
 
 /**
  * <code>NodeDialog</code> for the "DL4JPredictor" Node.
- * 
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
+ *
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardPredictorNodeDialog extends DefaultNodeSettingsPane {
@@ -65,17 +63,14 @@ public class FeedforwardPredictorNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the DL4JPredictor node.
      */
     protected FeedforwardPredictorNodeDialog() {
-     	PredictorParameterSettingsModels predictorSettingsModels = new PredictorParameterSettingsModels();
-    	
-    	setDefaultTabTitle("Predictor Parameters");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)predictorSettingsModels.createParameter(
-    					PredictorPrameter.APPEND_PREDICTION), 
-    			"Append Softmax Predicted Label?"));
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)predictorSettingsModels.createParameter(
-    					PredictorPrameter.APPEND_SCORE), 
-    			"Append Error for each example?"));
+        final PredictorParameterSettingsModels predictorSettingsModels = new PredictorParameterSettingsModels();
+
+        setDefaultTabTitle("Predictor Parameters");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)predictorSettingsModels.createParameter(PredictorPrameter.APPEND_PREDICTION),
+            "Append Softmax Predicted Label?"));
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)predictorSettingsModels.createParameter(PredictorPrameter.APPEND_SCORE),
+            "Append Error for each example?"));
     }
 }
-

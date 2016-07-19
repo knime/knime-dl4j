@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.io.writer;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
@@ -75,70 +74,68 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  */
 public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
 
-	private static final NodeLogger logger = NodeLogger.getLogger(
-			Dl4JModelWriterNodeModel.class);
-	
-	private SettingsModelString m_outfile;
-	private SettingsModelBoolean m_overwrite;
-	
-	/**
+    private static final NodeLogger logger = NodeLogger.getLogger(Dl4JModelWriterNodeModel.class);
+
+    private SettingsModelString m_outfile;
+
+    private SettingsModelBoolean m_overwrite;
+
+    /**
      * Constructor for the node model.
      */
-    protected Dl4JModelWriterNodeModel() {    
-    	super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {});
+    protected Dl4JModelWriterNodeModel() {
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{});
     }
 
-	
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_outfile = Dl4JModelWriterNodeDialog.createFileModel();
+        m_overwrite = Dl4JModelWriterNodeDialog.createOverwriteOKModel();
 
-	@Override
-	protected List<SettingsModel> initSettingsModels() {		
-		m_outfile = Dl4JModelWriterNodeDialog.createFileModel();
-		m_overwrite = Dl4JModelWriterNodeDialog.createOverwriteOKModel();
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.add(m_outfile);
-		settings.add(m_overwrite);
-		
-		return settings;
-	}
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.add(m_outfile);
+        settings.add(m_overwrite);
 
-	@Override
-	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		DLModelPortObject portObject = (DLModelPortObject)inData[0];
-		
-		CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
-		
-		URL url = FileUtil.toURL(m_outfile.getStringValue());
-		File file = FileUtil.getFileFromURL(url);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		ZipOutputStream zipOut = new ZipOutputStream(fileOut);
-		
-		try {
-			//write model and spec to zip stream
-			DLModelPortObjectUtils.saveModelToZip(portObject, true, true, zipOut);		
-		} finally {
-			zipOut.close();
-			fileOut.close();	
-		}
-		
-		return new PortObject[] {};
-	}
+        return settings;
+    }
 
-	@Override
-	protected DLModelPortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		String warning = CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
-		logWarnings(logger, Arrays.asList(warning));
-		return new DLModelPortObjectSpec[] {};
-	}
-	
-	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		String fileName = settings.getString("dl4j_model_writer_file");
-		
-		if (fileName == null || fileName.length() == 0) {
+    @Override
+    protected PortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+        final DLModelPortObject portObject = (DLModelPortObject)inData[0];
+
+        CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
+
+        final URL url = FileUtil.toURL(m_outfile.getStringValue());
+        final File file = FileUtil.getFileFromURL(url);
+        final FileOutputStream fileOut = new FileOutputStream(file);
+        final ZipOutputStream zipOut = new ZipOutputStream(fileOut);
+
+        try {
+            //write model and spec to zip stream
+            DLModelPortObjectUtils.saveModelToZip(portObject, true, true, zipOut);
+        } finally {
+            zipOut.close();
+            fileOut.close();
+        }
+
+        return new PortObject[]{};
+    }
+
+    @Override
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        final String warning =
+            CheckUtils.checkDestinationFile(m_outfile.getStringValue(), m_overwrite.getBooleanValue());
+        logWarnings(logger, Arrays.asList(warning));
+        return new DLModelPortObjectSpec[]{};
+    }
+
+    @Override
+    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
+        final String fileName = settings.getString("dl4j_model_writer_file");
+
+        if ((fileName == null) || (fileName.length() == 0)) {
             throw new InvalidSettingsException("No output file specified");
-        }		
-		super.validateSettings(settings);
-	}   
+        }
+        super.validateSettings(settings);
+    }
 }
-

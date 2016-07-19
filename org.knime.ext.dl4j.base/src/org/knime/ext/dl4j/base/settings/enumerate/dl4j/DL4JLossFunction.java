@@ -45,80 +45,74 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
- * Wrapper for {@link LossFunction} for better String representation
- * of values. Also hides unsupported LossFunction {@link LossFunction#CUSTOM}
- * 
+ * Wrapper for {@link LossFunction} for better String representation of values. Also hides unsupported LossFunction
+ * {@link LossFunction#CUSTOM}
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JLossFunction {
-	/** Mean Squared Error: Linear Regression */
-	MSE(LossFunction.MSE),
-	/** Exponential log likelihood: Poisson Regression */
-    EXPLL(LossFunction.EXPLL),
-    /** Cross Entropy: Binary Classification */
-    XENT(LossFunction.XENT),
-    /** Multiclass Cross Entropy */
-    MCXENT(LossFunction.MCXENT),
-    /** RMSE Cross Entropy */
-    RMSE_XENT(LossFunction.RMSE_XENT),
-    /** Squared Loss */
-    SQUARED_LOSS(LossFunction.SQUARED_LOSS),
-    /** Reconstruction Cross Entropy */
-    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY),
-    /** Negative Log Likelihood */
+        /** Mean Squared Error: Linear Regression */
+    MSE(LossFunction.MSE), /** Exponential log likelihood: Poisson Regression */
+    EXPLL(LossFunction.EXPLL), /** Cross Entropy: Binary Classification */
+    XENT(LossFunction.XENT), /** Multiclass Cross Entropy */
+    MCXENT(LossFunction.MCXENT), /** RMSE Cross Entropy */
+    RMSE_XENT(LossFunction.RMSE_XENT), /** Squared Loss */
+    SQUARED_LOSS(LossFunction.SQUARED_LOSS), /** Reconstruction Cross Entropy */
+    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY), /** Negative Log Likelihood */
     NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
-	
-	/** the corresponding dl4j value of this enum */
-	private LossFunction m_DL4JValue;
-	
-	private DL4JLossFunction(LossFunction loss) {
-		m_DL4JValue = loss;
-	}
-	
-	/**
+
+    /** the corresponding dl4j value of this enum */
+    private LossFunction m_DL4JValue;
+
+    private DL4JLossFunction(final LossFunction loss) {
+        m_DL4JValue = loss;
+    }
+
+    /**
      * Converts string representation of this enum back to this enum
-     * 
+     *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
      */
-	public static DL4JLossFunction fromToString(String toString){
-        for(DL4JLossFunction e : DL4JLossFunction.values()){
-            if(e.toString().equals(toString)){
+    public static DL4JLossFunction fromToString(final String toString) {
+        for (final DL4JLossFunction e : DL4JLossFunction.values()) {
+            if (e.toString().equals(toString)) {
                 return e;
             }
         }
         return null;
-	}
+    }
 
-	/**
-	 * Get the in dl4j usable {@link LossFunction} corresponding to this enum
-	 * 
-	 * @return dl4j usable {@link LossFunction}
-	 */
-	public LossFunction getDL4JValue(){
-	    return m_DL4JValue;
-	} 
-	
-	public String toString(){
-		switch (this) {		
-		case EXPLL:
-			return "Exponential Log Likelihood";
-		case MCXENT:
-			return "Multiclass Cross Entropy";
-		case MSE:
-			return "Mean Squared Error";
-		case NEGATIVELOGLIKELIHOOD:
-			return "Negative Log Likelihood";
-		case RECONSTRUCTION_CROSSENTROPY:
-			return "Reconstruction Cross Entropy";
-		case RMSE_XENT:
-			return "RMSE Cross Entropy";
-		case SQUARED_LOSS:
-			return "Squared Error";
-		case XENT:
-			return "Cross Entropy";
-		default:
-			return super.toString();
-		}
-	}
+    /**
+     * Get the in dl4j usable {@link LossFunction} corresponding to this enum
+     *
+     * @return dl4j usable {@link LossFunction}
+     */
+    public LossFunction getDL4JValue() {
+        return m_DL4JValue;
+    }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case EXPLL:
+                return "Exponential Log Likelihood";
+            case MCXENT:
+                return "Multiclass Cross Entropy";
+            case MSE:
+                return "Mean Squared Error";
+            case NEGATIVELOGLIKELIHOOD:
+                return "Negative Log Likelihood";
+            case RECONSTRUCTION_CROSSENTROPY:
+                return "Reconstruction Cross Entropy";
+            case RMSE_XENT:
+                return "RMSE Cross Entropy";
+            case SQUARED_LOSS:
+                return "Squared Error";
+            case XENT:
+                return "Cross Entropy";
+            default:
+                return super.toString();
+        }
+    }
 }

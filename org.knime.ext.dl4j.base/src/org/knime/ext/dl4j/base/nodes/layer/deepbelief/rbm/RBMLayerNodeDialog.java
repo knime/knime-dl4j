@@ -42,8 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm;
 
-
-
 import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.core.node.NodeLogger;
@@ -61,91 +59,57 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
  * <code>NodeDialog</code> for the "RBMLayer" Node.
- * 
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
+ *
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
 
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(RBMLayerNodeModel.class);
-	
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(RBMLayerNodeModel.class);
+
     /**
-     * New pane for configuring RBMLayer node dialog.
-     * This is just a suggestion to demonstrate possible default dialog
+     * New pane for configuring RBMLayer node dialog. This is just a suggestion to demonstrate possible default dialog
      * components.
      */
     protected RBMLayerNodeDialog() {
-    	LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
-    	
-    	try {
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.NUMBER_OF_OUTPUTS),
-					"Number of Output Units",
-					4
-					));
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.RBM_ITERATIONS),
-					"Contrastive Divergence Iterations",
-					4
-					));
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-							LayerParameter.DROP_OUT),
-					"Drop Out Rate",
-					4
-					));
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-							LayerParameter.LEARNING_RATE),
-					"Learning Rate",
-					4
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.HIDDEN_UNIT),
-					"Hidden Unit Transformation",
-					EnumUtils.getStringCollectionFromToString(RBM.HiddenUnit.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.VISIBLE_UNIT),
-					"Visible Unit Transformation",
-					EnumUtils.getStringCollectionFromToString(RBM.VisibleUnit.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.WEIGHT_INIT),
-					"Weight Initialization Strategy",
-					EnumUtils.getStringCollectionFromToString(WeightInit.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.LOSS_FUNCTION),
-					"Loss Function",
-					EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.ACTIVATION),
-					"Activation Function",
-					EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
-					));
-		} catch (IllegalStateException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-        
-        
-                    
+        final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
+
+        try {
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS),
+                "Number of Output Units", 4));
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.RBM_ITERATIONS),
+                "Contrastive Divergence Iterations", 4));
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.DROP_OUT), "Drop Out Rate",
+                4));
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
+                "Learning Rate", 4));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.HIDDEN_UNIT),
+                "Hidden Unit Transformation", EnumUtils.getStringCollectionFromToString(RBM.HiddenUnit.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.VISIBLE_UNIT),
+                "Visible Unit Transformation", EnumUtils.getStringCollectionFromToString(RBM.VisibleUnit.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.WEIGHT_INIT),
+                "Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.LOSS_FUNCTION), "Loss Function",
+                EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.ACTIVATION),
+                "Activation Function", EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
+        } catch (final IllegalStateException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }
-

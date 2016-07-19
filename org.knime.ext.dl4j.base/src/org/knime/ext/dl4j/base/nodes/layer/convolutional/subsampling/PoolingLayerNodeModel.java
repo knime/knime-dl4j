@@ -65,91 +65,81 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
-
 /**
  * Pooling layer for Deeplearning4J integration.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
-    
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(PoolingLayerNodeModel.class);
-    
-    private static final List<DNNType> DNNTYPES = 
-    		Arrays.asList(DNNType.DEEPCONVOLUTIONAL);    		   
+
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(PoolingLayerNodeModel.class);
+
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.DEEPCONVOLUTIONAL);
+
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.SUBSAMPLING_LAYER;
-    
-    /* SettingsModels */    
+
+    /* SettingsModels */
     private LayerParameterSettingsModels m_dnnParameterSettings;
-    
+
     /**
      * Constructor for the node model.
      */
-    protected PoolingLayerNodeModel() { 
-    	super(new PortType[] { DLModelPortObject.TYPE }, new PortType[] {
-    			DLModelPortObject.TYPE });
+    protected PoolingLayerNodeModel() {
+        super(new PortType[]{DLModelPortObject.TYPE}, new PortType[]{DLModelPortObject.TYPE});
     }
 
-	@Override
-	protected DLModelPortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		
-		DLModelPortObject portObject = (DLModelPortObject)inData[0];
-        List<Layer> newLayers = portObject.getLayers();
-        
+    @Override
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+
+        final DLModelPortObject portObject = (DLModelPortObject)inData[0];
+        final List<Layer> newLayers = portObject.getLayers();
+
         //parameters
-        SubsamplingLayer.PoolingType poolingType = SubsamplingLayer.
-        		PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
-        int[] kernelSize = ParameterUtils.convertStringsToInts(
-        		m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
-        int[] stride = ParameterUtils.convertStringsToInts(
-        		m_dnnParameterSettings.getStride().getStringValue().split(","));
-        
+        final SubsamplingLayer.PoolingType poolingType =
+            SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
+        final int[] kernelSize =
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+        final int[] stride =
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
+
         //build layer
-        Layer subsamplingLayer = new SubsamplingLayer.Builder(poolingType)
-        		.kernelSize(kernelSize)
-        		.stride(stride)
-        		.build();
-        newLayers.add(subsamplingLayer);       
-        
+        final Layer subsamplingLayer =
+            new SubsamplingLayer.Builder(poolingType).kernelSize(kernelSize).stride(stride).build();
+        newLayers.add(subsamplingLayer);
+
         DLModelPortObject newPortObject;
-        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), 
-        		m_outputSpec);
+        newPortObject = new DLModelPortObject(newLayers, portObject.getMultilayerLayerNetwork(), m_outputSpec);
         return new DLModelPortObject[]{newPortObject};
-	}
+    }
 
-	@Override
-	protected DLModelPortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
-	}
-	
-	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		String kernel = settings.getString(LayerParameter.KERNEL_SIZE .toString().toLowerCase());
-		String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
-				
-		ParameterUtils.validateKernelSizeParameter(kernel);
-		ParameterUtils.validateStrideParameter(stride);
-		
-		super.validateSettings(settings);
-	}
+    @Override
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
+    }
 
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		m_dnnParameterSettings = new LayerParameterSettingsModels();
-		m_dnnParameterSettings.setParameter(LayerParameter.POOLING_TYPE);
-		m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
-		m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
-				
-		return settings;
-	}
+    @Override
+    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
+        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase());
+        final String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
 
-	
-    
+        ParameterUtils.validateKernelSizeParameter(kernel);
+        ParameterUtils.validateStrideParameter(stride);
+
+        super.validateSettings(settings);
+    }
+
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_dnnParameterSettings = new LayerParameterSettingsModels();
+        m_dnnParameterSettings.setParameter(LayerParameter.POOLING_TYPE);
+        m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
+        m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);
+
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.addAll(m_dnnParameterSettings.getAllInitializedSettings());
+
+        return settings;
+    }
 
 }
-

@@ -64,193 +64,198 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.util.FeatureUtil;
 
 /**
- * Implementation of {@link DataSetIterator}, which iterates a {@link BufferedDataTable}
- * and converts the specified number of rows to {@link DataSet} on the fly when calling 
- * next(). DataSets are used as input for DL4J network training. Conversion is done using 
- * the DataCellTojavaConverter extension point, hence, all {@link DataType}s which can be
- * converted to {@link INDArray} are supported.
- * 
+ * Implementation of {@link DataSetIterator}, which iterates a {@link BufferedDataTable} and converts the specified
+ * number of rows to {@link DataSet} on the fly when calling next(). DataSets are used as input for DL4J network
+ * training. Conversion is done using the DataCellTojavaConverter extension point, hence, all {@link DataType}s which
+ * can be converted to {@link INDArray} are supported.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
-public class BufferedDataTableDataSetIterator implements DataSetIterator{
+public class BufferedDataTableDataSetIterator implements DataSetIterator {
 
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(BufferedDataTableDataSetIterator.class);
-	
-	private static final long serialVersionUID = 1L;
-	
-	private final BufferedDataTable m_table;
-	private final int m_labelColumnIndex;
-	private final int m_batchSize;
-	private final List<String> m_distinctLabels;
-	
-	private int m_recordLength;
-	private CloseableRowIterator m_tableIterator;	
-	private int m_cursor;
-	
-	private final boolean m_isTrain;
-	
-	/**
-	 * Constructor for class BufferedDataTableDataSetIterator. 
-	 * 
-	 * @param table the table to iterate
-	 * @param labelColumnName name of possible label column
-	 * @param batchSize the number of rows to return for next next() call, hence the number
-	 * 					of examples contained in the returned DataSet of next()
-	 * @param distinctLabels list of all distinct labels
-	 * @param isTrain flag if test or train mode, meaning whether to expect labels or not
-	 * @throws Exception
-	 */
-	public BufferedDataTableDataSetIterator(final BufferedDataTable table, final String labelColumnName, 
-			final int batchSize, final List<String> distinctLabels, boolean isTrain) throws Exception {
-		m_table = table;
-		m_batchSize = batchSize;
-		
-		if(distinctLabels != null){
-			m_distinctLabels = distinctLabels;
-		} else {
-			m_distinctLabels = new ArrayList<String>();
-		}
-		
-		m_isTrain = isTrain;
-		if(isTrain){			
-			m_labelColumnIndex = table.getSpec().findColumnIndex(labelColumnName);
-		} else {
-			m_labelColumnIndex = -1;
-		}
-		
-		m_tableIterator = table.iterator();
-		m_recordLength = TableUtils.calculateFeatureVectorLength(m_tableIterator.next(), m_labelColumnIndex);
-		reset();
-	}
-	
-	/**
-	 * Constructor for class BufferedDataTableDataSetIterator if no labels are available, hence, test mode is used.
-	 * 
-	 * @param table the table to iterate
-	 * @param batchSize the number of rows to return for next next() call, hence the number
-	 * 					of examples contained in the returned DataSet of next()
-	 * @throws Exception
-	 */
-	public BufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize) throws Exception {
-		this(table, null, batchSize, null, false);
-	}
-	
-	@Override
-	public boolean hasNext() {		
-		return m_tableIterator.hasNext();
-	}
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(BufferedDataTableDataSetIterator.class);
 
-	/**
-	 * Returns a DataSet containing two INDArrays. One array for the features and one for the labels. Both arrays
-	 * have batchSize number of rows. In the feature array each row contains the corresponding row of the table 
-	 * converted to INDArray. Conversion method is specified by {@link DataCellToJavaConverterFactory}s which
-	 * convert to INDArray registered in converter extension point. In the label array each row contains the label
-	 * for each feature row converted to one-hot representation. If test mode this array will only contain zeroes.
-	 */
-	@Override
-	public DataSet next() {
-		//if table.size % batch != 0
-		long numberOfRows = Math.min(m_batchSize, m_table.size() - m_cursor);
-		INDArray dataMatrix = Nd4j.create((int)numberOfRows, inputColumns());
-		INDArray labelsMatrix = null;
-		if(m_isTrain){
-			labelsMatrix = Nd4j.create((int)numberOfRows, m_distinctLabels.size());
-		} else {
-			labelsMatrix = Nd4j.create((int)numberOfRows, 1);
-		}
-		//loop over rows of current batch
-		for (int k = 0; k < numberOfRows; k++) {
-            DataRow row = m_tableIterator.next();     
+    private static final long serialVersionUID = 1L;
+
+    private final BufferedDataTable m_table;
+
+    private final int m_labelColumnIndex;
+
+    private final int m_batchSize;
+
+    private final List<String> m_distinctLabels;
+
+    private final int m_recordLength;
+
+    private CloseableRowIterator m_tableIterator;
+
+    private int m_cursor;
+
+    private final boolean m_isTrain;
+
+    /**
+     * Constructor for class BufferedDataTableDataSetIterator.
+     *
+     * @param table the table to iterate
+     * @param labelColumnName name of possible label column
+     * @param batchSize the number of rows to return for next next() call, hence the number of examples contained in the
+     *            returned DataSet of next()
+     * @param distinctLabels list of all distinct labels
+     * @param isTrain flag if test or train mode, meaning whether to expect labels or not
+     * @throws Exception
+     */
+    public BufferedDataTableDataSetIterator(final BufferedDataTable table, final String labelColumnName,
+        final int batchSize, final List<String> distinctLabels, final boolean isTrain) throws Exception {
+        m_table = table;
+        m_batchSize = batchSize;
+
+        if (distinctLabels != null) {
+            m_distinctLabels = distinctLabels;
+        } else {
+            m_distinctLabels = new ArrayList<String>();
+        }
+
+        m_isTrain = isTrain;
+        if (isTrain) {
+            m_labelColumnIndex = table.getSpec().findColumnIndex(labelColumnName);
+        } else {
+            m_labelColumnIndex = -1;
+        }
+
+        m_tableIterator = table.iterator();
+        m_recordLength = TableUtils.calculateFeatureVectorLength(m_tableIterator.next(), m_labelColumnIndex);
+        reset();
+    }
+
+    /**
+     * Constructor for class BufferedDataTableDataSetIterator if no labels are available, hence, test mode is used.
+     *
+     * @param table the table to iterate
+     * @param batchSize the number of rows to return for next next() call, hence the number of examples contained in the
+     *            returned DataSet of next()
+     * @throws Exception
+     */
+    public BufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize) throws Exception {
+        this(table, null, batchSize, null, false);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return m_tableIterator.hasNext();
+    }
+
+    /**
+     * Returns a DataSet containing two INDArrays. One array for the features and one for the labels. Both arrays have
+     * batchSize number of rows. In the feature array each row contains the corresponding row of the table converted to
+     * INDArray. Conversion method is specified by {@link DataCellToJavaConverterFactory}s which convert to INDArray
+     * registered in converter extension point. In the label array each row contains the label for each feature row
+     * converted to one-hot representation. If test mode this array will only contain zeroes.
+     */
+    @Override
+    public DataSet next() {
+        //if table.size % batch != 0
+        final long numberOfRows = Math.min(m_batchSize, m_table.size() - m_cursor);
+        final INDArray dataMatrix = Nd4j.create((int)numberOfRows, inputColumns());
+        INDArray labelsMatrix = null;
+        if (m_isTrain) {
+            labelsMatrix = Nd4j.create((int)numberOfRows, m_distinctLabels.size());
+        } else {
+            labelsMatrix = Nd4j.create((int)numberOfRows, 1);
+        }
+        //loop over rows of current batch
+        for (int k = 0; k < numberOfRows; k++) {
+            final DataRow row = m_tableIterator.next();
             //list of arrays which will be concatenated into one row
-            List<INDArray> dataRow = new ArrayList<>();
+            final List<INDArray> dataRow = new ArrayList<>();
             //loop over cells of current row
-            for(int i = 0; i < row.getNumCells(); i++){          	
-            	try {
-            		DataCell cell = row.getCell(i);            	
-            		//if label convert to one hot vector
-            		if(i == m_labelColumnIndex && m_isTrain){   
-            			//first convert nominal value to string
-            			String label = ConverterUtils.convertDataCellToJava(cell, String.class);
-            			INDArray labelOutcomeVector = FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
-            			labelsMatrix.putRow(k, labelOutcomeVector);
-            			//if collection convert every entry using existing converters
-            		} else if (cell.getType().isCollectionType()){  			
-            			INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);            			
-            			dataRow.addAll(Arrays.asList(convertedCollction));
-            			//else convert directly
-            		} else {    
-            			dataRow.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
-            		}					
-				} catch (Exception e) {
-					logger.coding("Problem with input conversion",e);
-				}            	           	
+            for (int i = 0; i < row.getNumCells(); i++) {
+                try {
+                    final DataCell cell = row.getCell(i);
+                    //if label convert to one hot vector
+                    if ((i == m_labelColumnIndex) && m_isTrain) {
+                        //first convert nominal value to string
+                        final String label = ConverterUtils.convertDataCellToJava(cell, String.class);
+                        final INDArray labelOutcomeVector =
+                            FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
+                        labelsMatrix.putRow(k, labelOutcomeVector);
+                        //if collection convert every entry using existing converters
+                    } else if (cell.getType().isCollectionType()) {
+                        final INDArray[] convertedCollction =
+                            ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
+                        dataRow.addAll(Arrays.asList(convertedCollction));
+                        //else convert directly
+                    } else {
+                        dataRow.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
+                    }
+                } catch (final Exception e) {
+                    logger.coding("Problem with input conversion", e);
+                }
             }
-            INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
-            if(linearConcat.length() != inputColumns()){
-            	logger.error("Length of current input in row: " + row.getKey() + " does not match expected length. Possible images or collections "
-            			+ "may not be of same size.");
+            final INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
+            if (linearConcat.length() != inputColumns()) {
+                logger.error("Length of current input in row: " + row.getKey()
+                    + " does not match expected length. Possible images or collections " + "may not be of same size.");
             }
             dataMatrix.putRow(k, linearConcat);
             m_cursor++;
-		}		
-		
-		return new DataSet(dataMatrix, labelsMatrix);
-	}
+        }
 
-	@Override
-	public DataSet next(int num) {
-		throw new UnsupportedOperationException("next(num) not supported");
-	}
+        return new DataSet(dataMatrix, labelsMatrix);
+    }
 
-	@Override
-	public int totalExamples() {
-		return (int)m_table.size();
-	}
+    @Override
+    public DataSet next(final int num) {
+        throw new UnsupportedOperationException("next(num) not supported");
+    }
 
-	/**
-	 * The number of features of the input data.
-	 */
-	@Override
-	public int inputColumns() {
-		return m_recordLength;
-	}
+    @Override
+    public int totalExamples() {
+        return (int)m_table.size();
+    }
 
-	@Override
-	public int totalOutcomes() {
-		return m_distinctLabels.size();
-	}
+    /**
+     * The number of features of the input data.
+     */
+    @Override
+    public int inputColumns() {
+        return m_recordLength;
+    }
 
-	@Override
-	public void reset() {
-		m_cursor = 0;
-		m_tableIterator.close();	
-		m_tableIterator = m_table.iterator();	
-	}
+    @Override
+    public int totalOutcomes() {
+        return m_distinctLabels.size();
+    }
 
-	@Override
-	public int batch() {
-		return m_batchSize;
-	}
+    @Override
+    public void reset() {
+        m_cursor = 0;
+        m_tableIterator.close();
+        m_tableIterator = m_table.iterator();
+    }
 
-	@Override
-	public int cursor() {
-		return m_cursor;
-	}
+    @Override
+    public int batch() {
+        return m_batchSize;
+    }
 
-	@Override
-	public int numExamples() {
-		return (int)m_table.size();
-	}
+    @Override
+    public int cursor() {
+        return m_cursor;
+    }
 
-	@Override
-	public void setPreProcessor(DataSetPreProcessor preProcessor) {
-		throw new UnsupportedOperationException("setPreProcessor is not supported");		
-	}
+    @Override
+    public int numExamples() {
+        return (int)m_table.size();
+    }
 
-	@Override
-	public List<String> getLabels() {
-		return m_distinctLabels;
-	}
+    @Override
+    public void setPreProcessor(final DataSetPreProcessor preProcessor) {
+        throw new UnsupportedOperationException("setPreProcessor is not supported");
+    }
+
+    @Override
+    public List<String> getLabels() {
+        return m_distinctLabels;
+    }
 }

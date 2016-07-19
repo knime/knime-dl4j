@@ -48,12 +48,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "EmptyModelCreator" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class DL4JModelInitNodeFactory 
-        extends NodeFactory<DL4JModelInitNodeModel> {
+public class DL4JModelInitNodeFactory extends NodeFactory<DL4JModelInitNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,9 +75,9 @@ public class DL4JModelInitNodeFactory
      */
     @Override
     public NodeView<DL4JModelInitNodeModel> createNodeView(final int viewIndex,
-            final DL4JModelInitNodeModel nodeModel) {
-    	return null;
-    }     
+        final DL4JModelInitNodeModel nodeModel) {
+        return null;
+    }
 
     /**
      * {@inheritDoc}
@@ -97,4 +96,3 @@ public class DL4JModelInitNodeFactory
     }
 
 }
-

@@ -69,366 +69,364 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * Utility class for {@link DLModelPortObject} and {@link DLModelPortObjectSpec}
- * Serialisation. Also contains utility methods for members of port and spec class.
+ * Utility class for {@link DLModelPortObject} and {@link DLModelPortObjectSpec} Serialisation. Also contains utility
+ * methods for members of port and spec class.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DLModelPortObjectUtils {
 
-	private DLModelPortObjectUtils() {
-		// Utility class
-	}
+    private DLModelPortObjectUtils() {
+        // Utility class
+    }
 
-	/**
-	 * Writes the specified {@link DLModelPortObject} and the {@link DLModelPortObjectSpec} contained
-	 * within to the specified {@link ZipOutputStream}.
-	 *
-	 * @param portObject the port object to write
-	 * @param writePortObject whether to write the port object
-	 * @param writeSpec whether to write the spec
-	 * @param outStream the stream to write to
-	 * @throws IOException
-	 */
-	public static void saveModelToZip(final DLModelPortObject portObject, final boolean writePortObject, final boolean writeSpec, final ZipOutputStream outStream)
-			throws IOException{
-		DLModelPortObjectSpec spec = (DLModelPortObjectSpec)portObject.getSpec();
+    /**
+     * Writes the specified {@link DLModelPortObject} and the {@link DLModelPortObjectSpec} contained within to the
+     * specified {@link ZipOutputStream}.
+     *
+     * @param portObject the port object to write
+     * @param writePortObject whether to write the port object
+     * @param writeSpec whether to write the spec
+     * @param outStream the stream to write to
+     * @throws IOException
+     */
+    public static void saveModelToZip(final DLModelPortObject portObject, final boolean writePortObject,
+        final boolean writeSpec, final ZipOutputStream outStream) throws IOException {
+        final DLModelPortObjectSpec spec = (DLModelPortObjectSpec)portObject.getSpec();
 
-		if(outStream == null){
-			throw new IOException("OutputStream is null");
-		}
-		if(writePortObject && !writeSpec){
-			savePortObjectOnly(portObject, outStream);
-		}
-		if(!writePortObject && writeSpec){
-			saveSpecOnly(spec, outStream);
-		}
-		if(writePortObject && writeSpec){
-			savePortObjectAndSpec(portObject, spec, outStream);
-		}
-	}
+        if (outStream == null) {
+            throw new IOException("OutputStream is null");
+        }
+        if (writePortObject && !writeSpec) {
+            savePortObjectOnly(portObject, outStream);
+        }
+        if (!writePortObject && writeSpec) {
+            saveSpecOnly(spec, outStream);
+        }
+        if (writePortObject && writeSpec) {
+            savePortObjectAndSpec(portObject, spec, outStream);
+        }
+    }
 
-	/**
-	 * Loads a {@link DLModelPortObjectSpec} from the specified {@link ZipInputStream}.
-	 *
-	 * @param inStream the stream to load from
-	 * @return the loaded {@link DLModelPortObjectSpec}
-	 * @throws IOException
-	 */
-	public static DLModelPortObjectSpec loadSpecFromZip(final ZipInputStream inStream) throws IOException{
-		List<DNNLayerType> layerTypes = new ArrayList<>();
-		List<DNNType> networkTypes = new ArrayList<>();
-		boolean isTrained = false;
-		List<Pair<String,String>> learnedColumnTypes = new ArrayList<>();
-		List<String> labels = new ArrayList<>();
+    /**
+     * Loads a {@link DLModelPortObjectSpec} from the specified {@link ZipInputStream}.
+     *
+     * @param inStream the stream to load from
+     * @return the loaded {@link DLModelPortObjectSpec}
+     * @throws IOException
+     */
+    public static DLModelPortObjectSpec loadSpecFromZip(final ZipInputStream inStream) throws IOException {
+        final List<DNNLayerType> layerTypes = new ArrayList<>();
+        final List<DNNType> networkTypes = new ArrayList<>();
+        boolean isTrained = false;
+        final List<Pair<String, String>> learnedColumnTypes = new ArrayList<>();
+        final List<String> labels = new ArrayList<>();
 
-		ZipEntry entry;
+        ZipEntry entry;
 
-		 while ((entry = inStream.getNextEntry())!= null) {
-			 	if(entry.getName().matches("isTrained")){//read flag
-		    		Integer read = inStream.read();
-		    		if( read == 1 ){
-		    			isTrained = true;
-		    		} else {
-		    			isTrained = false;
-		    		}
-		    	} else if (entry.getName().matches("layer_type[0123456789]+")){//read layer type
-		    		String read = readStringFromZipStream(inStream);
-		    		layerTypes.add(DNNLayerType.valueOf(read));
+        while ((entry = inStream.getNextEntry()) != null) {
+            if (entry.getName().matches("isTrained")) {//read flag
+                final Integer read = inStream.read();
+                if (read == 1) {
+                    isTrained = true;
+                } else {
+                    isTrained = false;
+                }
+            } else if (entry.getName().matches("layer_type[0123456789]+")) {//read layer type
+                final String read = readStringFromZipStream(inStream);
+                layerTypes.add(DNNLayerType.valueOf(read));
 
-		    	} else if (entry.getName().matches("dnn_type[0123456789]+")){//read dnn type
-		    		String read = readStringFromZipStream(inStream);
-		    		networkTypes.add(DNNType.valueOf(read));
-		    	} else if (entry.getName().matches("input_column[0123456789]+")){//read input type
-		    		String read = readStringFromZipStream(inStream);
-		    		String columnName = read.split(",")[0];
-		    		String columnType = (read.split(",")[1]);
+            } else if (entry.getName().matches("dnn_type[0123456789]+")) {//read dnn type
+                final String read = readStringFromZipStream(inStream);
+                networkTypes.add(DNNType.valueOf(read));
+            } else if (entry.getName().matches("input_column[0123456789]+")) {//read input type
+                final String read = readStringFromZipStream(inStream);
+                final String columnName = read.split(",")[0];
+                final String columnType = (read.split(",")[1]);
 
-		    		learnedColumnTypes.add(new Pair<String,String>(columnName,columnType));
+                learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
 
-		    	} else if (entry.getName().matches("label[0123456789]+")){//read label
-		    		String read = readStringFromZipStream(inStream);
-		    		labels.add(read);
+            } else if (entry.getName().matches("label[0123456789]+")) {//read label
+                final String read = readStringFromZipStream(inStream);
+                labels.add(read);
 
-		    	} else {
-		    		// ignore unrecognised ZipEntries
-		    	}
-		 }
+            } else {
+                // ignore unrecognised ZipEntries
+            }
+        }
 
-		 DLModelPortObjectSpec spec = new DLModelPortObjectSpec(networkTypes, layerTypes,
-				 learnedColumnTypes, labels, isTrained);
-		 return spec;
-	}
+        final DLModelPortObjectSpec spec =
+            new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
+        return spec;
+    }
 
-	/**
-	 * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}.
-	 *
-	 * @param inStream inStream the stream to load from
-	 * @return the loaded {@link DLModelPortObject}
-	 * @throws IOException
-	 */
-	@SuppressWarnings("resource")
-    public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException{
-		List<Layer> layers = new ArrayList<>();
-		INDArray mln_params = null;
-		MultiLayerConfiguration mln_config = null;
-		org.deeplearning4j.nn.api.Updater updater = null;
+    /**
+     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}.
+     *
+     * @param inStream inStream the stream to load from
+     * @return the loaded {@link DLModelPortObject}
+     * @throws IOException
+     */
+    @SuppressWarnings("resource")
+    public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException {
+        final List<Layer> layers = new ArrayList<>();
+        INDArray mln_params = null;
+        MultiLayerConfiguration mln_config = null;
+        org.deeplearning4j.nn.api.Updater updater = null;
 
-	    ZipEntry entry;
+        ZipEntry entry;
 
-	    while ((entry = inStream.getNextEntry())!= null) {
-	    	if(entry.getName().matches("layer[0123456789]+")){//read layers
-	    		String read = readStringFromZipStream(inStream);
-	    		layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
-	    	} else if (entry.getName().matches("mln_config")){//read MultilayerNetwork
-	    		String read = readStringFromZipStream(inStream);
-	    		mln_config = MultiLayerConfiguration.fromJson(read.toString());
-	    	} else if (entry.getName().matches("mln_params")){
-	    		mln_params = Nd4j.read(inStream);
-	    	} else if (entry.getName().matches("mln_updater")){
-	    	    // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
-	    	    ObjectInputStream ois = new ObjectInputStream(inStream);
-	    		try {
-					updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
-				} catch (ClassNotFoundException e) {
-					throw new IOException("Problem with updater loading: " + e.getMessage());
-				}
-	    	}
-	    }
+        while ((entry = inStream.getNextEntry()) != null) {
+            if (entry.getName().matches("layer[0123456789]+")) {//read layers
+                final String read = readStringFromZipStream(inStream);
+                layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
+            } else if (entry.getName().matches("mln_config")) {//read MultilayerNetwork
+                final String read = readStringFromZipStream(inStream);
+                mln_config = MultiLayerConfiguration.fromJson(read.toString());
+            } else if (entry.getName().matches("mln_params")) {
+                mln_params = Nd4j.read(inStream);
+            } else if (entry.getName().matches("mln_updater")) {
+                // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
+                final ObjectInputStream ois = new ObjectInputStream(inStream);
+                try {
+                    updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
+                } catch (final ClassNotFoundException e) {
+                    throw new IOException("Problem with updater loading: " + e.getMessage());
+                }
+            }
+        }
 
-	    MultiLayerNetwork mln;
+        MultiLayerNetwork mln;
 
-	    if(mln_config != null){
-	    	mln = new MultiLayerNetwork(mln_config);
-	    	mln.init();
-	    	if(updater != null){
-	    		mln.setUpdater(updater);
-	    	}
+        if (mln_config != null) {
+            mln = new MultiLayerNetwork(mln_config);
+            mln.init();
+            if (updater != null) {
+                mln.setUpdater(updater);
+            }
 
-	    	if (mln_params != null){
-		    	mln.setParams(mln_params);
-		    }
-	    } else {
-	    	mln = null;
-	    }
+            if (mln_params != null) {
+                mln.setParams(mln_params);
+            }
+        } else {
+            mln = null;
+        }
 
-	    DLModelPortObject newPortObject = new DLModelPortObject(layers, mln, null);
+        final DLModelPortObject newPortObject = new DLModelPortObject(layers, mln, null);
 
-	    return newPortObject;
-	}
+        return newPortObject;
+    }
 
-	private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
-			throws IOException{
-		List<Layer> layers = portObject.getLayers();
-		MultiLayerNetwork mln = portObject.getMultilayerLayerNetwork();
+    private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
+        throws IOException {
+        final List<Layer> layers = portObject.getLayers();
+        final MultiLayerNetwork mln = portObject.getMultilayerLayerNetwork();
 
-		writeLayers(layers, out);
-		writeMultiLayerNetwork(mln, out);
-	}
+        writeLayers(layers, out);
+        writeMultiLayerNetwork(mln, out);
+    }
 
-	private static void saveSpecOnly(final DLModelPortObjectSpec spec, final ZipOutputStream out)
-			throws IOException{
-		List<DNNLayerType> layerTypes = spec.getLayerTypes();
-		List<DNNType> networkTypes = spec.getNeuralNetworkTypes();
-		boolean isTrained = spec.isTrained();
-		List<Pair<String,String>> learnedColumnTypes = spec.getLearnedColumns();
-		List<String> labels = spec.getLabels();
+    private static void saveSpecOnly(final DLModelPortObjectSpec spec, final ZipOutputStream out) throws IOException {
+        final List<DNNLayerType> layerTypes = spec.getLayerTypes();
+        final List<DNNType> networkTypes = spec.getNeuralNetworkTypes();
+        final boolean isTrained = spec.isTrained();
+        final List<Pair<String, String>> learnedColumnTypes = spec.getLearnedColumns();
+        final List<String> labels = spec.getLabels();
 
-		writeLayerTypes(layerTypes, out);
-		writeDNNTypes(networkTypes, out);
-		writeIsTrained(isTrained, out);
-		writeLearnedColumns(learnedColumnTypes, out);
-		writeLabels(labels, out);
-	}
+        writeLayerTypes(layerTypes, out);
+        writeDNNTypes(networkTypes, out);
+        writeIsTrained(isTrained, out);
+        writeLearnedColumns(learnedColumnTypes, out);
+        writeLabels(labels, out);
+    }
 
-	private static void savePortObjectAndSpec(final DLModelPortObject portObject, final DLModelPortObjectSpec spec, final ZipOutputStream out)
-			throws IOException{
-		savePortObjectOnly(portObject, out);
-		saveSpecOnly(spec,out);
-	}
+    private static void savePortObjectAndSpec(final DLModelPortObject portObject, final DLModelPortObjectSpec spec,
+        final ZipOutputStream out) throws IOException {
+        savePortObjectOnly(portObject, out);
+        saveSpecOnly(spec, out);
+    }
 
+    private static void writeLayers(final List<Layer> layers, final ZipOutputStream out) throws IOException {
+        final List<String> allLayersAsJson = convertLayersToJSONs(layers);
+        ZipEntry entry;
 
-	private static void writeLayers(final List<Layer> layers, final ZipOutputStream out) throws IOException{
-		List<String> allLayersAsJson = convertLayersToJSONs(layers);
-		ZipEntry entry;
+        for (int i = 0; i < allLayersAsJson.size(); i++) {
+            entry = new ZipEntry("layer" + i);
+            out.putNextEntry(entry);
+            out.write(allLayersAsJson.get(i).getBytes(Charset.forName("UTF-8")));
+        }
+    }
 
-		for(int i = 0 ; i < allLayersAsJson.size() ; i++){
-			entry = new ZipEntry("layer" + i);
-			out.putNextEntry(entry);
-			out.write(allLayersAsJson.get(i).getBytes(Charset.forName("UTF-8")));
-		}
-	}
+    private static void writeIsTrained(final boolean isTrained, final ZipOutputStream out) throws IOException {
+        ZipEntry entry;
+        entry = new ZipEntry("isTrained");
+        out.putNextEntry(entry);
+        if (isTrained) {
+            out.write(new Integer(1));
+        } else {
+            out.write(new Integer(0));
+        }
+    }
 
-	private static void writeIsTrained(final boolean isTrained, final ZipOutputStream out) throws IOException{
-		ZipEntry entry;
-		entry = new ZipEntry("isTrained");
-		out.putNextEntry(entry);
-		if(isTrained){
-			out.write(new Integer(1));
-		} else {
-			out.write(new Integer(0));
-		}
-	}
+    private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out)
+        throws IOException {
+        ZipEntry entry;
+        if (mln != null) {
+            //write MultilayerNetwork, consists of configuration and network parameters
+            entry = new ZipEntry("mln_config");
+            out.putNextEntry(entry);
+            out.write(mln.getLayerWiseConfigurations().toJson().getBytes(Charset.forName("UTF-8")));
 
-	private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out) throws IOException{
-		ZipEntry entry;
-		if(mln != null){
-			//write MultilayerNetwork, consists of configuration and network parameters
-			entry = new ZipEntry("mln_config");
-			out.putNextEntry(entry);
-			out.write(mln.getLayerWiseConfigurations().toJson()
-					.getBytes(Charset.forName("UTF-8")));
+            try {
+                //params() throws exception if not yet set
+                final INDArray params = mln.params();
+                entry = new ZipEntry("mln_params");
+                out.putNextEntry(entry);
+                Nd4j.write(out, params);
+            } catch (final Exception e) {
+                //net does not contain params so we just write nothing
+            }
 
-			try {
-				//params() throws exception if not yet set
-				INDArray params = mln.params();
-				entry = new ZipEntry("mln_params");
-				out.putNextEntry(entry);
-				Nd4j.write(out, params);
-			} catch (Exception e) {
-				//net does not contain params so we just write nothing
-			}
+            //write updater
+            try {
+                //if no backprop is done getUpdater() will throw an exception
+                if (mln.getUpdater() != null) {
+                    entry = new ZipEntry("mln_updater");
+                    out.putNextEntry(entry);
+                    final ObjectOutputStream oos = new ObjectOutputStream(out);
+                    oos.writeObject(mln.getUpdater());
+                }
+            } catch (final Exception e) {
+                //net does not contain updater because no backprop was done
+            }
+        }
+    }
 
-			//write updater
-			try {
-				//if no backprop is done getUpdater() will throw an exception
-				if(mln.getUpdater() != null){
-					entry = new ZipEntry("mln_updater");
-					out.putNextEntry(entry);
-					ObjectOutputStream oos = new ObjectOutputStream(out);
-					oos.writeObject(mln.getUpdater());
-				}
-			} catch (Exception e) {
-				//net does not contain updater because no backprop was done
-			}
-		}
-	}
+    private static void writeLayerTypes(final List<DNNLayerType> layerTypes, final ZipOutputStream out)
+        throws IOException {
+        final String[] layerTypesString = EnumUtils.getStringListFromEnumCollection(layerTypes);
+        ZipEntry entry;
 
-	private static void writeLayerTypes(final List<DNNLayerType> layerTypes, final ZipOutputStream out) throws IOException{
-		String[] layerTypesString = EnumUtils.getStringListFromEnumCollection(layerTypes);
-		ZipEntry entry;
+        for (int i = 0; i < layerTypesString.length; i++) {
+            entry = new ZipEntry("layer_type" + i);
+            out.putNextEntry(entry);
+            out.write(layerTypesString[i].getBytes(Charset.forName("UTF-8")));
+        }
 
-		for(int i = 0 ; i < layerTypesString.length ; i++){
-			entry = new ZipEntry("layer_type" + i);
-			out.putNextEntry(entry);
-			out.write(layerTypesString[i].getBytes(Charset.forName("UTF-8")));
-		}
+    }
 
-	}
+    private static void writeDNNTypes(final List<DNNType> dnnTypes, final ZipOutputStream out) throws IOException {
+        final String[] layerTypesStrings = EnumUtils.getStringListFromEnumCollection(dnnTypes);
+        ZipEntry entry;
 
-	private static void writeDNNTypes(final List<DNNType> dnnTypes, final ZipOutputStream out) throws IOException{
-		String[] layerTypesStrings = EnumUtils.getStringListFromEnumCollection(dnnTypes);
-		ZipEntry entry;
+        for (int i = 0; i < layerTypesStrings.length; i++) {
+            entry = new ZipEntry("dnn_type" + i);
+            out.putNextEntry(entry);
+            out.write(layerTypesStrings[i].getBytes(Charset.forName("UTF-8")));
+        }
+    }
 
-		for(int i = 0 ; i < layerTypesStrings.length ; i++){
-			entry = new ZipEntry("dnn_type" + i);
-			out.putNextEntry(entry);
-			out.write(layerTypesStrings[i].getBytes(Charset.forName("UTF-8")));
-		}
-	}
+    private static void writeLearnedColumns(final List<Pair<String, String>> learnedColumnTypes,
+        final ZipOutputStream out) throws IOException {
+        final String[] inputTypesStrings = getSeconds(learnedColumnTypes, String.class);
+        final String[] columnNames = getFirsts(learnedColumnTypes, String.class);
+        ZipEntry entry;
 
-	private static void writeLearnedColumns(final List<Pair<String,String>> learnedColumnTypes, final ZipOutputStream out) throws IOException{
-		String[] inputTypesStrings = getSeconds(learnedColumnTypes, String.class);
-		String[] columnNames = getFirsts(learnedColumnTypes, String.class);
-		ZipEntry entry;
+        for (int i = 0; i < inputTypesStrings.length; i++) {
+            entry = new ZipEntry("input_column" + i);
+            out.putNextEntry(entry);
+            final String stringToWrite = columnNames[i] + "," + inputTypesStrings[i];
+            out.write(stringToWrite.getBytes(Charset.forName("UTF-8")));
+        }
+    }
 
-		for(int i = 0 ; i < inputTypesStrings.length ; i++){
-			entry = new ZipEntry("input_column" + i);
-			out.putNextEntry(entry);
-			String stringToWrite = columnNames[i] + "," + inputTypesStrings[i];
-			out.write(stringToWrite.getBytes(Charset.forName("UTF-8")));
-		}
-	}
+    private static void writeLabels(final List<String> labels, final ZipOutputStream out) throws IOException {
+        ZipEntry entry;
 
-	private static void writeLabels(final List<String> labels, final ZipOutputStream out) throws IOException{
-		ZipEntry entry;
+        int i = 0;
+        for (final String label : labels) {
+            entry = new ZipEntry("label" + i);
+            out.putNextEntry(entry);
+            out.write(label.getBytes(Charset.forName("UTF-8")));
+            i++;
+        }
+    }
 
-		int i = 0;
-		for(String label : labels){
-			entry = new ZipEntry("label" + i);
-			out.putNextEntry(entry);
-			out.write(label.getBytes(Charset.forName("UTF-8")));
-			i++;
-		}
-	}
+    /**
+     * Converts layers to list of Strings in json format.
+     *
+     * @return list of Strings in json format of converted layers
+     */
+    public static List<String> convertLayersToJSONs(final List<Layer> layers) {
+        final List<String> allLayersAsJson = new ArrayList<>();
+        final NeuralNetConfiguration config = new NeuralNetConfiguration();
+        for (final Layer layer : layers) {
+            config.setLayer(layer);
+            allLayersAsJson.add(config.toJson());
+        }
+        return allLayersAsJson;
+    }
 
-	/**
-	 * Converts layers to list of Strings in json format.
-	 *
-	 * @return list of Strings in json format of converted layers
-	 */
-	public static List<String> convertLayersToJSONs(final List<Layer> layers){
-		List<String> allLayersAsJson = new ArrayList<>();
-		NeuralNetConfiguration config = new NeuralNetConfiguration();
-		for(Layer layer : layers){
-			config.setLayer(layer);
-			allLayersAsJson.add(config.toJson());
-		}
-		return allLayersAsJson;
-	}
+    /**
+     * Read a String from {@link ZipInputStream} until the stream is finished.
+     *
+     * @param in the stream to read from
+     * @return the read String
+     * @throws IOException
+     */
+    private static String readStringFromZipStream(final ZipInputStream in) throws IOException {
+        final StringBuilder stringBuilder = new StringBuilder();
+        final byte[] byteBuffer = new byte[1024];
+        int currentRead = 0;
 
-	/**
-	 * Read a String from {@link ZipInputStream} until the stream is finished.
-	 *
-	 * @param in the stream to read from
-	 * @return the read String
-	 * @throws IOException
-	 */
-	private static String readStringFromZipStream(final ZipInputStream in) throws IOException{
-		StringBuilder stringBuilder = new StringBuilder();
-	    byte[] byteBuffer = new byte[1024];
-	    int currentRead = 0;
-
-	    while ((currentRead = in.read(byteBuffer, 0, 1024)) >= 0) {
+        while ((currentRead = in.read(byteBuffer, 0, 1024)) >= 0) {
             stringBuilder.append(new String(byteBuffer, 0, currentRead));
-	    }
+        }
 
-	    return stringBuilder.toString();
-	}
+        return stringBuilder.toString();
+    }
 
-	/**
-	 * Returns an array of all first elements of the specified list of
-	 * pairs. Returned array will be of specified class. The class is needed
-	 * in order to determine the class of the array to return when there are
-	 * no pairs in the list so we can't get the class during runtime.
-	 *
-	 * @param pairs the pairs to get first elements from
-	 * @param c the class of first elements
-	 * @return array of all first elements of pairs contained in the list
-	 */
-	@SuppressWarnings("unchecked")
-	public static <E,V> E[] getFirsts(final List<Pair<E,V>> pairs, final Class<E> c){
-		return pairs.stream().map(f -> f.getFirst()).collect(Collectors.toList())
-				.toArray((E[])Array.newInstance(c, pairs.size()));
-	}
+    /**
+     * Returns an array of all first elements of the specified list of pairs. Returned array will be of specified class.
+     * The class is needed in order to determine the class of the array to return when there are no pairs in the list so
+     * we can't get the class during runtime.
+     *
+     * @param pairs the pairs to get first elements from
+     * @param c the class of first elements
+     * @return array of all first elements of pairs contained in the list
+     */
+    @SuppressWarnings("unchecked")
+    public static <E, V> E[] getFirsts(final List<Pair<E, V>> pairs, final Class<E> c) {
+        return pairs.stream().map(f -> f.getFirst()).collect(Collectors.toList())
+            .toArray((E[])Array.newInstance(c, pairs.size()));
+    }
 
-	/**
-	 * Returns an array of all second elements of the specified list of
-	 * pairs. Returned array will be of specified class. The class is needed
-	 * in order to determine the class of the array to return when there are
-	 * no pairs in the list so we can't get the class during runtime.
-	 *
-	 * @param pairs the pairs to get second elements from
-	 * @param c the class of second elements
-	 * @return array of all second elements of pairs contained in the list
-	 */
-	@SuppressWarnings("unchecked")
-	public static <E,V> V[] getSeconds(final List<Pair<E,V>> pairs, final Class<V> c){
-		return pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
-				.toArray((V[])Array.newInstance(c, pairs.size()));
-	}
+    /**
+     * Returns an array of all second elements of the specified list of pairs. Returned array will be of specified
+     * class. The class is needed in order to determine the class of the array to return when there are no pairs in the
+     * list so we can't get the class during runtime.
+     *
+     * @param pairs the pairs to get second elements from
+     * @param c the class of second elements
+     * @return array of all second elements of pairs contained in the list
+     */
+    @SuppressWarnings("unchecked")
+    public static <E, V> V[] getSeconds(final List<Pair<E, V>> pairs, final Class<V> c) {
+        return pairs.stream().map(f -> f.getSecond()).collect(Collectors.toList())
+            .toArray((V[])Array.newInstance(c, pairs.size()));
+    }
 
-	/**
-	 * Returns a cloned list of the specified list of {@link Layer}s.
-	 *
-	 * @param layers the list of layers to clone
-	 * @return clone of specified list of layers
-	 */
-	public static List<Layer> cloneLayers(final List<Layer> layers){
-		List<Layer> layersClone = new ArrayList<>();
-		for(Layer l : layers){
-			layersClone.add(l.clone());
-		}
-		return layersClone;
-	}
+    /**
+     * Returns a cloned list of the specified list of {@link Layer}s.
+     *
+     * @param layers the list of layers to clone
+     * @return clone of specified list of layers
+     */
+    public static List<Layer> cloneLayers(final List<Layer> layers) {
+        final List<Layer> layersClone = new ArrayList<>();
+        for (final Layer l : layers) {
+            layersClone.add(l.clone());
+        }
+        return layersClone;
+    }
 }

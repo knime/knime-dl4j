@@ -48,12 +48,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "DL4JPredictor" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class FeedforwardPredictorNodeFactory 
-        extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -76,7 +75,7 @@ public class FeedforwardPredictorNodeFactory
      */
     @Override
     public NodeView<FeedforwardPredictorNodeModel> createNodeView(final int viewIndex,
-            final FeedforwardPredictorNodeModel nodeModel) {
+        final FeedforwardPredictorNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +96,3 @@ public class FeedforwardPredictorNodeFactory
     }
 
 }
-

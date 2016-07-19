@@ -57,33 +57,35 @@ import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
  * @author David Kolb, KNIME.com GmbH
  */
 public class ConverterUtils {
-	
-	/**
-	 * Converts the specified {@link DataCell} to the specified class. For conversion the KNIME
-	 * converter framework is used and in this case the converter created by the converter 
-	 * factory returned by <code>getPreferredConverterFactory</code> using the specified class.
-	 * 
-	 * @param cellToConvert the cell which should be converted
-	 * @param classOfResultType the class of the type which should be converted to
-	 * @return the result of the converter
-	 * @throws UnsupportedDataTypeException if no converter is available for the specified cell and class
-	 * 										if there are errors during conversion 
-	 */
-	public static <T> T convertDataCellToJava(DataCell cellToConvert, Class<T> classOfResultType)
-			throws UnsupportedDataTypeException{
-		
-		Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory =
-				DataCellToJavaConverterRegistry.getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);  
-		
-		if (!converterFactory.isPresent()) {
-			throw new UnsupportedDataTypeException("No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
-		}
-		DataCellToJavaConverter<DataValue, T> converter = converterFactory.get().create();							
-		try {
-			return converter.convert(cellToConvert);
-		} catch (Exception e) {
-			throw new UnsupportedDataTypeException("Conversion of DataCell of type: " + cellToConvert.getType().getName() + " failed. Converter implementation "
-					+ "may contain errors. Error message: " + e.getMessage());
-		}
-	}
+
+    /**
+     * Converts the specified {@link DataCell} to the specified class. For conversion the KNIME converter framework is
+     * used and in this case the converter created by the converter factory returned by
+     * <code>getPreferredConverterFactory</code> using the specified class.
+     *
+     * @param cellToConvert the cell which should be converted
+     * @param classOfResultType the class of the type which should be converted to
+     * @return the result of the converter
+     * @throws UnsupportedDataTypeException if no converter is available for the specified cell and class if there are
+     *             errors during conversion
+     */
+    public static <T> T convertDataCellToJava(final DataCell cellToConvert, final Class<T> classOfResultType)
+        throws UnsupportedDataTypeException {
+
+        final Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
+            .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
+
+        if (!converterFactory.isPresent()) {
+            throw new UnsupportedDataTypeException(
+                "No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
+        }
+        final DataCellToJavaConverter<DataValue, T> converter = converterFactory.get().create();
+        try {
+            return converter.convert(cellToConvert);
+        } catch (final Exception e) {
+            throw new UnsupportedDataTypeException(
+                "Conversion of DataCell of type: " + cellToConvert.getType().getName()
+                    + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage());
+        }
+    }
 }

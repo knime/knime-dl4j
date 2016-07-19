@@ -86,136 +86,136 @@ import org.nd4j.linalg.factory.Nd4j;
  * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel {
-	
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(FeedforwardPredictorNodeModel.class);
-    
-    
-    /* SettingsModels */ 
-    private PredictorParameterSettingsModels m_predictorParameter; 
-    
+
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardPredictorNodeModel.class);
+
+    /* SettingsModels */
+    private PredictorParameterSettingsModels m_predictorParameter;
+
     private DataTableSpec m_outputSpec;
-    
-	/**
+
+    /**
      * Constructor for the node model.
      */
-    protected FeedforwardPredictorNodeModel() {   
-    	super(new PortType[] { DLModelPortObject.TYPE , BufferedDataTable.TYPE }, new PortType[] {
-    			BufferedDataTable.TYPE });   	
+    protected FeedforwardPredictorNodeModel() {
+        super(new PortType[]{DLModelPortObject.TYPE, BufferedDataTable.TYPE}, new PortType[]{BufferedDataTable.TYPE});
     }
-	
+
     @Override
-    protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
-    	DLModelPortObject port = (DLModelPortObject)inObjects[0];
-    	DLModelPortObjectSpec portSpec = (DLModelPortObjectSpec)port.getSpec();
-    	BufferedDataTable table = (BufferedDataTable)inObjects[1];
-    	
-    	//select feature columns from table used for prediction
-    	String[] predictCols = DLModelPortObjectUtils.getFirsts(portSpec.getLearnedColumns(), String.class);  	
-		BufferedDataTable filteredTable = exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
-    	
-    	//create iterator and prediction
-		BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, 1);
-    	MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
-    	
-    	//set flag if last layer activation is softmax
-    	boolean outputActivationIsSoftmax = isOutActivationSoftmax(port.getLayers());
-   
-    	boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
-    	boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
-    	List<String> labels = portSpec.getLabels();
-    	
-    	//write output to table
-    	BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
-    	CloseableRowIterator tabelIter = table.iterator();
-    	
-    	int i = 0;
-    	while(tabelIter.hasNext()){  		
-    		exec.setProgress((double)(i+1)/(double)(table.size()));
-    		exec.checkCanceled();
-    		
-    		DataRow row = tabelIter.next();
-    		List<DataCell> cells = TableUtils.toListOfCells(row);
-    		
-    		DataSet next = input.next();
-    		INDArray prediction = predict(mln, next.getFeatureMatrix());
-    		
-    		ListCell outputVector = CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
-    		cells.add(outputVector);
-    		if(appendScore){
-    			double score = mln.score(new DataSet(next.getFeatureMatrix(),prediction), false);
-    			cells.add(new DoubleCell(score));
-    		}    		
-    		if(appendPrediction && outputActivationIsSoftmax && containsLabels()){
-    			String winningLabel = NDArrayUtils.softmaxActivationToLabel(labels, prediction);
-    			cells.add(new StringCell(winningLabel));
-    		} else if (appendPrediction && containsLabels()){
-    			cells.add(new MissingCell("Output Layer activation is not softmax"));			
-    		} else if (appendPrediction && !containsLabels()){
-    			cells.add(new MissingCell("Model contains no labels"));			
-    		}
-    		
-    		container.addRowToTable(new DefaultRow(row.getKey(), cells));
-    		i++;
-    	}
-    	if(appendPrediction && !outputActivationIsSoftmax){
-    		logger.warn("Output Layer activation is not softmax. Label prediction column will be empty.");
-    	} else if (appendPrediction && outputActivationIsSoftmax && !containsLabels()){
-    		logger.warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
-    	}
-    	
-    	container.close();
-    	BufferedDataTable outputTable = container.getTable();
+    protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+        final DLModelPortObject port = (DLModelPortObject)inObjects[0];
+        final DLModelPortObjectSpec portSpec = (DLModelPortObjectSpec)port.getSpec();
+        final BufferedDataTable table = (BufferedDataTable)inObjects[1];
 
-    	return new PortObject[]{outputTable};
+        //select feature columns from table used for prediction
+        final String[] predictCols = DLModelPortObjectUtils.getFirsts(portSpec.getLearnedColumns(), String.class);
+        final BufferedDataTable filteredTable =
+            exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
+
+        //create iterator and prediction
+        final BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, 1);
+        final MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
+
+        //set flag if last layer activation is softmax
+        final boolean outputActivationIsSoftmax = isOutActivationSoftmax(port.getLayers());
+
+        final boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
+        final boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
+        final List<String> labels = portSpec.getLabels();
+
+        //write output to table
+        final BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
+        final CloseableRowIterator tabelIter = table.iterator();
+
+        int i = 0;
+        while (tabelIter.hasNext()) {
+            exec.setProgress((double)(i + 1) / (double)(table.size()));
+            exec.checkCanceled();
+
+            final DataRow row = tabelIter.next();
+            final List<DataCell> cells = TableUtils.toListOfCells(row);
+
+            final DataSet next = input.next();
+            final INDArray prediction = predict(mln, next.getFeatureMatrix());
+
+            final ListCell outputVector =
+                CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
+            cells.add(outputVector);
+            if (appendScore) {
+                final double score = mln.score(new DataSet(next.getFeatureMatrix(), prediction), false);
+                cells.add(new DoubleCell(score));
+            }
+            if (appendPrediction && outputActivationIsSoftmax && containsLabels()) {
+                final String winningLabel = NDArrayUtils.softmaxActivationToLabel(labels, prediction);
+                cells.add(new StringCell(winningLabel));
+            } else if (appendPrediction && containsLabels()) {
+                cells.add(new MissingCell("Output Layer activation is not softmax"));
+            } else if (appendPrediction && !containsLabels()) {
+                cells.add(new MissingCell("Model contains no labels"));
+            }
+
+            container.addRowToTable(new DefaultRow(row.getKey(), cells));
+            i++;
+        }
+        if (appendPrediction && !outputActivationIsSoftmax) {
+            logger.warn("Output Layer activation is not softmax. Label prediction column will be empty.");
+        }
+        if (appendPrediction && outputActivationIsSoftmax && !containsLabels()) {
+            logger
+                .warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
+        }
+
+        container.close();
+        final BufferedDataTable outputTable = container.getTable();
+
+        return new PortObject[]{outputTable};
     }
-    
-	@Override
-	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		m_outputSpec = configure(inSpecs, logger)[0];
-		m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "output_activations", 
-				DataType.getType(ListCell.class, DoubleCell.TYPE));
-		
-    	boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
-    	if(appendScore){
-    		m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "error", DataType.getType(DoubleCell.class));
-    	}  	
-		boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
-		if(appendPrediction){
-			m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "prediction", DataType.getType(StringCell.class));
-		} 
-		return new DataTableSpec[]{m_outputSpec};
-	}
-    
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		m_predictorParameter = new PredictorParameterSettingsModels();
-		m_predictorParameter.setParameter(PredictorPrameter.APPEND_PREDICTION);
-		m_predictorParameter.setParameter(PredictorPrameter.APPEND_SCORE);
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.addAll(m_predictorParameter.getAllInitializedSettings());
-		
-		return settings;
-	}
-	
-	/**
-	 * Creates out for a input {@link INDArray}. The input array must contain each example to predict
-	 * in a row. Returns a {@link INDArray} with 'number of outputs' columns and 'number of examples'
-	 * rows, whereby the number of examples is the number of rows of the input array.
-	 * 
-	 * @param mln the network to use for prediction
-	 * @param input the input used to create output
-	 * @param exec {@link ExecutionContext} for progress reporting
-	 * @return array containing the output of the network for each row of the input 
-	 */
-	private INDArray predict(MultiLayerNetwork mln, INDArray input){
-		INDArray output = Nd4j.create(input.rows(), getNumberOfOutputs(mln));
-		for(int i = 0; i< input.rows(); i++){
-			output.putRow(i, mln.output(input.getRow(i), false));
-		}
-		return output;
-	}
-}
 
+    @Override
+    protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+        m_outputSpec = configure(inSpecs, logger)[0];
+        m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "output_activations",
+            DataType.getType(ListCell.class, DoubleCell.TYPE));
+
+        final boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
+        if (appendScore) {
+            m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "error", DataType.getType(DoubleCell.class));
+        }
+        final boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
+        if (appendPrediction) {
+            m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "prediction", DataType.getType(StringCell.class));
+        }
+        return new DataTableSpec[]{m_outputSpec};
+    }
+
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_predictorParameter = new PredictorParameterSettingsModels();
+        m_predictorParameter.setParameter(PredictorPrameter.APPEND_PREDICTION);
+        m_predictorParameter.setParameter(PredictorPrameter.APPEND_SCORE);
+
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.addAll(m_predictorParameter.getAllInitializedSettings());
+
+        return settings;
+    }
+
+    /**
+     * Creates out for a input {@link INDArray}. The input array must contain each example to predict in a row. Returns
+     * a {@link INDArray} with 'number of outputs' columns and 'number of examples' rows, whereby the number of examples
+     * is the number of rows of the input array.
+     *
+     * @param mln the network to use for prediction
+     * @param input the input used to create output
+     * @param exec {@link ExecutionContext} for progress reporting
+     * @return array containing the output of the network for each row of the input
+     */
+    private INDArray predict(final MultiLayerNetwork mln, final INDArray input) {
+        final INDArray output = Nd4j.create(input.rows(), getNumberOfOutputs(mln));
+        for (int i = 0; i < input.rows(); i++) {
+            output.putRow(i, mln.output(input.getRow(i), false));
+        }
+        return output;
+    }
+}

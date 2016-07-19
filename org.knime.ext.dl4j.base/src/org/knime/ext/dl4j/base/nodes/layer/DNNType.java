@@ -52,24 +52,20 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 
 /**
  * Neural networks associated with deeplearning.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DNNType {
-	/** network type not yet specified */
-	EMPTY,
-	/** deep belief network using {@link RBM}s */
-	DEEPBELIEF, 
-	/** deep convolutional network possibly using {@link ConvolutionLayer}s, 
-	 * {@link SubsamplingLayer}s, {@link DenseLayer}s, and {@link LocalResponseNormalization}s */
-	DEEPCONVOLUTIONAL,
-	/** multi layer perceptron using {@link DenseLayer}s*/
-	MLP,
-	/** recurrent networks, e.g. using {@link GravesLSTM}s*/
-	RECURRENT,
-	/** deep autoencoder consisting of {@link RBM}s */
-	DEEPAUTOENCODER,
-	/** stacked autoencoder consisting of {@link AutoEncoder} */
-	STACKEDAUTOENCODER
-	
+        /** network type not yet specified */
+    EMPTY, /** deep belief network using {@link RBM}s */
+    DEEPBELIEF, /**
+                 * deep convolutional network possibly using {@link ConvolutionLayer}s, {@link SubsamplingLayer}s,
+                 * {@link DenseLayer}s, and {@link LocalResponseNormalization}s
+                 */
+    DEEPCONVOLUTIONAL, /** multi layer perceptron using {@link DenseLayer}s */
+    MLP, /** recurrent networks, e.g. using {@link GravesLSTM}s */
+    RECURRENT, /** deep autoencoder consisting of {@link RBM}s */
+    DEEPAUTOENCODER, /** stacked autoencoder consisting of {@link AutoEncoder} */
+    STACKEDAUTOENCODER
+
 }

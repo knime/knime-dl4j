@@ -48,12 +48,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "LRNLayer" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class LRNLayerNodeFactory 
-        extends NodeFactory<LRNLayerNodeModel> {
+public class LRNLayerNodeFactory extends NodeFactory<LRNLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -75,8 +74,7 @@ public class LRNLayerNodeFactory
      * {@inheritDoc}
      */
     @Override
-    public NodeView<LRNLayerNodeModel> createNodeView(final int viewIndex,
-            final LRNLayerNodeModel nodeModel) {
+    public NodeView<LRNLayerNodeModel> createNodeView(final int viewIndex, final LRNLayerNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +95,3 @@ public class LRNLayerNodeFactory
     }
 
 }
-

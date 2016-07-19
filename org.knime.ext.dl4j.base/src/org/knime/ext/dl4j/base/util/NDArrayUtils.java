@@ -59,85 +59,86 @@ import org.nd4j.linalg.factory.Nd4j;
  * @author David Kolb, KNIME.com GmbH
  */
 public class NDArrayUtils {
-	
-	private NDArrayUtils() {
-		// Utility class
-	}
-	
-	/**
-	 * Converts a INDArray to a List of Double Cells.
-	 * 
-	 * @param array the INDArray to convert
-	 * @return List of DoubleCells containing the values from the specified INDArray
-	 */
-	public static List<DoubleCell> toListOfDoubleCells(final INDArray array){
-		List<DoubleCell> cells = new ArrayList<>();
-		for(int i = 0; i < array.length(); i++){
-			cells.add(new DoubleCell(array.getDouble(i)));
-		}		
-		return cells;
-	}
-	
-	public static INDArray fromListOfDoubleValues(CollectionDataValue cell){
-		Iterator<DataCell> iter = cell.iterator();
-		INDArray doubles = Nd4j.create(cell.size());
-		
-		int i = 0;
-		while(iter.hasNext()){
-			DoubleValue doubleValue = (DoubleValue)iter.next();
-			doubles.putScalar(i, doubleValue.getDoubleValue());
-			i++;
-		}
-		
-		return doubles;
-	}
-	
-	/**
-	 * Corresponds a INDArray containing a softmax activation array with the label with the highest probability.
-	 * Expects one dimensional INDArray with length equal to the number of specified labels. It is expected that
-	 * the INDArray holds class probabilities, which are mapped to each of the specified labels by index.
-	 * 
-	 * @param labels labels corresponding to positions in softmax activation array
-	 * @param softmaxActivation softmax activation array
-	 * @return the label corresponding to the highest probability
-	 * @throws Exception if number of labels doesn't match length of softmax activation array
-	 */
-	public static String softmaxActivationToLabel(List<String> labels, INDArray softmaxActivation) throws Exception{
-		if(labels.size() != softmaxActivation.length()){
-			throw new Exception("The number of labels: " + labels.size() + " does not match the length of the softmaxActivation "
-					+ "vector: " + softmaxActivation.length());
-		}
-		List<Double> classProbabilities = new ArrayList<>();
-		for(int i = 0; i < softmaxActivation.length(); i++){
-			classProbabilities.add(softmaxActivation.getDouble(i));
-		}
-		double max = softmaxActivation.max(1).getDouble(0);
-		int indexOfMax = classProbabilities.indexOf(max);
 
-		return labels.get(indexOfMax);
-	}
-	
-	/**
-	 * Horizontally concatenates arrays contained in the specified list.
-	 * 
-	 * @param arrs the arrays which should be concatenated
-	 * @return array concatenated array
-	 */
-	public static INDArray linearConcat(List<INDArray> arrs){
-		int l = 0;
-		//calculate resulting vector length
-		for(INDArray arr : arrs){
-			l += arr.length();
-		}
-		INDArray concat = Nd4j.create(l);
-		int globalPos = 0;
-		//fill with data
-		for(INDArray arr : arrs){
-			for(int i = 0; i < arr.length(); i++){
-				concat.putScalar(globalPos, arr.getDouble(i));
-				globalPos++;
-			}
-		}
-		return concat;
-	}
+    private NDArrayUtils() {
+        // Utility class
+    }
+
+    /**
+     * Converts a INDArray to a List of Double Cells.
+     *
+     * @param array the INDArray to convert
+     * @return List of DoubleCells containing the values from the specified INDArray
+     */
+    public static List<DoubleCell> toListOfDoubleCells(final INDArray array) {
+        final List<DoubleCell> cells = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            cells.add(new DoubleCell(array.getDouble(i)));
+        }
+        return cells;
+    }
+
+    public static INDArray fromListOfDoubleValues(final CollectionDataValue cell) {
+        final Iterator<DataCell> iter = cell.iterator();
+        final INDArray doubles = Nd4j.create(cell.size());
+
+        int i = 0;
+        while (iter.hasNext()) {
+            final DoubleValue doubleValue = (DoubleValue)iter.next();
+            doubles.putScalar(i, doubleValue.getDoubleValue());
+            i++;
+        }
+
+        return doubles;
+    }
+
+    /**
+     * Corresponds a INDArray containing a softmax activation array with the label with the highest probability. Expects
+     * one dimensional INDArray with length equal to the number of specified labels. It is expected that the INDArray
+     * holds class probabilities, which are mapped to each of the specified labels by index.
+     *
+     * @param labels labels corresponding to positions in softmax activation array
+     * @param softmaxActivation softmax activation array
+     * @return the label corresponding to the highest probability
+     * @throws Exception if number of labels doesn't match length of softmax activation array
+     */
+    public static String softmaxActivationToLabel(final List<String> labels, final INDArray softmaxActivation)
+        throws Exception {
+        if (labels.size() != softmaxActivation.length()) {
+            throw new Exception("The number of labels: " + labels.size()
+                + " does not match the length of the softmaxActivation " + "vector: " + softmaxActivation.length());
+        }
+        final List<Double> classProbabilities = new ArrayList<>();
+        for (int i = 0; i < softmaxActivation.length(); i++) {
+            classProbabilities.add(softmaxActivation.getDouble(i));
+        }
+        final double max = softmaxActivation.max(1).getDouble(0);
+        final int indexOfMax = classProbabilities.indexOf(max);
+
+        return labels.get(indexOfMax);
+    }
+
+    /**
+     * Horizontally concatenates arrays contained in the specified list.
+     *
+     * @param arrs the arrays which should be concatenated
+     * @return array concatenated array
+     */
+    public static INDArray linearConcat(final List<INDArray> arrs) {
+        int l = 0;
+        //calculate resulting vector length
+        for (final INDArray arr : arrs) {
+            l += arr.length();
+        }
+        final INDArray concat = Nd4j.create(l);
+        int globalPos = 0;
+        //fill with data
+        for (final INDArray arr : arrs) {
+            for (int i = 0; i < arr.length(); i++) {
+                concat.putScalar(globalPos, arr.getDouble(i));
+                globalPos++;
+            }
+        }
+        return concat;
+    }
 }

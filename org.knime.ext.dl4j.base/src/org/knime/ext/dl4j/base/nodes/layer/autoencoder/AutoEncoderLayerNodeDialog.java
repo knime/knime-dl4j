@@ -58,67 +58,46 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
  * <code>NodeDialog</code> for the "DenseLayer" Node.
- * 
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
+ *
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
 
-	// the logger instance
-    private static final NodeLogger logger = NodeLogger
-            .getLogger(AutoEncoderLayerNodeModel.class);
-    
-	/**
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(AutoEncoderLayerNodeModel.class);
+
+    /**
      * New pane for configuring the DenseLayer node.
      */
     protected AutoEncoderLayerNodeDialog() {
-LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
-    	
-    	try {   		   		
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelIntegerBounded)dnnSettingsModels.createParameter(
-							LayerParameter.NUMBER_OF_OUTPUTS),
-					"Number of Output Units",
-					4
-					));
-        	addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-							LayerParameter.LEARNING_RATE),
-					"Learning Rate",
-					4
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.WEIGHT_INIT),
-					"Weight Initialization Strategy",
-					EnumUtils.getStringCollectionFromToString(WeightInit.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.ACTIVATION),
-					"Activation Function",
-					EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
-					));
-			addDialogComponent(new DialogComponentStringSelection(
-					(SettingsModelString)dnnSettingsModels.createParameter(
-							LayerParameter.LOSS_FUNCTION),
-					"Loss Function",
-					EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())
-					));
-			addDialogComponent(new DialogComponentNumberEdit(
-					(SettingsModelDoubleBounded)dnnSettingsModels.createParameter(
-							LayerParameter.CORRUPTION_LEVEL),
-					"Corruption Level",
-					4));
-		} catch (IllegalStateException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
+        final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
+
+        try {
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS),
+                "Number of Output Units", 4));
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
+                "Learning Rate", 4));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.WEIGHT_INIT),
+                "Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.ACTIVATION),
+                "Activation Function", EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
+            addDialogComponent(new DialogComponentStringSelection(
+                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.LOSS_FUNCTION), "Loss Function",
+                EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())));
+            addDialogComponent(new DialogComponentNumberEdit(
+                (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.CORRUPTION_LEVEL),
+                "Corruption Level", 4));
+        } catch (final IllegalStateException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
-

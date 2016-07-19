@@ -48,12 +48,11 @@ import org.knime.core.node.NodeView;
 
 /**
  * <code>NodeFactory</code> for the "DenseLayer" Node.
- * 
+ *
  *
  * @author KNIME
  */
-public class DenseLayerNodeFactory 
-        extends NodeFactory<DenseLayerNodeModel> {
+public class DenseLayerNodeFactory extends NodeFactory<DenseLayerNodeModel> {
 
     /**
      * {@inheritDoc}
@@ -75,8 +74,7 @@ public class DenseLayerNodeFactory
      * {@inheritDoc}
      */
     @Override
-    public NodeView<DenseLayerNodeModel> createNodeView(final int viewIndex,
-            final DenseLayerNodeModel nodeModel) {
+    public NodeView<DenseLayerNodeModel> createNodeView(final int viewIndex, final DenseLayerNodeModel nodeModel) {
         return null;
     }
 
@@ -97,4 +95,3 @@ public class DenseLayerNodeFactory
     }
 
 }
-

@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.layer.init;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,55 +60,42 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 
 /**
  * Model Initializer for Deeplearning4J integration.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DL4JModelInitNodeModel extends AbstractDLLayerNodeModel {
-    
+
     /**
      * Constructor for the node model.
      */
-    protected DL4JModelInitNodeModel() {        
+    protected DL4JModelInitNodeModel() {
         super(new PortType[]{}, new PortType[]{DLModelPortObject.TYPE});
     }
-    
-    private static final List<DNNType> DNNTYPES = 
-    		Arrays.asList(DNNType.EMPTY);
+
+    private static final List<DNNType> DNNTYPES = Arrays.asList(DNNType.EMPTY);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected DLModelPortObject[] execute(final PortObject[] inData,
-            final ExecutionContext exec) throws Exception {
-        return new DLModelPortObject[]{
-        			new DLModelPortObject(
-        				new ArrayList<>(), 
-        				null,
-        				m_outputSpec)};
+    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+        return new DLModelPortObject[]{new DLModelPortObject(new ArrayList<>(), null, m_outputSpec)};
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs)
-            throws InvalidSettingsException {     	
-        
-    	DLModelPortObjectSpec spec = new DLModelPortObjectSpec(
-        		DNNTYPES,
-        		new ArrayList<DNNLayerType>(),        		
-        		false);
-    	m_outputSpec = spec;
-    	return new DLModelPortObjectSpec[]{m_outputSpec};
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+
+        final DLModelPortObjectSpec spec = new DLModelPortObjectSpec(DNNTYPES, new ArrayList<DNNLayerType>(), false);
+        m_outputSpec = spec;
+        return new DLModelPortObjectSpec[]{m_outputSpec};
     }
 
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		return new ArrayList<>();
-	} 
-    
-    
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        return new ArrayList<>();
+    }
 
 }
-

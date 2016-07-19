@@ -83,13 +83,11 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * <code>NodeDialog</code> for the "DL4JLearner" Node.
- * 
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
+ *
+ * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
+ * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
@@ -98,300 +96,207 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the DL4JLearner node.
      */
     protected FeedforwardLearnerNodeDialog() {
-    	LearnerParameterSettingsModels learnerSettingsModels = new LearnerParameterSettingsModels();
-    	DataParameterSettingsModels dataSettingsModels = new DataParameterSettingsModels();
-    	LayerParameterSettingsModels layerSettingsModels = new LayerParameterSettingsModels();
-    	
-       	setDefaultTabTitle("Learning Parameters");
-       	SettingsModelString trainingModeSettings = (SettingsModelString)learnerSettingsModels.createParameter(
-				LearnerParameter.TRAINING_MODE);
-       	SettingsModelString labelColumnSettings = (SettingsModelString)dataSettingsModels.createParameter(
-				DataParameter.LABEL_COLUMN);
-       	SettingsModelFilterString columnSelectionSettings = (SettingsModelFilterString)dataSettingsModels.createParameter(
-				DataParameter.COLUMN_SELECTION);
-       	SettingsModelIntegerBounded numberOfOutputs = (SettingsModelIntegerBounded)layerSettingsModels.createParameter(
-				LayerParameter.NUMBER_OF_OUTPUTS);
-       	
-       	trainingModeSettings.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				TrainingMode mode = TrainingMode.valueOf(trainingModeSettings.getStringValue());
-				switch (mode) {
-				case SUPERVISED:
-					labelColumnSettings.setEnabled(true);
-					columnSelectionSettings.setEnabled(true);
-					numberOfOutputs.setEnabled(false);
-					break;
-				case UNSUPERVISED:
-					labelColumnSettings.setEnabled(false);
-					columnSelectionSettings.setEnabled(true);	
-					numberOfOutputs.setEnabled(true);
-					break;
-				default:
-					break;
-				}
-			}       		
-       	});
-       	
-       	addDialogComponent(new DialogComponentButtonGroup(
-       			trainingModeSettings,
-    			false,
-    			"Training Mode",
-    			EnumUtils.getStringListFromToString(TrainingMode.values())
-    			));	
-       	
-       	createNewGroup("Seed");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_SEED), 
-    			"Use Seed"));
-    	
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelIntegerBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.SEED),
-				"Seed",
-				4
-				));
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Training Method");
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelIntegerBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.TRAINING_ITERATIONS),
-				"Number of Training Iterations",
-				4
-				));
-    	addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)learnerSettingsModels.createParameter(
-						LearnerParameter.OPTIMIZATION_ALGORITHM),
-				"Optimization Algorithm",
-				EnumUtils.getStringCollectionFromToString(DL4JOptimizationAlgorithm.values())
-				));
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_BACKPROP), 
-    			"Do Backpropagation"));
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_PRETRAIN), 
-    			"Do Pretraining"));
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_FINETUNE), 
-    			"Do Finetuning"));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Updater");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_PRETRAINED_UPDATER), 
-    			"Use Pretrained Updater"));
-    	addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)learnerSettingsModels.createParameter(
-						LearnerParameter.UPDATER),
-				"Updater Type",
-				EnumUtils.getStringCollectionFromToString(DL4JUpdater.values())
-				));   	
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Regularization");     	
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_REGULARIZATION), 
-    			"Use Regularization"));
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.L1),
-				"L1 Regularization Coefficient",
-				4
-				));   	
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.L2),
-				"L2 Regularization Coefficient",
-				4
-				));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Gradient Normalization");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_GRADIENT_NORMALIZATION), 
-    			"Use Gradient Normalization"));
-      	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)learnerSettingsModels.createParameter(
-						LearnerParameter.GRADIENT_NORMALIZATION),
-				"Gradient Normalization Strategy",
-				EnumUtils.getStringCollectionFromToString(DL4JGradientNormalization.values())
-				));
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
-				"Gradient Normalization Threshold",
-				4
-				));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Momentum");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_MOMENTUM), 
-    			"Use Momentum"));
-      	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.MOMENTUM),
-				"Momentum Rate",
-				4
-				));
-    	addDialogComponent(new DialogComponentString(
-				(SettingsModelString)learnerSettingsModels.createParameter(
-						LearnerParameter.MOMENTUM_AFTER),
-				"Momentum After",
-				false,
-				4
-				));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Drop Connect");
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_DROP_CONNECT), 
-    			"Use Drop Connect"));
-    	closeCurrentGroup();
-    	
-    	createNewTab("Global Parameters");
-    	
-    	createNewGroup("Global Learning Rate");
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_GLOBAL_LEARNING_RATE), 
-    			"Use Global Learning Rate"));
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-						LearnerParameter.GLOBAL_LEARNING_RATE),
-				"Global Learning Rate",
-				4
-				));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Global Drop Out Rate");
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_GLOBAL_DROP_OUT), 
-    			"Use Global Drop Out Rate"));  	
-    	addDialogComponent(new DialogComponentNumberEdit(
-    			(SettingsModelDoubleBounded)learnerSettingsModels.createParameter(
-    					LearnerParameter.GLOBAL_DROP_OUT), 
-    			"Global Drop Our Rate",
-    			4
-    			));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewGroup("Global Weight Initialization");
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentBoolean(
-    			(SettingsModelBoolean)learnerSettingsModels.createParameter(
-    					LearnerParameter.USE_GLOBAL_WEIGHT_INIT), 
-    			"Use Global Weight Initialization Strategy"));
-    	addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)learnerSettingsModels.createParameter(
-						LearnerParameter.GLOBAL_WEIGHT_INIT),
-				"Global Weight Initialization Strategy",
-				EnumUtils.getStringCollectionFromToString(WeightInit.values())
-				));
-    	setHorizontalPlacement(false);
-    	closeCurrentGroup();
-    	
-    	createNewTab("Data Parameters");
-    	setHorizontalPlacement(true);
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelIntegerBounded)dataSettingsModels.createParameter(
-						DataParameter.BATCH_SIZE),
-				"Batch Size",
-				4
-				));
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelIntegerBounded)dataSettingsModels.createParameter(
-						DataParameter.EPOCHS),
-				"Epochs",
-				4
-				));
-    	setHorizontalPlacement(false);
-    	addDialogComponent(new DialogComponentString(
-				(SettingsModelString)dataSettingsModels.createParameter(
-						DataParameter.IMAGE_SIZE),
-				"Size of Input Image"
-				));
-    	
-    	createNewTab("Output Layer Parameters");
-    	addDialogComponent(new DialogComponentNumberEdit(
-    			numberOfOutputs,
-				"Number of Output Units",
-				4
-				));
-    	addDialogComponent(new DialogComponentNumberEdit(
-				(SettingsModelDoubleBounded)layerSettingsModels.createParameter(
-						LayerParameter.LEARNING_RATE),
-				"Learning Rate",
-				4
-				));
-		addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)layerSettingsModels.createParameter(
-						LayerParameter.WEIGHT_INIT),
-				"Weight Initialization Strategy",
-				EnumUtils.getStringCollectionFromToString(WeightInit.values())
-				));
-		addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)layerSettingsModels.createParameter(
-						LayerParameter.LOSS_FUNCTION),
-				"Loss Function",
-				EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())
-				));
-		addDialogComponent(new DialogComponentStringSelection(
-				(SettingsModelString)layerSettingsModels.createParameter(
-						LayerParameter.ACTIVATION),
-				"Activation Function",
-				EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())
-				));
-    	
-    	//get all types from where we can convert to INDArray
-    	Set<Class<?>> possibleTypes = DataCellToJavaConverterRegistry.getInstance()
-    			.getFactoriesForDestinationType(INDArray.class)
-    	        // Get the destination type of factories which can handle mySourceType
-    	        .stream().map((factory) -> factory.getSourceType())
-    	        // Put all the destination types into a set
-    	        .collect(Collectors.toSet());
-    	//we can also convert collections
-    	possibleTypes.add(CollectionDataValue.class);
-    	Class<? extends DoubleValue>[] possibleTypesArray = (Class<? extends DoubleValue>[]) possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
+        final LearnerParameterSettingsModels learnerSettingsModels = new LearnerParameterSettingsModels();
+        final DataParameterSettingsModels dataSettingsModels = new DataParameterSettingsModels();
+        final LayerParameterSettingsModels layerSettingsModels = new LayerParameterSettingsModels();
 
-    	
-    	createNewTab("Column Selection");
-    	addDialogComponent(new DialogComponentColumnNameSelection(
-    			labelColumnSettings,
-    			"Label Column",
-    			1,
-    			false,
-    			NominalValue.class
-                ));
-    	addDialogComponent(new DialogComponentColumnFilter(
-    			columnSelectionSettings,
-    			1,
-    			true,
-    			possibleTypesArray
-    			));    	
-    }  
+        setDefaultTabTitle("Learning Parameters");
+        final SettingsModelString trainingModeSettings =
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_MODE);
+        final SettingsModelString labelColumnSettings =
+            (SettingsModelString)dataSettingsModels.createParameter(DataParameter.LABEL_COLUMN);
+        final SettingsModelFilterString columnSelectionSettings =
+            (SettingsModelFilterString)dataSettingsModels.createParameter(DataParameter.COLUMN_SELECTION);
+        final SettingsModelIntegerBounded numberOfOutputs =
+            (SettingsModelIntegerBounded)layerSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS);
+
+        trainingModeSettings.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(final ChangeEvent arg0) {
+                final TrainingMode mode = TrainingMode.valueOf(trainingModeSettings.getStringValue());
+                switch (mode) {
+                    case SUPERVISED:
+                        labelColumnSettings.setEnabled(true);
+                        columnSelectionSettings.setEnabled(true);
+                        numberOfOutputs.setEnabled(false);
+                        break;
+                    case UNSUPERVISED:
+                        labelColumnSettings.setEnabled(false);
+                        columnSelectionSettings.setEnabled(true);
+                        numberOfOutputs.setEnabled(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        addDialogComponent(new DialogComponentButtonGroup(trainingModeSettings, false, "Training Mode",
+            EnumUtils.getStringListFromToString(TrainingMode.values())));
+
+        createNewGroup("Seed");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_SEED), "Use Seed"));
+
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed", 4));
+        closeCurrentGroup();
+
+        createNewGroup("Training Method");
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_ITERATIONS),
+            "Number of Training Iterations", 4));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.OPTIMIZATION_ALGORITHM),
+            "Optimization Algorithm", EnumUtils.getStringCollectionFromToString(DL4JOptimizationAlgorithm.values())));
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_BACKPROP),
+            "Do Backpropagation"));
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAIN),
+            "Do Pretraining"));
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_FINETUNE),
+            "Do Finetuning"));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Updater");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAINED_UPDATER),
+            "Use Pretrained Updater"));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.UPDATER), "Updater Type",
+            EnumUtils.getStringCollectionFromToString(DL4JUpdater.values())));
+        closeCurrentGroup();
+
+        createNewGroup("Regularization");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_REGULARIZATION),
+            "Use Regularization"));
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L1),
+            "L1 Regularization Coefficient", 4));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L2),
+            "L2 Regularization Coefficient", 4));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Gradient Normalization");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GRADIENT_NORMALIZATION),
+            "Use Gradient Normalization"));
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GRADIENT_NORMALIZATION),
+            "Gradient Normalization Strategy",
+            EnumUtils.getStringCollectionFromToString(DL4JGradientNormalization.values())));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels
+                .createParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
+            "Gradient Normalization Threshold", 4));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Momentum");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_MOMENTUM),
+            "Use Momentum"));
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM),
+            "Momentum Rate", 4));
+        addDialogComponent(new DialogComponentString(
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM_AFTER),
+            "Momentum After", false, 4));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Drop Connect");
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_DROP_CONNECT),
+            "Use Drop Connect"));
+        closeCurrentGroup();
+
+        createNewTab("Global Parameters");
+
+        createNewGroup("Global Learning Rate");
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_LEARNING_RATE),
+            "Use Global Learning Rate"));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_LEARNING_RATE),
+            "Global Learning Rate", 4));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Global Drop Out Rate");
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_DROP_OUT),
+            "Use Global Drop Out Rate"));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_DROP_OUT),
+            "Global Drop Our Rate", 4));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewGroup("Global Weight Initialization");
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentBoolean(
+            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT),
+            "Use Global Weight Initialization Strategy"));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_WEIGHT_INIT),
+            "Global Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
+        setHorizontalPlacement(false);
+        closeCurrentGroup();
+
+        createNewTab("Data Parameters");
+        setHorizontalPlacement(true);
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.BATCH_SIZE), "Batch Size",
+            4));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs", 4));
+        setHorizontalPlacement(false);
+        addDialogComponent(new DialogComponentString(
+            (SettingsModelString)dataSettingsModels.createParameter(DataParameter.IMAGE_SIZE), "Size of Input Image"));
+
+        createNewTab("Output Layer Parameters");
+        addDialogComponent(new DialogComponentNumberEdit(numberOfOutputs, "Number of Output Units", 4));
+        addDialogComponent(new DialogComponentNumberEdit(
+            (SettingsModelDoubleBounded)layerSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
+            "Learning Rate", 4));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.WEIGHT_INIT),
+            "Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.LOSS_FUNCTION), "Loss Function",
+            EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())));
+        addDialogComponent(new DialogComponentStringSelection(
+            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.ACTIVATION), "Activation Function",
+            EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
+
+        //get all types from where we can convert to INDArray
+        final Set<Class<?>> possibleTypes =
+            DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
+                // Get the destination type of factories which can handle mySourceType
+                .stream().map((factory) -> factory.getSourceType())
+                // Put all the destination types into a set
+                .collect(Collectors.toSet());
+        //we can also convert collections
+        possibleTypes.add(CollectionDataValue.class);
+        final Class<? extends DoubleValue>[] possibleTypesArray =
+            (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
+
+        createNewTab("Column Selection");
+        addDialogComponent(
+            new DialogComponentColumnNameSelection(labelColumnSettings, "Label Column", 1, false, NominalValue.class));
+        addDialogComponent(new DialogComponentColumnFilter(columnSelectionSettings, 1, true, possibleTypesArray));
+    }
 }
-

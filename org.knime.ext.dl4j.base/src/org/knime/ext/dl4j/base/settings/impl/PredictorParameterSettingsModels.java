@@ -51,78 +51,80 @@ import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
 
 /**
- * Implementation of {@link IParameterSettingsModels} to store 
- * and create {@link SettingsModel}s for {@link PredictorPrameter}s.
- * 
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link PredictorPrameter}s.
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class PredictorParameterSettingsModels implements IParameterSettingsModels<PredictorPrameter> {
 
-	static final boolean DEFAULT_BOOLEAN = false;
-	
-	private SettingsModelBoolean m_appendPrediction;
-	private SettingsModelBoolean m_predictSteps;
-	private SettingsModelBoolean m_appendScore;
-	
-	private List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
-	
-	@Override
-	public SettingsModel createParameter(final PredictorPrameter enumerate) throws IllegalStateException {
-		switch (enumerate) {
-		case APPEND_PREDICTION:
-			return new SettingsModelBoolean("append_prediction", DEFAULT_BOOLEAN);
-		case PREDICT_STEPS:
-			return new SettingsModelBoolean("predict_steps", DEFAULT_BOOLEAN);
-		case APPEND_SCORE:
-			return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
-		default:
-			break;
-		}
-		return null;
-	}
+    static final boolean DEFAULT_BOOLEAN = false;
 
-	@Override
-	public void setParameter(final PredictorPrameter enumerate) throws IllegalStateException {
-		switch (enumerate) {
-		case APPEND_PREDICTION:
-			m_appendPrediction = (SettingsModelBoolean)createParameter(enumerate);
-			addToSet(m_appendPrediction);
-			break;
-		case PREDICT_STEPS:
-			m_predictSteps = (SettingsModelBoolean)createParameter(enumerate);
-			addToSet(m_predictSteps);
-			break;
-		case APPEND_SCORE:
-			m_appendScore = (SettingsModelBoolean)createParameter(enumerate);
-			addToSet(m_appendScore);
-			break;
-		default:
-			break;
-		}
-		
-	}
+    private SettingsModelBoolean m_appendPrediction;
 
-	private void addToSet(SettingsModel model){
-		if(!m_allInitializedSettings.contains(model)){
-			m_allInitializedSettings.add(model);
-		}
-	}
-	
-	public SettingsModelBoolean getPredictSteps(){
-		return m_predictSteps;
-	}
-	
-	public SettingsModelBoolean getAppendPrediction(){
-		return m_appendPrediction;
-	}
-	
-	public SettingsModelBoolean getAppendScore(){
-		return m_appendScore;
-	}
-	
-	@Override
-	public List<SettingsModel> getAllInitializedSettings() {
-		return m_allInitializedSettings;
-	}
+    private SettingsModelBoolean m_predictSteps;
+
+    private SettingsModelBoolean m_appendScore;
+
+    private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
+
+    @Override
+    public SettingsModel createParameter(final PredictorPrameter enumerate) throws IllegalStateException {
+        switch (enumerate) {
+            case APPEND_PREDICTION:
+                return new SettingsModelBoolean("append_prediction", DEFAULT_BOOLEAN);
+            case PREDICT_STEPS:
+                return new SettingsModelBoolean("predict_steps", DEFAULT_BOOLEAN);
+            case APPEND_SCORE:
+                return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
+            default:
+                break;
+        }
+        return null;
+    }
+
+    @Override
+    public void setParameter(final PredictorPrameter enumerate) throws IllegalStateException {
+        switch (enumerate) {
+            case APPEND_PREDICTION:
+                m_appendPrediction = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_appendPrediction);
+                break;
+            case PREDICT_STEPS:
+                m_predictSteps = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_predictSteps);
+                break;
+            case APPEND_SCORE:
+                m_appendScore = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_appendScore);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void addToSet(final SettingsModel model) {
+        if (!m_allInitializedSettings.contains(model)) {
+            m_allInitializedSettings.add(model);
+        }
+    }
+
+    public SettingsModelBoolean getPredictSteps() {
+        return m_predictSteps;
+    }
+
+    public SettingsModelBoolean getAppendPrediction() {
+        return m_appendPrediction;
+    }
+
+    public SettingsModelBoolean getAppendScore() {
+        return m_appendScore;
+    }
+
+    @Override
+    public List<SettingsModel> getAllInitializedSettings() {
+        return m_allInitializedSettings;
+    }
 
 }

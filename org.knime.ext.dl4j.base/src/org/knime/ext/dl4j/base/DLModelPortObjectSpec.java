@@ -42,7 +42,6 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,136 +57,129 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
  * Port Object Spec for Deep Learning Models.
- * 
+ *
  * @author David Kolb, KNIME.com GmbH
  */
 public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
-	
-	public static final class Serializer extends
-    	AbstractSimplePortObjectSpecSerializer<DLModelPortObjectSpec> {
-	}
-	
-	private static final String CFGKEY_NEURALNETTYPES =
-            "NeuralNetType";
-	private static final String CFGKEY_LAYERTYPES =
-            "LayerTypeList";
-	private static final String CFGKEY_ISTRAINED =
-            "IsTrained";
-	private static final String CFGKEY_COLUMNTYPES =
-            "FeatureColumsTypes";
-	private static final String CFGKEY_COLUMNNAMES =
-            "FeatureColumsNames";
-	private static final String CFGKEY_LABELS =
-            "Labels";
-	
-	
-	private List<DNNType> m_netTypes;
-	private List<DNNLayerType> m_layerTypes;
-	private boolean m_isTrained;
-	
-	private List<Pair<String, String>> m_featureColumns;
-	private List<String> m_labels;
-	
-	/**
+
+    public static final class Serializer extends AbstractSimplePortObjectSpecSerializer<DLModelPortObjectSpec> {
+    }
+
+    private static final String CFGKEY_NEURALNETTYPES = "NeuralNetType";
+
+    private static final String CFGKEY_LAYERTYPES = "LayerTypeList";
+
+    private static final String CFGKEY_ISTRAINED = "IsTrained";
+
+    private static final String CFGKEY_COLUMNTYPES = "FeatureColumsTypes";
+
+    private static final String CFGKEY_COLUMNNAMES = "FeatureColumsNames";
+
+    private static final String CFGKEY_LABELS = "Labels";
+
+    private List<DNNType> m_netTypes;
+
+    private List<DNNLayerType> m_layerTypes;
+
+    private boolean m_isTrained;
+
+    private List<Pair<String, String>> m_featureColumns;
+
+    private List<String> m_labels;
+
+    /**
      * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}
      */
-	public DLModelPortObjectSpec(){
-		
-	}
-	
-	public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList, 
-			final List<Pair<String, String>> featureColumns, 
-			final List<String> labels, final boolean isTrained){
-		this.m_netTypes = type;
-		this.m_layerTypes = layerTypeList;
-		this.m_isTrained = isTrained;
-		this.m_featureColumns = featureColumns;
-		this.m_labels = labels;
-		
-	}
-	
-	public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList, 
-			final boolean isTrained){
-		this.m_netTypes = type;
-		this.m_layerTypes = layerTypeList;
-		this.m_isTrained = isTrained;
-		m_featureColumns = new ArrayList<>();
-		m_labels = new ArrayList<>();
-	}
-	
-	@Override
-	protected void save(final ModelContentWO model) {
-		model.addStringArray(CFGKEY_NEURALNETTYPES,
-				EnumUtils.getStringListFromEnumCollection(m_netTypes));
-		model.addStringArray(CFGKEY_LAYERTYPES, 
-				EnumUtils.getStringListFromEnumCollection(m_layerTypes));		
-		
-		model.addBoolean(CFGKEY_ISTRAINED, m_isTrained);
-		
-		
-		model.addStringArray(CFGKEY_COLUMNTYPES,
-				DLModelPortObjectUtils.getSeconds(m_featureColumns, String.class));
-		model.addStringArray(CFGKEY_COLUMNNAMES,
-				DLModelPortObjectUtils.getFirsts(m_featureColumns, String.class));
-		
-		model.addStringArray(CFGKEY_LABELS,
-				m_labels.toArray(new String[m_labels.size()]));
-		
-	}
+    public DLModelPortObjectSpec() {
 
-	@Override
-	protected void load(final ModelContentRO model) throws InvalidSettingsException {
-		//load labels
-		List<String> labels = new ArrayList<>();
-		for(String label : model.getStringArray(CFGKEY_LABELS)){
-			labels.add(label);			
-		}
-		m_labels = labels;
-		
-		//load learned columns types and names
-		String[] columnNames = model.getStringArray(CFGKEY_COLUMNNAMES);
-		String[] columnTypes = model.getStringArray(CFGKEY_COLUMNTYPES);
-		List<Pair<String, String>> namesAndTypes = new ArrayList<>();
-		for(int i = 0; i < columnNames.length; i++){
-			namesAndTypes.add(new Pair<String, String>(columnNames[i], columnTypes[i]));
-		}
-		m_featureColumns = namesAndTypes;
-		
-		//load network types	
-		List<DNNType> dnnTypeList = new ArrayList<>();
-		for(String dnnTypeAsString : model.getStringArray(CFGKEY_NEURALNETTYPES)){
-			dnnTypeList.add(DNNType.valueOf(dnnTypeAsString));			
-		}
-		m_netTypes = dnnTypeList;							
-		
-		//load layer types
-		List<DNNLayerType> layerTypeList = new ArrayList<>();
-		for(String layerTypeAsString : model.getStringArray(CFGKEY_LAYERTYPES)){
-			layerTypeList.add(DNNLayerType.valueOf(layerTypeAsString));			
-		}
-		m_layerTypes = layerTypeList;	
-		
-		//load isTrained flag
-		m_isTrained = model.getBoolean(CFGKEY_ISTRAINED);
-	}
-	
-	public List<DNNType> getNeuralNetworkTypes(){
-		return m_netTypes;
-	}
+    }
 
-	public List<DNNLayerType> getLayerTypes() {
-		return m_layerTypes;
-	}
-	
-	public boolean isTrained(){
-		return m_isTrained;
-	}
-	
-	public List<Pair<String, String>> getLearnedColumns() {
-		return m_featureColumns;
-	}
-	
-	public List<String> getLabels(){
-		return m_labels;
-	}
+    public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList,
+        final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
+        this.m_netTypes = type;
+        this.m_layerTypes = layerTypeList;
+        this.m_isTrained = isTrained;
+        this.m_featureColumns = featureColumns;
+        this.m_labels = labels;
+
+    }
+
+    public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList,
+        final boolean isTrained) {
+        this.m_netTypes = type;
+        this.m_layerTypes = layerTypeList;
+        this.m_isTrained = isTrained;
+        m_featureColumns = new ArrayList<>();
+        m_labels = new ArrayList<>();
+    }
+
+    @Override
+    protected void save(final ModelContentWO model) {
+        model.addStringArray(CFGKEY_NEURALNETTYPES, EnumUtils.getStringListFromEnumCollection(m_netTypes));
+        model.addStringArray(CFGKEY_LAYERTYPES, EnumUtils.getStringListFromEnumCollection(m_layerTypes));
+
+        model.addBoolean(CFGKEY_ISTRAINED, m_isTrained);
+
+        model.addStringArray(CFGKEY_COLUMNTYPES, DLModelPortObjectUtils.getSeconds(m_featureColumns, String.class));
+        model.addStringArray(CFGKEY_COLUMNNAMES, DLModelPortObjectUtils.getFirsts(m_featureColumns, String.class));
+
+        model.addStringArray(CFGKEY_LABELS, m_labels.toArray(new String[m_labels.size()]));
+
+    }
+
+    @Override
+    protected void load(final ModelContentRO model) throws InvalidSettingsException {
+        //load labels
+        final List<String> labels = new ArrayList<>();
+        for (final String label : model.getStringArray(CFGKEY_LABELS)) {
+            labels.add(label);
+        }
+        m_labels = labels;
+
+        //load learned columns types and names
+        final String[] columnNames = model.getStringArray(CFGKEY_COLUMNNAMES);
+        final String[] columnTypes = model.getStringArray(CFGKEY_COLUMNTYPES);
+        final List<Pair<String, String>> namesAndTypes = new ArrayList<>();
+        for (int i = 0; i < columnNames.length; i++) {
+            namesAndTypes.add(new Pair<String, String>(columnNames[i], columnTypes[i]));
+        }
+        m_featureColumns = namesAndTypes;
+
+        //load network types
+        final List<DNNType> dnnTypeList = new ArrayList<>();
+        for (final String dnnTypeAsString : model.getStringArray(CFGKEY_NEURALNETTYPES)) {
+            dnnTypeList.add(DNNType.valueOf(dnnTypeAsString));
+        }
+        m_netTypes = dnnTypeList;
+
+        //load layer types
+        final List<DNNLayerType> layerTypeList = new ArrayList<>();
+        for (final String layerTypeAsString : model.getStringArray(CFGKEY_LAYERTYPES)) {
+            layerTypeList.add(DNNLayerType.valueOf(layerTypeAsString));
+        }
+        m_layerTypes = layerTypeList;
+
+        //load isTrained flag
+        m_isTrained = model.getBoolean(CFGKEY_ISTRAINED);
+    }
+
+    public List<DNNType> getNeuralNetworkTypes() {
+        return m_netTypes;
+    }
+
+    public List<DNNLayerType> getLayerTypes() {
+        return m_layerTypes;
+    }
+
+    public boolean isTrained() {
+        return m_isTrained;
+    }
+
+    public List<Pair<String, String>> getLearnedColumns() {
+        return m_featureColumns;
+    }
+
+    public List<String> getLabels() {
+        return m_labels;
+    }
 }

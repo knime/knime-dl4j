@@ -71,98 +71,97 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  * @author David Kolb, KNIME.com GmbH
  */
 public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
-	
-	private SettingsModelString m_infile;
-	private DLModelPortObjectSpec m_outSpec;
-	
-	/**
+
+    private SettingsModelString m_infile;
+
+    private DLModelPortObjectSpec m_outSpec;
+
+    /**
      * Constructor for the node model.
      */
-    protected Dl4JModelReaderNodeModel() {    
-    	super(new PortType[] {}, new PortType[] { DLModelPortObject.TYPE });
+    protected Dl4JModelReaderNodeModel() {
+        super(new PortType[]{}, new PortType[]{DLModelPortObject.TYPE});
     }
 
     @Override
-    protected DLModelPortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+    protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
 
-		try {	
-			//read spec only for configure
-			m_outSpec = loadSpec();		
-		} catch (Exception e) {
-			throw new InvalidSettingsException(e.getMessage());	
-		}
-    	return new DLModelPortObjectSpec[]{m_outSpec};    
+        try {
+            //read spec only for configure
+            m_outSpec = loadSpec();
+        } catch (final Exception e) {
+            throw new InvalidSettingsException(e.getMessage());
+        }
+        return new DLModelPortObjectSpec[]{m_outSpec};
     }
-    
+
     @Override
-    protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
-    	CheckUtils.checkSourceFile(m_infile.getStringValue());
-    	
-    	URL url = FileUtil.toURL(m_infile.getStringValue());
-		File file = FileUtil.getFileFromURL(url);
-		
-		FileInputStream fileIn = new FileInputStream(file);
-		ZipInputStream zipIn = new ZipInputStream(fileIn);
-		DLModelPortObject portObjectOnly;
-		
-		try {
-			 portObjectOnly = DLModelPortObjectUtils.loadPortFromZip(zipIn);
-		} finally {
-			zipIn.close();
-			fileIn.close();
-		}
+    protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+        CheckUtils.checkSourceFile(m_infile.getStringValue());
 
-		return new PortObject[]{new DLModelPortObject(portObjectOnly.getLayers(), 
-				portObjectOnly.getMultilayerLayerNetwork(), m_outSpec)};
+        final URL url = FileUtil.toURL(m_infile.getStringValue());
+        final File file = FileUtil.getFileFromURL(url);
+
+        final FileInputStream fileIn = new FileInputStream(file);
+        final ZipInputStream zipIn = new ZipInputStream(fileIn);
+        DLModelPortObject portObjectOnly;
+
+        try {
+            portObjectOnly = DLModelPortObjectUtils.loadPortFromZip(zipIn);
+        } finally {
+            zipIn.close();
+            fileIn.close();
+        }
+
+        return new PortObject[]{
+            new DLModelPortObject(portObjectOnly.getLayers(), portObjectOnly.getMultilayerLayerNetwork(), m_outSpec)};
     }
-    
-	@Override
-	protected List<SettingsModel> initSettingsModels() {
-		m_infile = Dl4JModelReaderNodeDialog.createFileModel();
-		
-		List<SettingsModel> settings = new ArrayList<>();
-		settings.add(m_infile);
-		
-		return settings;
-	}
-	
-	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		String fileName = settings.getString("dl4j_model_reader_file");
-		
-		if (fileName == null || fileName.length() == 0) {
+
+    @Override
+    protected List<SettingsModel> initSettingsModels() {
+        m_infile = Dl4JModelReaderNodeDialog.createFileModel();
+
+        final List<SettingsModel> settings = new ArrayList<>();
+        settings.add(m_infile);
+
+        return settings;
+    }
+
+    @Override
+    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
+        final String fileName = settings.getString("dl4j_model_reader_file");
+
+        if ((fileName == null) || (fileName.length() == 0)) {
             throw new InvalidSettingsException("No input file specified");
-        }		
-		super.validateSettings(settings);
-	} 
-	
-	/**
-	 * Helper method to load only spec.
-	 * 
-	 * @return the loaded spec
-	 * @throws Exception
-	 */
-	private DLModelPortObjectSpec loadSpec() throws Exception{			
-		String warning = CheckUtils.checkSourceFile(m_infile.getStringValue());	
-		if(warning != null){
-			throw new IOException("Unable to load Spec from file. Reason: " + warning);
-		}
-		
-		URL url = FileUtil.toURL(m_infile.getStringValue());
-		File file = FileUtil.getFileFromURL(url);
-			
-		FileInputStream fileIn = new FileInputStream(file);;
-		ZipInputStream zipIn = new ZipInputStream(fileIn);	
-			
-		DLModelPortObjectSpec spec = DLModelPortObjectUtils.loadSpecFromZip(zipIn);
-				
-		zipIn.close();
-		fileIn.close();
-		
-		return spec;
-	}
+        }
+        super.validateSettings(settings);
+    }
 
-   
+    /**
+     * Helper method to load only spec.
+     *
+     * @return the loaded spec
+     * @throws Exception
+     */
+    private DLModelPortObjectSpec loadSpec() throws Exception {
+        final String warning = CheckUtils.checkSourceFile(m_infile.getStringValue());
+        if (warning != null) {
+            throw new IOException("Unable to load Spec from file. Reason: " + warning);
+        }
+
+        final URL url = FileUtil.toURL(m_infile.getStringValue());
+        final File file = FileUtil.getFileFromURL(url);
+
+        final FileInputStream fileIn = new FileInputStream(file);
+        ;
+        final ZipInputStream zipIn = new ZipInputStream(fileIn);
+
+        final DLModelPortObjectSpec spec = DLModelPortObjectUtils.loadSpecFromZip(zipIn);
+
+        zipIn.close();
+        fileIn.close();
+
+        return spec;
+    }
 
 }
-

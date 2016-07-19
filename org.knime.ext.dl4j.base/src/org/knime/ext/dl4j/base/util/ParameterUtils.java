@@ -49,164 +49,154 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 
 /**
- * Utility class for parameter validation and conversion of 
- * Deeplearning4J Integration nodes.
+ * Utility class for parameter validation and conversion of Deeplearning4J Integration nodes.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class ParameterUtils {
-	
-	/** regex pattern for expected format of image size parameter */
-	private final static String imageSizePattern = 
-			"\\d+,\\d+,\\d+";
-	/** regex pattern for expected format of kernel parameter */
-	private final static String strideKernelSizePattern = 
-			"\\d+,\\d+";
-	/** regex pattern for expected format of a string representation of a map.
-	 *  e.g. momentum after parameter */
-	private final static String mapAsStringPattern = 
-			"(\\d+:\\d+\\.\\d+)?(\\d+:\\d+\\.\\d+,)*(\\d+:\\d+\\.\\d+)";
-	
-	private ParameterUtils(){
-		// Utility class
-	}
-	
-	/**
-	 * Check if string of stride parameter matches corresponding regex
-	 * 
-	 * @param stride the string to check
-	 * @throws InvalidSettingsException if string doesn't match regex
-	 */
-	public static void validateStrideParameter(String stride) 
-			throws InvalidSettingsException{
-		if(!stride.matches(strideKernelSizePattern)){
-			throw new InvalidSettingsException("string for parameter Stride is incorrect. "
-					+ "Has to be two Integers separated by a comma");
-		}
-	}
-	
-	/**
-	 * Check if string of image size parameter matches corresponding regex
-	 * 
-	 * @param stride the string to check
-	 * @throws InvalidSettingsException if string doesn't match regex
-	 */
-	public static void validateImageSizeParameter(String imageSize, boolean isConv) 
-			throws InvalidSettingsException{
-		if(isConv){
-			if(imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)){
-				throw new InvalidSettingsException("Image size needs to be set for convolutional"
-						+ " networks. Set image size in learner dialog -> Data Parameters.");
-			}
-			if(!imageSize.matches(imageSizePattern)){
-				throw new InvalidSettingsException("string for image size is incorrect. "
-						+ "Has to be three Integers separated by a comma (x-size,y-size,channels)");
-			}
-		}
-	}
-	
-	/**
-	 * Check if string of kernel size parameter matches corresponding regex
-	 * 
-	 * @param stride the string to check
-	 * @throws InvalidSettingsException if string doesn't match regex
-	 */
-	public static void validateKernelSizeParameter(String kernel) 
-			throws InvalidSettingsException{
-		if(!kernel.matches(strideKernelSizePattern)){
-			throw new InvalidSettingsException("string for parameter Kernel Size is incorrect. "
-					+ "Has to be two Integers separated by a comma");
-		}
-	}
-	
-	/**
-	 * Check if string of momentum after parameter matches corresponding regex
-	 * 
-	 * @param stride the string to check
-	 * @throws InvalidSettingsException if string doesn't match regex
-	 */
-	public static void validateMomentumAfterParameter(String momentumAfter)
-			throws InvalidSettingsException{
-		if(momentumAfter.isEmpty()){
-			return;
-		}
-		if(!momentumAfter.matches(mapAsStringPattern)){
-			throw new InvalidSettingsException("string for parameter Momentum After is incorrect. "
-					+ "Has to be list of 'Integer:Double' separated by a comma");
-		}
-	}
-	
-	/**
-	 * Converts a String representation of a number list to an array of int. The numbers in the 
-	 * String need to be separated by a comma. 
-	 * e.g. '1,2' or '132,3'
-	 * 
-	 * @param intsAsString numbers separated by commas
-	 * @return array of numbers contained in the string
-	 */
-	public static int[] convertIntsAsStringToInts(String intsAsString){
-		String[] split = intsAsString.split(",");
-		int[] ints = new int[split.length];
-		int i = 0;
-		for(String s : split){
-			ints[i] = new Integer(s);
-			i++;
-		}
-		return ints;
-	}
-	
-	
-	/**
-	 * Converts a string array to an int array. Assumes that each String of the array contains 
-	 * one number. Every string needs to be in the correct number format.
-	 * 
-	 * @param strings array of strings in correct number format
-	 * @return array of ints
-	 */
-	public static int[] convertStringsToInts(String[] strings){
-		int[] ints = new int[strings.length];
-		int i = 0;
-		for(String s : strings){
-			ints[i] = new Integer(s);
-			i++;
-		}		
-		return ints;
-	}
-	
-	
-	/**
-	 * Converts a string representation of a map to a actual {@link Map}.
-	 * The string need to be in the following format:
-	 * 'Integer:Double' separated by commas.
-	 * e.g. '1:0.2,2:0.9'
-	 * 
-	 * @param mapAsString the string to parse
-	 * @return HashMap with the Integer values as keys and Double 
-	 * values as values
-	 */
-	public static Map<Integer,Double> convertStringToMap(String mapAsString){
-		if(mapAsString.isEmpty()){
-			return new HashMap<>();
-		}
-		String[] keysValues = mapAsString.split(",");
-		
-		Integer[] keys = new Integer[keysValues.length];
-		Double[] values = new Double[keysValues.length];
-		
-		int i = 0;
-		for(String keyValue : keysValues){
-			String[] kV = keyValue.split(":");
-			keys[i] = new Integer(kV[0]);
-			values[i] = new Double(kV[1]);
-			i++;
-		}
-		
-		Map<Integer,Double> m = new HashMap<>();
-		
-		for(int j = 0 ; j < keys.length ; j++){
-			m.put(keys[j], values[j]);
-		}
-		
-		return m;
-	}
+
+    /** regex pattern for expected format of image size parameter */
+    private final static String imageSizePattern = "\\d+,\\d+,\\d+";
+
+    /** regex pattern for expected format of kernel parameter */
+    private final static String strideKernelSizePattern = "\\d+,\\d+";
+
+    /**
+     * regex pattern for expected format of a string representation of a map. e.g. momentum after parameter
+     */
+    private final static String mapAsStringPattern = "(\\d+:\\d+\\.\\d+)?(\\d+:\\d+\\.\\d+,)*(\\d+:\\d+\\.\\d+)";
+
+    private ParameterUtils() {
+        // Utility class
+    }
+
+    /**
+     * Check if string of stride parameter matches corresponding regex
+     *
+     * @param stride the string to check
+     * @throws InvalidSettingsException if string doesn't match regex
+     */
+    public static void validateStrideParameter(final String stride) throws InvalidSettingsException {
+        if (!stride.matches(strideKernelSizePattern)) {
+            throw new InvalidSettingsException(
+                "string for parameter Stride is incorrect. " + "Has to be two Integers separated by a comma");
+        }
+    }
+
+    /**
+     * Check if string of image size parameter matches corresponding regex
+     *
+     * @param stride the string to check
+     * @throws InvalidSettingsException if string doesn't match regex
+     */
+    public static void validateImageSizeParameter(final String imageSize, final boolean isConv)
+        throws InvalidSettingsException {
+        if (isConv) {
+            if (imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)) {
+                throw new InvalidSettingsException("Image size needs to be set for convolutional"
+                    + " networks. Set image size in learner dialog -> Data Parameters.");
+            }
+            if (!imageSize.matches(imageSizePattern)) {
+                throw new InvalidSettingsException("string for image size is incorrect. "
+                    + "Has to be three Integers separated by a comma (x-size,y-size,channels)");
+            }
+        }
+    }
+
+    /**
+     * Check if string of kernel size parameter matches corresponding regex
+     *
+     * @param stride the string to check
+     * @throws InvalidSettingsException if string doesn't match regex
+     */
+    public static void validateKernelSizeParameter(final String kernel) throws InvalidSettingsException {
+        if (!kernel.matches(strideKernelSizePattern)) {
+            throw new InvalidSettingsException(
+                "string for parameter Kernel Size is incorrect. " + "Has to be two Integers separated by a comma");
+        }
+    }
+
+    /**
+     * Check if string of momentum after parameter matches corresponding regex
+     *
+     * @param stride the string to check
+     * @throws InvalidSettingsException if string doesn't match regex
+     */
+    public static void validateMomentumAfterParameter(final String momentumAfter) throws InvalidSettingsException {
+        if (momentumAfter.isEmpty()) {
+            return;
+        }
+        if (!momentumAfter.matches(mapAsStringPattern)) {
+            throw new InvalidSettingsException("string for parameter Momentum After is incorrect. "
+                + "Has to be list of 'Integer:Double' separated by a comma");
+        }
+    }
+
+    /**
+     * Converts a String representation of a number list to an array of int. The numbers in the String need to be
+     * separated by a comma. e.g. '1,2' or '132,3'
+     *
+     * @param intsAsString numbers separated by commas
+     * @return array of numbers contained in the string
+     */
+    public static int[] convertIntsAsStringToInts(final String intsAsString) {
+        final String[] split = intsAsString.split(",");
+        final int[] ints = new int[split.length];
+        int i = 0;
+        for (final String s : split) {
+            ints[i] = new Integer(s);
+            i++;
+        }
+        return ints;
+    }
+
+    /**
+     * Converts a string array to an int array. Assumes that each String of the array contains one number. Every string
+     * needs to be in the correct number format.
+     *
+     * @param strings array of strings in correct number format
+     * @return array of ints
+     */
+    public static int[] convertStringsToInts(final String[] strings) {
+        final int[] ints = new int[strings.length];
+        int i = 0;
+        for (final String s : strings) {
+            ints[i] = new Integer(s);
+            i++;
+        }
+        return ints;
+    }
+
+    /**
+     * Converts a string representation of a map to a actual {@link Map}. The string need to be in the following format:
+     * 'Integer:Double' separated by commas. e.g. '1:0.2,2:0.9'
+     *
+     * @param mapAsString the string to parse
+     * @return HashMap with the Integer values as keys and Double values as values
+     */
+    public static Map<Integer, Double> convertStringToMap(final String mapAsString) {
+        if (mapAsString.isEmpty()) {
+            return new HashMap<>();
+        }
+        final String[] keysValues = mapAsString.split(",");
+
+        final Integer[] keys = new Integer[keysValues.length];
+        final Double[] values = new Double[keysValues.length];
+
+        int i = 0;
+        for (final String keyValue : keysValues) {
+            final String[] kV = keyValue.split(":");
+            keys[i] = new Integer(kV[0]);
+            values[i] = new Double(kV[1]);
+            i++;
+        }
+
+        final Map<Integer, Double> m = new HashMap<>();
+
+        for (int j = 0; j < keys.length; j++) {
+            m.put(keys[j], values[j]);
+        }
+
+        return m;
+    }
 }

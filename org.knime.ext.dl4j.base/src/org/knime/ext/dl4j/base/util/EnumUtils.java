@@ -65,8 +65,7 @@ public final class EnumUtils {
      *
      * @return {@link Enum} with the given name
      */
-    public static <E extends Enum<?>> E valueForName(final String name,
-            final E[] values) {
+    public static <E extends Enum<?>> E valueForName(final String name, final E[] values) {
         for (final E mode : values) {
             if (mode.toString().equalsIgnoreCase(name)) {
                 return mode;
@@ -96,8 +95,7 @@ public final class EnumUtils {
     }
 
     /**
-     * Creates a {@link Collection} of {@link String}s using toString of the
-     * given {@link Enum}.
+     * Creates a {@link Collection} of {@link String}s using toString of the given {@link Enum}.
      *
      * @param enums
      * @return Collection<String> of enum based on toString
@@ -109,21 +107,20 @@ public final class EnumUtils {
         }
         return s;
     }
-    
+
     /**
-     * Creates a {@link String}[] using toString of the given {@link Collection}
-     * of enums.
+     * Creates a {@link String}[] using toString of the given {@link Collection} of enums.
      *
      * @param enums Collection of enums
      * @return enum as String[] based on toString
      */
-    public static <E extends Enum<E>> String[] getStringListFromEnumCollection(final List<E> enums){
-    	final String[] s = new String[enums.size()];
-    	int i = 0;
-    	for(final Enum<?> e : enums){
-    		s[i] = e.toString();
-    		i++;
-    	}
-    	return s;
+    public static <E extends Enum<E>> String[] getStringListFromEnumCollection(final List<E> enums) {
+        final String[] s = new String[enums.size()];
+        int i = 0;
+        for (final Enum<?> e : enums) {
+            s[i] = e.toString();
+            i++;
+        }
+        return s;
     }
 }
