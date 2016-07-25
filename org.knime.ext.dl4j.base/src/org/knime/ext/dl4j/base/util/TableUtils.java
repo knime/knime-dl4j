@@ -121,33 +121,74 @@ public class TableUtils {
 
     /**
      * Calculate the resulting feature vector length if the specified {@link DataRow} is converted into vector format
-     * for deep learning. The cell with the specified index will be skipped (normally a label column contained in the
-     * input table).
+     * for deep learning. The cells with the specified indices will be skipped (normally a label or target columns
+     * contained in the input table).
      *
      * @param cells the {@link DataRow} which is expected for conversion
-     * @param labelColumnIndex the index of a possible label column
+     * @param indices List containing indices of columns which should be skipped
      * @return the calculated feature vector length
      * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
      */
-    public static int calculateFeatureVectorLength(final DataRow cells, final int labelColumnIndex)
+    public static int calculateFeatureVectorLengthExcludingIndices(final DataRow cells, final List<Integer> indices)
         throws UnsupportedDataTypeException {
         int recordLength = 0;
 
         int i = 0;
         for (final DataCell cell : cells) {
-            if (i == labelColumnIndex) {
+            if (indices.contains(i)) {
                 i++;
                 continue;
             }
+            recordLength += calculateFeatureVectorLength(cell);
+            i++;
+        }
 
-            if (cell.getType().isCollectionType()) {
-                final INDArray[] arrs = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-                for (final INDArray arr : arrs) {
-                    recordLength += arr.length();
-                }
-            } else {
-                recordLength += ConverterUtils.convertDataCellToJava(cell, INDArray.class).length();
+        return recordLength;
+    }
+
+    /**
+     * Calculate the resulting feature vector length if the specified {@link DataCell} is converted into vector format
+     * for deep learning.
+     *
+     * @param cell the {@link DataCell} which is expected for conversion
+     * @return the calculated feature vector length
+     * @throws UnsupportedDataTypeException
+     */
+    public static int calculateFeatureVectorLength(final DataCell cell) throws UnsupportedDataTypeException {
+        int recordLength = 0;
+
+        if (cell.getType().isCollectionType()) {
+            final INDArray[] arrs = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
+            for (final INDArray arr : arrs) {
+                recordLength += arr.length();
             }
+        } else {
+            recordLength += ConverterUtils.convertDataCellToJava(cell, INDArray.class).length();
+        }
+
+        return recordLength;
+    }
+
+    /**
+     * Calculate the resulting feature vector length if the specified {@link DataRow} is converted into vector format
+     * for deep learning. Only the cells with the specified indices will be used.
+     *
+     * @param cells the {@link DataRow} which is expected for conversion
+     * @param indices List containing indices of columns which should be used
+     * @return the calculated feature vector length
+     * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
+     */
+    public static int calculateFeatureVectorLengthOnlyIndices(final DataRow cells, final List<Integer> indices)
+        throws UnsupportedDataTypeException {
+        int recordLength = 0;
+
+        int i = 0;
+        for (final DataCell cell : cells) {
+            if (!indices.contains(i)) {
+                i++;
+                continue;
+            }
+            recordLength += calculateFeatureVectorLength(cell);
             i++;
         }
 
@@ -212,4 +253,20 @@ public class TableUtils {
         }
         return new ArrayList<String>(labels);
     }
+
+    /**
+     * Creates a list of column indices from a list of column names and corresponding {@link DataTableSpec}.
+     *
+     * @param columnNames the list of column names
+     * @param spec the spec corresponding to the column names
+     * @return a list of the indices of the specified columns in the table
+     */
+    public static List<Integer> indicesFromColumnNames(final List<String> columnNames, final DataTableSpec spec) {
+        List<Integer> indices = new ArrayList<Integer>();
+        for (String columnName : columnNames) {
+            indices.add(spec.findColumnIndex(columnName));
+        }
+        return indices;
+    }
+
 }

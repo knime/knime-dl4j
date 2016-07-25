@@ -97,7 +97,7 @@ public enum LearnerParameter {
 
     public static final String DEFAULT_UPDATER = "NESTEROVS";
 
-    public static final String DEFAULT_MAP = "0:0.0";
+    public static final String DEFAULT_MAP = "";
 
     public static final String DEFAULT_TRAININGS_MODE = "SUPERVISED";
 

@@ -122,9 +122,12 @@ public class NDArrayUtils {
      * Horizontally concatenates arrays contained in the specified list.
      *
      * @param arrs the arrays which should be concatenated
-     * @return array concatenated array
+     * @return array concatenated array or null if list is empty
      */
-    public static INDArray linearConcat(final List<INDArray> arrs) {
+    public static INDArray linearHConcat(final List<INDArray> arrs) {
+        if(arrs.isEmpty()){
+            return null;
+        }
         int l = 0;
         //calculate resulting vector length
         for (final INDArray arr : arrs) {

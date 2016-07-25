@@ -68,6 +68,8 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
 
     private SettingsModelFilterString m_columnSelection;
 
+    private SettingsModelFilterString m_targetColumnSelection;
+
     private SettingsModelString m_imageSize;
 
     private SettingsModelString m_documentColumn;
@@ -84,7 +86,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                     Integer.MAX_VALUE);
             case EPOCHS:
                 return new SettingsModelIntegerBounded("epochs", DataParameter.DEFAULT_EPOCHS, 1, Integer.MAX_VALUE);
-            case COLUMN_SELECTION:
+            case FEATURE_COLUMN_SELECTION:
                 return new SettingsModelFilterString("column_selection");
             case LABEL_COLUMN:
                 return new SettingsModelString("label_column", "");
@@ -94,6 +96,8 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 return new SettingsModelString("document_column", "");
             case SEQUENCE_COLUMN:
                 return new SettingsModelString("sequence_column", "");
+            case TARGET_COLUMN_SELECTION:
+                return new SettingsModelFilterString("target_column_selection");
             default:
                 throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
         }
@@ -112,7 +116,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 m_epochs = (SettingsModelIntegerBounded)createParameter(enumerate);
                 addToSet(m_epochs);
                 break;
-            case COLUMN_SELECTION:
+            case FEATURE_COLUMN_SELECTION:
                 m_columnSelection = (SettingsModelFilterString)createParameter(enumerate);
                 if (!m_allInitializedSettings.contains(m_columnSelection)) {
                     m_allInitializedSettings.add(m_columnSelection);
@@ -138,9 +142,17 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 m_sequenceColumn = (SettingsModelString)createParameter(enumerate);
                 addToSet(m_sequenceColumn);
                 break;
+            case TARGET_COLUMN_SELECTION:
+                m_targetColumnSelection = (SettingsModelFilterString)createParameter(enumerate);
+                addToSet(m_targetColumnSelection);
+                break;
             default:
                 throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
         }
+    }
+
+    public SettingsModelFilterString getTargetColumnSelection() {
+        return m_targetColumnSelection;
     }
 
     public SettingsModelIntegerBounded getBatchSize() {
@@ -155,7 +167,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
         return m_labelColumn;
     }
 
-    public SettingsModelFilterString getColumnSelection() {
+    public SettingsModelFilterString getFeatureColumnSelection() {
         return m_columnSelection;
     }
 

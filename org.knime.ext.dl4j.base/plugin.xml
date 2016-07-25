@@ -28,6 +28,11 @@
       category-path="/labs/deeplearning/layer/encoder"
       factory-class="org.knime.ext.dl4j.base.nodes.layer.autoencoder.AutoEncoderLayerNodeFactory">
 </node>
+<node
+      category-path="/labs/deeplearning/learn"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.regression.FeedforwardRegressionLearnerNodeFactory">
+</node>
 </extension>
    <extension point="org.knime.core.PortType">
       <portType hidden="false" name="org.knime.dl.nodes.DNNModelPortObject" objectClass="org.knime.ext.dl4j.base.DLModelPortObject" objectSerializer="org.knime.ext.dl4j.base.DLModelPortObject$Serializer" specClass="org.knime.ext.dl4j.base.DLModelPortObjectSpec" specSerializer="org.knime.ext.dl4j.base.DLModelPortObjectSpec$Serializer">

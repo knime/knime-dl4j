@@ -40,28 +40,59 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.settings.enumerate;
+package org.knime.ext.dl4j.base.nodes.learn.feedforward.regression;
+
+import org.knime.core.node.NodeDialogPane;
+import org.knime.core.node.NodeFactory;
+import org.knime.core.node.NodeView;
 
 /**
- * Parameters for the data set to train on.
+ * <code>NodeFactory</code> for the "DL4JLearner" Node.
  *
- * @author David Kolb, KNIME.com GmbH
+ *
+ * @author
  */
-public enum DataParameter {
-        /** the number of examples to use for gradient estimation */
-    BATCH_SIZE, /** number of epochs to train */
-    EPOCHS, /** the columns holding the data to train on */
-    FEATURE_COLUMN_SELECTION, /** the column holding the labels */
-    LABEL_COLUMN, /** the size of the input image */
-    IMAGE_SIZE, /** the column holding the documents */
-    DOCUMENT_COLUMN, /** the column holding the sequence to train on */
-    SEQUENCE_COLUMN, /** the columns holding the targets for regression */
-    TARGET_COLUMN_SELECTION;
+public class FeedforwardRegressionLearnerNodeFactory extends NodeFactory<FeedforwardRegressionLearnerNodeModel> {
 
-    //default values for learner parameters
-    public static final String DEFAULT_IMAGE_SIZE = "0,0,0";
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public FeedforwardRegressionLearnerNodeModel createNodeModel() {
+        return new FeedforwardRegressionLearnerNodeModel();
+    }
 
-    public static final int DEFAULT_BATCH_SIZE = 1;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNrNodeViews() {
+        return 1;
+    }
 
-    public static final int DEFAULT_EPOCHS = 1;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NodeView<FeedforwardRegressionLearnerNodeModel> createNodeView(final int viewIndex,
+        final FeedforwardRegressionLearnerNodeModel nodeModel) {
+        return new FeedforwardRegressionLearnerNodeView(nodeModel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasDialog() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NodeDialogPane createNodeDialogPane() {
+        return new FeedforwardRegressionLearnerNodeDialog();
+    }
+
 }

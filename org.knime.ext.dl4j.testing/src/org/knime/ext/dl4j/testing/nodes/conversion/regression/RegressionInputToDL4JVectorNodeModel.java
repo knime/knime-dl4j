@@ -1,4 +1,4 @@
-package org.knime.ext.dl4j.testing.nodes.conversion;
+package org.knime.ext.dl4j.testing.nodes.conversion.regression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,10 @@ import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
-import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
-import org.knime.ext.dl4j.base.data.iter.ClassificationBufferedDataTableDataSetIterator;
-import org.knime.ext.dl4j.base.util.ConverterUtils;
+import org.knime.ext.dl4j.base.data.iter.RegressionBufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
@@ -29,16 +28,16 @@ import org.nd4j.linalg.dataset.api.DataSet;
  *
  * @author KNIME
  */
-public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
+public class RegressionInputToDL4JVectorNodeModel extends AbstractDLNodeModel {
 
-    private SettingsModelString m_labelColumn;
+    private SettingsModelFilterString m_targetColumns;
 
     private DataTableSpec m_outputSpec;
 
     /**
      * Constructor for the node model.
      */
-    protected TableToDL4JVectorNodeModel() {
+    protected RegressionInputToDL4JVectorNodeModel() {
         super(new PortType[]{BufferedDataTable.TYPE}, new PortType[]{BufferedDataTable.TYPE});
     }
 
@@ -46,18 +45,18 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
     protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec)
         throws Exception {
         final DataTableSpec tableSpec = inData[0].getDataTableSpec();
+        List<String> targetColumnsNames = m_targetColumns.getIncludeList();
 
         DataSetIterator input = null;
-        if ((m_labelColumn.getStringValue() != null) && !m_labelColumn.getStringValue().isEmpty()) {
-            final String labelColumnName = m_labelColumn.getStringValue();
-            final List<String> labels = new ArrayList<String>();
-            for (final DataCell cell : tableSpec.getColumnSpec(labelColumnName).getDomain().getValues()) {
-                labels.add(ConverterUtils.convertDataCellToJava(cell, String.class));
+        if ((targetColumnsNames != null) && !targetColumnsNames.isEmpty()) {
+
+            List<Integer> targetColumnsIndices = new ArrayList<Integer>();
+            for (String targetColumn : targetColumnsNames) {
+                targetColumnsIndices.add(inData[0].getSpec().findColumnIndex(targetColumn));
             }
-            input = new ClassificationBufferedDataTableDataSetIterator(inData[0],
-                tableSpec.findColumnIndex(labelColumnName), 1, labels, true);
+            input = new RegressionBufferedDataTableDataSetIterator(inData[0], 1, targetColumnsIndices, true);
         } else {
-            input = new ClassificationBufferedDataTableDataSetIterator(inData[0], 1);
+            input = new RegressionBufferedDataTableDataSetIterator(inData[0], 1);
         }
 
         final BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
@@ -65,12 +64,12 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
         while (input.hasNext()) {
             final DataSet n = input.next();
             final INDArray features = n.getFeatureMatrix();
-            final INDArray one_hot = n.getLabels();
+            final INDArray target = n.getLabels();
             final List<DataCell> cells = new ArrayList<DataCell>();
 
             cells.add(INDArrayToDoubleVector(features));
-            if ((m_labelColumn.getStringValue() != null) && !m_labelColumn.getStringValue().isEmpty()) {
-                cells.add(INDArrayToDoubleVector(one_hot));
+            if ((targetColumnsNames != null) && !targetColumnsNames.isEmpty()) {
+                cells.add(INDArrayToDoubleVector(target));
             }
 
             container.addRowToTable(new DefaultRow(new RowKey("Row" + i), cells));
@@ -81,16 +80,16 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
         return new BufferedDataTable[]{container.getTable()};
     }
 
-    public static SettingsModelString createLabelColumnSettings() {
-        return new SettingsModelString("label_column", "");
+    public static SettingsModelFilterString createTargetColumnsSettings() {
+        return new SettingsModelFilterString("target_columns");
     }
 
     @Override
     protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
         DataTableSpec newSpec = new DataTableSpec();
         newSpec = TableUtils.appendColumnSpec(newSpec, "dl4j_vector", DoubleVectorCellFactory.TYPE);
-        if ((m_labelColumn.getStringValue() != null) && !m_labelColumn.getStringValue().isEmpty()) {
-            newSpec = TableUtils.appendColumnSpec(newSpec, "one_hot_label", DoubleVectorCellFactory.TYPE);
+        if ((m_targetColumns.getIncludeList() != null) && !m_targetColumns.getIncludeList().isEmpty()) {
+            newSpec = TableUtils.appendColumnSpec(newSpec, "target_vector", DoubleVectorCellFactory.TYPE);
         }
         m_outputSpec = newSpec;
         return new DataTableSpec[]{newSpec};
@@ -98,9 +97,9 @@ public class TableToDL4JVectorNodeModel extends AbstractDLNodeModel {
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
-        m_labelColumn = createLabelColumnSettings();
+        m_targetColumns = createTargetColumnsSettings();
         final List<SettingsModel> settings = new ArrayList<SettingsModel>();
-        settings.add(m_labelColumn);
+        settings.add(m_targetColumns);
         return settings;
     }
 

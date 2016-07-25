@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base.nodes.predict.feedforward;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.base.data.filter.column.FilterColumnTable;
 import org.knime.core.data.DataCell;
@@ -69,7 +70,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
-import org.knime.ext.dl4j.base.data.iter.BufferedDataTableDataSetIterator;
+import org.knime.ext.dl4j.base.data.iter.ClassificationBufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.nodes.predict.AbstractDLPredictorNodeModel;
 import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
 import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels;
@@ -114,7 +115,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
             exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
 
         //create iterator and prediction
-        final BufferedDataTableDataSetIterator input = new BufferedDataTableDataSetIterator(filteredTable, 1);
+        final DataSetIterator input = new ClassificationBufferedDataTableDataSetIterator(filteredTable, 1);
         final MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
 
         //set flag if last layer activation is softmax

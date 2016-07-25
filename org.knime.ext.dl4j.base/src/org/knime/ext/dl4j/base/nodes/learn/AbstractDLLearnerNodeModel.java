@@ -123,8 +123,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
         inputTableContainsImg = ConfigurationUtils.containsImg(tableSpec);
 
         //validate column selection
-        ConfigurationUtils.validateColumnSelection(tableSpec,
-            selectedColumns.toArray(new String[selectedColumns.size()]));
+        ConfigurationUtils.validateColumnSelection(tableSpec, selectedColumns);
 
         //check for spec sanity
         logWarnings(logger, ConfigurationUtils.validateSpec(modelSpec, modelSpec.getNeuralNetworkTypes()));

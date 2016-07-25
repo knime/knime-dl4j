@@ -79,6 +79,7 @@ public class ConfigurationUtils {
      * @param spec the spec which we want to validate
      * @param types the {@link DNNType} of the current layer
      * @return warning messages giving possible problems of spec, returns empty list if no problems were discovered
+     * @throws InvalidSettingsException
      */
     public static List<String> validateSpec(final DLModelPortObjectSpec spec, final List<DNNType> types)
         throws InvalidSettingsException {
@@ -146,8 +147,53 @@ public class ConfigurationUtils {
      */
     public static void validateColumnSelection(final DataTableSpec tableSpec, final String[] columnSelection)
         throws InvalidSettingsException {
+        if (columnSelection.length == 0) {
+            throw new InvalidSettingsException("No input columns selected");
+        }
         for (final String columnName : columnSelection) {
             validateColumnSelection(tableSpec, columnName);
+        }
+    }
+
+    /**
+     * Checks if the specified column selection is present in the specified {@link DataTableSpec} and if the selection
+     * is empty.
+     *
+     * @param tableSpec the spec of the table
+     * @param columnSelection the selected column/s
+     * @throws InvalidSettingsException if no columns are selected if selected columns are not available in the table
+     */
+    public static void validateColumnSelection(final DataTableSpec tableSpec, final List<String> columnSelection)
+        throws InvalidSettingsException {
+        if (columnSelection.isEmpty()) {
+            throw new InvalidSettingsException("No input columns selected");
+        }
+        for (final String columnName : columnSelection) {
+            validateColumnSelection(tableSpec, columnName);
+        }
+    }
+
+    /**
+     * Checks two {@link SettingsModelFilterString} if the include lists contain duplicate columns.
+     *
+     * @param fs1
+     * @param fs2
+     * @throws InvalidSettingsException if the include lists contain duplicate columns
+     */
+    public static void validateFilterStringSettings(final SettingsModelFilterString fs1,
+        final SettingsModelFilterString fs2) throws InvalidSettingsException {
+        List<String> include_fs1 = new ArrayList<>();
+        include_fs1.addAll(fs1.getIncludeList());
+
+        List<String> include_fs2 = new ArrayList<>();
+        include_fs2.addAll(fs2.getIncludeList());
+
+        for (String s : include_fs1) {
+            if (include_fs2.contains(s)) {
+                throw new InvalidSettingsException(
+                    "The list of feature and target columns must not contain duplicate columns. Duplicate Column: "
+                        + s);
+            }
         }
     }
 
@@ -177,7 +223,7 @@ public class ConfigurationUtils {
      * the returned string.
      *
      * @param types
-     * @return
+     * @return string containing string representation of enum separated by "OR"
      */
     public static <E extends Enum<E>> String typesToString(final List<E> types) {
         String typesToString = "";
@@ -190,6 +236,15 @@ public class ConfigurationUtils {
         return typesToString;
     }
 
+    /**
+     * Creates a list of pairs (name,type) containing the column names and type description of selected columns from a
+     * table.
+     *
+     * @param featureColumns names of selected columns
+     * @param tableSpec the table spec corresponding to the table where the columns are selected from
+     * @return pairs containing name and type of selected columns
+     * @throws InvalidSettingsException
+     */
     public static List<Pair<String, String>> createNameTypeListOfSelectedCols(final List<String> featureColumns,
         final DataTableSpec tableSpec) throws InvalidSettingsException {
         final List<Pair<String, String>> inputs = new ArrayList<>();
@@ -201,6 +256,12 @@ public class ConfigurationUtils {
         return inputs;
     }
 
+    /**
+     * Check if the specified spec contains an image column.
+     *
+     * @param spec
+     * @return true if the spec contains a column whose type name contains the string "Image", false if not
+     */
     public static boolean containsImg(final DataTableSpec spec) {
         final Iterator<DataColumnSpec> colSpecs = spec.iterator();
         while (colSpecs.hasNext()) {

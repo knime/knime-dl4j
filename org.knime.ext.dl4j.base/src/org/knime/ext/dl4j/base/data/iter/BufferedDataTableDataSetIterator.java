@@ -44,6 +44,7 @@ package org.knime.ext.dl4j.base.data.iter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
@@ -124,7 +125,8 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
         }
 
         m_tableIterator = table.iterator();
-        m_recordLength = TableUtils.calculateFeatureVectorLength(m_tableIterator.next(), m_labelColumnIndex);
+        m_recordLength = TableUtils.calculateFeatureVectorLengthExcludingIndices(m_tableIterator.next(),
+            Collections.singletonList(m_labelColumnIndex));
         reset();
     }
 
@@ -192,7 +194,7 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
                     logger.coding("Problem with input conversion", e);
                 }
             }
-            final INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
+            final INDArray linearConcat = NDArrayUtils.linearHConcat(dataRow);
             if (linearConcat.length() != inputColumns()) {
                 logger.error("Length of current input in row: " + row.getKey()
                     + " does not match expected length. Possible images or collections " + "may not be of same size.");

@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./learn.png" type="Learner" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>DL4J Feedforward Learner (Classification)</name>
+    <name>DL4J Feedforward Learner (Regression)</name>
     
     <shortDescription>
-        Learner for Feedforward Deep Learning Models.
+        Regression Learner for Feedforward Deep Learning Models.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        This node supplies means to learn the network configuration specified by the Deep Learning Model. Thereby,
-        the model can be either trained supervised or unsupervised using several training methods like Stochastic Gradient
-        Descent. The output layer of the network, which can be configured in the node dialog, will be automatically added by this node. 
-        Additionally, the node supplies further methods for regularization, gradient normalization and learning refinements.
-        In order to learn the network, inputs will be automatically converted into a network understandable vector format. For the model 
-        input there are two options. If the supplied model is untrained it will be trained normally by the learner. If the model was 
-        trained by a previous learner the node will try to use the network parameters of the trained model to initialise the parameters 
-        of the new network for the new training run, because the network configuration can be changed between learner nodes. This way 
-        methods like <a href="https://en.wikipedia.org/wiki/Inductive_transfer">Transfer Learning</a> can be implemented. The output 
-        of the node is a learned Deep Learning Model containing the original configuration and tuned network weights and biases.
+        This node trains a Deep Learning Model used for regression. Similar to the DL4J Feedforward Learner (Classification),
+        the node automatically adds an Output Layer to the Model, which can be configured in the Node Dialog. For regression 
+        the activation of the Output Layer will be always set the identity function. Additionally, the node supplies further methods 
+        for regularization, gradient normalization and learning refinements. In order to learn the network, inputs will be 
+        automatically converted into a network understandable vector format. For the model input there are two options. If 
+        the supplied model is untrained it will be trained normally by the learner. If the model was trained by a previous 
+        learner the node will try to use the network parameters of the trained model to initialise the parameters of the new 
+        network for the new training run. The output of the node is a learned Deep Learning Model containing the original 
+        configuration and tuned network weights and biases.
         </intro>
 
-        <tab name="Learning Parameters">
-            <option name="Training Mode">
-            Whether to do supervised or unsupervised training.
-            <ul>
-				<li>SUPERVISED - label column needs to be specified</li>
-				<li>UNSUPERVISED - label column can be omitted</li>				
-			</ul>	
-            </option>
+        <tab name="Learning Parameters">           
             <option name="Use Seed">
-            Whether to use a seed value for training. Used to make different learning runs comparable. If the same seed was used and 
-            the configuration didn't change, the results will the same between learning runs.
+            Whether to use a seed value for training. Used to make different learning runs comparable. 
             </option>
             <option name="Seed">
             The seed value which should be used. Any Integer number may be used.
@@ -47,26 +38,15 @@
 				<li><a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">LBFGS</a></li>
 				<li>STOCHASTIC_GRADIENT_DESCENTT - gradient descent using minibatches</li>		
 			</ul>	
-            </option>
-            <option name="Do Backpropagation">
-            Whether to do backpropagation. If this option is chosen the learner will perform supervised training using the specified 
-            techniques and hyper parameters.
-            </option>
-            <option name="Do Pretraining">
-            Whether to to pretreaining. If this option is chosen the learner will perform unsupervised pretraining (Contrastive Divergence)
-             of the network parameters. This option is only applicable for Restricted Boltzmann Machines and Autoencoders. 
-            </option>
-            <option name="Do Finetuning">
-            Whether to to finetuning. If this option is chosen the learner will perform supervised finetuning of the network parameters.
-            </option>
+            </option>           
             <option name="Use Pretrained Updater">
             Whether to use a pretrained updater of a trained model. Some updaters contain a history of previous gradients, hence, it can be 
-            specified if a supplied updater should be taken or a new should be created. This option will only take effect if Deep Learning 
+            specified if a supplied updater should be taken or a new should be created. This option will only take effect if the Deep Learning 
             Model supplied at the input was previously trained and contains a saved updater.
             </option>
             <option name="Updater Type">
             The type of updater to use. These specify how the raw gradients will be modified. If a pretrained updater is used this option
-            will be ignored. The The following methods are available:
+            will be ignored. The following methods are available:
             <ul>
 				<li>SGD</li>
 				<li>ADAM</li>
@@ -76,6 +56,8 @@
 				<li>ADAGRAD</li>
 				<li>RMSPROP</li>
 			</ul>	
+			An explanation of some of the methods can be found 
+			<a href="http://sebastianruder.com/optimizing-gradient-descent/index.html#stochasticgradientdescent">here</a>. 
             </option>
             <option name="Use Regularization">
             Whether to use regularization techniques to prevent overfitting.
@@ -154,21 +136,19 @@
             </option>
         </tab>
         <tab name="Column Selection">
-            <option name="Label Column">
-            The column of the input table containing labels for supervised learning.
+            <option name="Target Column Selection">
+            The column/s of the input table that should be used as targets for regression. These will also
+            specify the length of the resulting output vector created by a Predictor Node. This means that the
+            number of outputs will be set to the length of the target vector.
             </option>
-            <option name="Input Column Selection">
-            The columns of the input table containing the training data for the network.
+            <option name="Feature Column Selection">
+            The column/s of the input table containing the training data for the network.
             </option>
         </tab>
-        <tab name="Output Layer Parameter">
-            <option name="Number of Output Units">The number of outputs for this layer. For supervised training this value is 
-        	determined automatically, hence it is not possible to set it. For unsupervised training this value specifies the
-        	number of neurons in the output layer.</option>
+        <tab name="Output Layer Parameter">            
         	<option name="Learning Rate">The learning rate that should be used for this layer.</option>
         	<option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
         	<option name="Loss Function">The type of loss function that should be used for this layer.</option>
-<option name="Activation Function">The type of activation function that should be used for this layer.</option>
         </tab>
 
     </fullDescription>
