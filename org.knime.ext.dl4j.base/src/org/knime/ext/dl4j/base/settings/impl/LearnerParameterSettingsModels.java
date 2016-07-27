@@ -116,7 +116,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
-    public SettingsModel createParameter(final LearnerParameter enumerate) throws IllegalStateException {
+    public SettingsModel createParameter(final LearnerParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             //Integer parameters
             case SEED:
@@ -182,12 +182,12 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case USE_GLOBAL_LEARNING_RATE:
                 return new SettingsModelBoolean("use_global_learning_rate", LearnerParameter.DEFAULT_BOOLEAN);
             default:
-                throw new IllegalStateException("LearnerParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Learner Parameter: " + enumerate);
         }
     }
 
     @Override
-    public void setParameter(final LearnerParameter enumerate) throws IllegalStateException {
+    public void setParameter(final LearnerParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case GLOBAL_DROP_OUT:
                 m_globalDropOut = (SettingsModelDoubleBounded)createParameter(enumerate);
@@ -328,7 +328,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 addToSet(m_useGlobalLearningRate);
                 break;
             default:
-                throw new IllegalStateException("LearnerParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Learner Parameter: " + enumerate);
         }
     }
 

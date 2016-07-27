@@ -89,6 +89,13 @@ public class DLModelPortObject extends AbstractPortObject {
 
     }
 
+    /**
+     * Constructor for class DLModelPortObject.
+     *
+     * @param layers the list of layers contained in this model
+     * @param mln the {@link MultiLayerNetwork} object which should be stored
+     * @param spec the corresponding specs to this object
+     */
     public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln, final DLModelPortObjectSpec spec) {
         this.m_layers = layers;
         this.m_spec = spec;
@@ -135,33 +142,4 @@ public class DLModelPortObject extends AbstractPortObject {
     public JComponent[] getViews() {
         return new JComponent[]{};
     }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof DLModelPortObject)) {
-            return false;
-        }
-        final DLModelPortObject other = (DLModelPortObject)obj;
-
-        final int i = 0;
-        for (final Layer l : other.getLayers()) {
-            if (!m_layers.get(i).equals(l)) {
-                return false;
-            }
-        }
-        if (!m_multiLayerNet.equals(other.getMultilayerLayerNetwork())) {
-            return false;
-        }
-        if (!m_spec.equals(other.getSpec())) {
-            return false;
-        }
-        return true;
-    }
-
 }

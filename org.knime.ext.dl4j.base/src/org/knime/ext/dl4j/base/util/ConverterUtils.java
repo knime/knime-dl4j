@@ -58,6 +58,10 @@ import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
  */
 public class ConverterUtils {
 
+    private ConverterUtils() {
+        // Utility class
+    }
+
     /**
      * Converts the specified {@link DataCell} to the specified class. For conversion the KNIME converter framework is
      * used and in this case the converter created by the converter factory returned by

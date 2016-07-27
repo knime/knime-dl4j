@@ -48,23 +48,23 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum LayerParameter {
-        /** number of output neurons */
-    NUMBER_OF_OUTPUTS, /** number of contrastive divergence iterations */
-    RBM_ITERATIONS, /** activation function */
-    ACTIVATION, /** weight initialization strategy */
-    WEIGHT_INIT, /** loss function type */
-    LOSS_FUNCTION, /** hidden unit type */
-    HIDDEN_UNIT, /** visible unit type */
-    VISIBLE_UNIT, /** drop out rate */
-    DROP_OUT, /** type of pooling for subsampling layer */
-    POOLING_TYPE, /** size of kernel */
-    KERNEL_SIZE, /** stride of kernel */
-    STRIDE, /** whether to use specified input output numbers */
-    LEARNING_RATE, /** hyper parameter for local response normalization */
-    LRN_ALPHA, /** hyper parameter for local response normalization */
-    LRN_BETA, /** hyper parameter for local response normalization */
-    LRN_K, /** hyper parameter for local response normalization */
-    LRN_N, /** amount of 'noise' or 'corruption' to use */
+        /** The number of output neurons. */
+    NUMBER_OF_OUTPUTS, /** The number of contrastive divergence iterations. */
+    RBM_ITERATIONS, /** The activation function. */
+    ACTIVATION, /** The weight initialization strategy. */
+    WEIGHT_INIT, /** The loss function type. */
+    LOSS_FUNCTION, /** The hidden unit type. */
+    HIDDEN_UNIT, /** The visible unit type. */
+    VISIBLE_UNIT, /** The drop out rate. */
+    DROP_OUT, /** The type of pooling for subsampling layer. */
+    POOLING_TYPE, /** The size of kernel. */
+    KERNEL_SIZE, /** The stride of kernel. */
+    STRIDE, /** Whether to use specified input output numbers. */
+    LEARNING_RATE, /** A hyper parameter for local response normalization. */
+    LRN_ALPHA, /** A hyper parameter for local response normalization. */
+    LRN_BETA, /** A hyper parameter for local response normalization. */
+    LRN_K, /** A hyper parameter for local response normalization. */
+    LRN_N, /** The amount of 'noise' or 'corruption' to use. */
     CORRUPTION_LEVEL;
 
     //default values for learner parameters

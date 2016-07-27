@@ -79,6 +79,8 @@ public abstract class AbstractDLNodeModel extends NodeModel {
 
     /**
      * Initialises member settings models of the current node. Will be called when the NodeModel is created.
+     *
+     * @return a List of SettingsModels corresponding to this node
      */
     protected abstract List<SettingsModel> initSettingsModels();
 
@@ -100,7 +102,7 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      * Logs debugs.
      *
      * @param logger the logger instance
-     * @param warnings debug messages as list of strings
+     * @param debug debug messages as list of strings
      */
     protected void logDebug(final NodeLogger logger, final List<String> debug) {
         for (final String w : debug) {
@@ -180,8 +182,8 @@ public abstract class AbstractDLNodeModel extends NodeModel {
         return m_settingsModels;
     }
 
-    protected void setSettingsModels(final List<SettingsModel> m_settingsModels) {
-        this.m_settingsModels = m_settingsModels;
+    protected void setSettingsModels(final List<SettingsModel> settingsModels) {
+        this.m_settingsModels = settingsModels;
     }
 
     protected void addToSettingsModels(final SettingsModel setting) {

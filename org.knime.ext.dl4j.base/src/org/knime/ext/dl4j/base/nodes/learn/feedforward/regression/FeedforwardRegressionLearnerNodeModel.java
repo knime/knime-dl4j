@@ -68,8 +68,7 @@ import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory;
 import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
-import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
-import org.knime.ext.dl4j.base.nodes.learn.UpdateLearnerViewIterationListener;
+import org.knime.ext.dl4j.base.nodes.learn.view.UpdateLearnerViewIterationListener;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
@@ -134,7 +133,6 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
             TableUtils.indicesFromColumnNames(targetColumns, selectedTable.getSpec()), true);
 
         //build multi layer net
-        //List<Layer> layers = DLModelPortObjectUtils.cloneLayers(portObject.getLayers());
         final List<Layer> layers = portObject.getLayers();
         final MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();
         MultiLayerNetFactory mlnFactory;
@@ -181,7 +179,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     @Override
     protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         final DLModelPortObjectSpec specWithoutLabels = (DLModelPortObjectSpec)configure(inSpecs,
-            m_dataParameterSettings.getFeatureColumnSelection().getIncludeList(), logger)[0];
+            m_dataParameterSettings.getFeatureColumnSelection().getIncludeList())[0];
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
         //validate target column selection
@@ -215,8 +213,9 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         final String imageSize = settings.getString(DataParameter.IMAGE_SIZE.toString().toLowerCase());
 
         ParameterUtils.validateMomentumAfterParameter(momentumAfter);
-        ParameterUtils.validateImageSizeParameter(imageSize, isConvolutional());
-
+        if (isConvolutional()) {
+            ParameterUtils.validateImageSizeParameter(imageSize);
+        }
         super.validateSettings(settings);
     }
 
@@ -307,36 +306,6 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     }
 
     /**
-     * Updates the view using the specified values.
-     *
-     * @param currentEpoch the current training epoch
-     * @param maxEpochs the maximum number of epochs
-     * @param trainingMethod a string describing the training method
-     */
-    private void updateView(final int currentEpoch, final int maxEpochs, final String trainingMethod) {
-        final LearningStatus currentStatus = new LearningStatus(currentEpoch, maxEpochs, getScore(), trainingMethod);
-        notifyViews(currentStatus);
-        setLearningStatus(currentStatus);
-    }
-
-    @Override
-    protected void reset() {
-        //reset the view, if view receives null it resets to default values
-        notifyViews(null);
-        super.reset();
-    }
-
-    /**
-     * Logs score of specified model at specified epoch.
-     *
-     * @param m the model to get score from
-     * @param epoch the epoch number to print into log message
-     */
-    private void logEpochScore(final MultiLayerNetwork m, final int epoch) {
-        logger.info("Loss after epoch " + epoch + " is " + m.score());
-    }
-
-    /**
      * Creates an new {@link OutputLayer} using the specified layer parameters and number of output units.
      *
      * @param settings the parameter settings models object holding the layer parameter
@@ -353,32 +322,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
             DL4JLossFunction.fromToString(settings.getLossFunction().getStringValue()).getDL4JValue();
         final double learningRate = settings.getLearningRate().getDoubleValue();
 
-        final OutputLayer outputLayer = new OutputLayer.Builder(loss).nOut(nOut).activation(activation)
-            .weightInit(weight).learningRate(learningRate).build();
-        return outputLayer;
-    }
-
-    /**
-     * Checks if the last layer in the specified list of layers is a {@link OutputLayer}.
-     *
-     * @param layers the list of layers to check
-     * @return true if the last layer is of type {@link OutputLayer}, false if not
-     */
-    private boolean checkOutputLayer(final List<Layer> layers) {
-        if (layers.isEmpty()) {
-            return false;
-        }
-        if (layers.get(layers.size() - 1) instanceof OutputLayer) {
-            logger.debug("Last layer is output layer. Should be replaced in Learner Node for uptraining.");
-            return true;
-        } else {
-            for (final Layer l : layers) {
-                if (l instanceof OutputLayer) {
-                    logger.coding("The Output Layer is not the last layer of the network");
-                    return false;
-                }
-            }
-            return false;
-        }
+        return new OutputLayer.Builder(loss).nOut(nOut).activation(activation).weightInit(weight)
+            .learningRate(learningRate).build();
     }
 }

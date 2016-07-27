@@ -50,7 +50,7 @@ import org.deeplearning4j.nn.conf.GradientNormalization;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JGradientNormalization {
-        /** Rescale gradients by dividing by the L2 norm of all gradients for the layer */
+        /** Rescale gradients by dividing by the L2 norm of all gradients for the layer. */
     RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
         /**
          * <p>
@@ -112,7 +112,7 @@ public enum DL4JGradientNormalization {
          */
     ClipL2PerParamType(GradientNormalization.ClipL2PerParamType),;
 
-    /** the corresponding dl4j value of this enum */
+    /** the corresponding dl4j value of this enum. */
     private GradientNormalization m_DL4JValue;
 
     private DL4JGradientNormalization(final GradientNormalization norm) {
@@ -120,7 +120,7 @@ public enum DL4JGradientNormalization {
     }
 
     /**
-     * Converts string representation of this enum back to this enum
+     * Converts string representation of this enum back to this enum.
      *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
@@ -135,7 +135,7 @@ public enum DL4JGradientNormalization {
     }
 
     /**
-     * Get the in dl4j usable {@link GradientNormalization} corresponding to this enum
+     * Get the in dl4j usable {@link GradientNormalization} corresponding to this enum.
      *
      * @return dl4j usable {@link GradientNormalization}
      */

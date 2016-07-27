@@ -79,7 +79,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
-    public SettingsModel createParameter(final DataParameter enumerate) throws IllegalStateException {
+    public SettingsModel createParameter(final DataParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case BATCH_SIZE:
                 return new SettingsModelIntegerBounded("batch_size", DataParameter.DEFAULT_BATCH_SIZE, 1,
@@ -99,12 +99,12 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
             case TARGET_COLUMN_SELECTION:
                 return new SettingsModelFilterString("target_column_selection");
             default:
-                throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Data Parameter: " + enumerate);
         }
     }
 
     @Override
-    public void setParameter(final DataParameter enumerate) throws IllegalStateException {
+    public void setParameter(final DataParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case BATCH_SIZE:
                 m_batchSize = (SettingsModelIntegerBounded)createParameter(enumerate);
@@ -147,7 +147,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 addToSet(m_targetColumnSelection);
                 break;
             default:
-                throw new IllegalStateException("DataParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Data Parameter: " + enumerate);
         }
     }
 

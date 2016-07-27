@@ -61,22 +61,22 @@ public interface IParameterSettingsModels<E extends Enum<?>> {
      *
      * @param enumerate the enum corresponding to the parameter to create
      * @return a new {@link SettingsModel} with the suitable type and key for the parameter
-     * @throws IllegalStateException
+     * @throws IllegalArgumentException
      */
-    SettingsModel createParameter(E enumerate) throws IllegalStateException;
+    SettingsModel createParameter(E enumerate) throws IllegalArgumentException;
 
     /**
      * Sets the member corresponding to the passed enum.
      *
      * @param enumerate the enum corresponding to the parameter to set
-     * @throws IllegalStateException
+     * @throws IllegalArgumentException
      */
-    void setParameter(E enumerate) throws IllegalStateException;
+    void setParameter(E enumerate) throws IllegalArgumentException;
 
     /**
      * Returns a list of all {@link SettingsModel}s set by the setParameter() method.
      *
-     * @return
+     * @return a list containing all {@link SettingsModel}s managed by this class.
      */
     List<SettingsModel> getAllInitializedSettings();
 

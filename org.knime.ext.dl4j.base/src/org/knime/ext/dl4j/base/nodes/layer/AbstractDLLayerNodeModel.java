@@ -66,7 +66,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
         super(inPortTypes, outPortTypes);
     }
 
-    /** DNNModelPortObjectSpec to exchange specs from configure to execute */
+    /** DNNModelPortObjectSpec to exchange specs from configure to execute. */
     protected DLModelPortObjectSpec m_outputSpec;
 
     /**

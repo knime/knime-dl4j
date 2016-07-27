@@ -94,15 +94,15 @@ public class LabelTargetDataRowToDataSetConverter extends AbstractDataRowToDataS
         if (!isTrain) {
             m_distinctLabels = null;
             setTargetLength(-1);
-        } else if (isTrain && (distinctLabels == null || distinctLabels.isEmpty())) {
-            throw new Exception("List of distinct labels must not be null or empty.");
+        } else if (distinctLabels == null || distinctLabels.isEmpty()) {
+            throw new IllegalArgumentException("List of distinct labels must not be null or empty.");
         } else {
             m_distinctLabels = distinctLabels;
             setTargetLength(distinctLabels.size());
         }
         m_labelColumnIndex = labelColumnIndex;
-        setFeatureLength(
-            TableUtils.calculateFeatureVectorLengthExcludingIndices(referenceRow, Collections.singletonList(m_labelColumnIndex)));
+        setFeatureLength(TableUtils.calculateFeatureVectorLengthExcludingIndices(referenceRow,
+            Collections.singletonList(m_labelColumnIndex)));
     }
 
     /**

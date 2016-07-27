@@ -55,7 +55,7 @@ public enum DL4JOptimizationAlgorithm {
         LBFGS(OptimizationAlgorithm.LBFGS),
         STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
 
-    /** the corresponding dl4j value of this enum */
+    /** The corresponding dl4j value of this enum. */
     private OptimizationAlgorithm m_DL4JValue;
 
     private DL4JOptimizationAlgorithm(final OptimizationAlgorithm optimization) {
@@ -63,7 +63,7 @@ public enum DL4JOptimizationAlgorithm {
     }
 
     /**
-     * Converts string representation of this enum back to this enum
+     * Converts string representation of this enum back to this enum.
      *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
@@ -78,7 +78,7 @@ public enum DL4JOptimizationAlgorithm {
     }
 
     /**
-     * Get the in dl4j usable {@link OptimizationAlgorithm} corresponding to this enum
+     * Get the in dl4j usable {@link OptimizationAlgorithm} corresponding to this enum.
      *
      * @return dl4j usable {@link OptimizationAlgorithm}
      */

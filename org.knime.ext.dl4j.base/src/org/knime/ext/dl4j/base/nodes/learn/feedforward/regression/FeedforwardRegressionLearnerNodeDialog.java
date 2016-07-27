@@ -84,6 +84,8 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  */
 public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsPane {
 
+    private final int DEFAULT_WIDTH = 4;
+
     /**
      * New pane for configuring the DL4JLearner node.
      */
@@ -99,13 +101,14 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_SEED), "Use Seed"));
 
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed", 4));
+            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed",
+            DEFAULT_WIDTH));
         closeCurrentGroup();
 
         createNewGroup("Training Method");
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_ITERATIONS),
-            "Number of Training Iterations", 4));
+            "Number of Training Iterations", DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.OPTIMIZATION_ALGORITHM),
             "Optimization Algorithm", EnumUtils.getStringCollectionFromToString(DL4JOptimizationAlgorithm.values())));
@@ -127,10 +130,10 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L1),
-            "L1 Regularization Coefficient", 4));
+            "L1 Regularization Coefficient", DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L2),
-            "L2 Regularization Coefficient", 4));
+            "L2 Regularization Coefficient", DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
@@ -146,7 +149,7 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels
                 .createParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
-            "Gradient Normalization Threshold", 4));
+            "Gradient Normalization Threshold", DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
@@ -157,10 +160,10 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM),
-            "Momentum Rate", 4));
+            "Momentum Rate", DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentString(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM_AFTER),
-            "Momentum After", false, 4));
+            "Momentum After", false, DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
@@ -179,7 +182,7 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
             "Use Global Learning Rate"));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_LEARNING_RATE),
-            "Global Learning Rate", 4));
+            "Global Learning Rate", DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
@@ -190,7 +193,7 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
             "Use Global Drop Out Rate"));
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_DROP_OUT),
-            "Global Drop Our Rate", 4));
+            "Global Drop Our Rate", DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         closeCurrentGroup();
 
@@ -209,9 +212,10 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
         setHorizontalPlacement(true);
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.BATCH_SIZE), "Batch Size",
-            4));
+            DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs", 4));
+            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs",
+            DEFAULT_WIDTH));
         setHorizontalPlacement(false);
         addDialogComponent(new DialogComponentString(
             (SettingsModelString)dataSettingsModels.createParameter(DataParameter.IMAGE_SIZE), "Size of Input Image"));
@@ -219,7 +223,7 @@ public class FeedforwardRegressionLearnerNodeDialog extends DefaultNodeSettingsP
         createNewTab("Output Layer Parameters");
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelDoubleBounded)layerSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
-            "Learning Rate", 4));
+            "Learning Rate", DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.WEIGHT_INIT),
             "Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));

@@ -69,7 +69,7 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
-    public SettingsModel createParameter(final PredictorPrameter enumerate) throws IllegalStateException {
+    public SettingsModel createParameter(final PredictorPrameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case APPEND_PREDICTION:
                 return new SettingsModelBoolean("append_prediction", DEFAULT_BOOLEAN);
@@ -78,13 +78,12 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
             case APPEND_SCORE:
                 return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
             default:
-                break;
+                throw new IllegalArgumentException("No case defined for Predictor Parameter: " + enumerate);
         }
-        return null;
     }
 
     @Override
-    public void setParameter(final PredictorPrameter enumerate) throws IllegalStateException {
+    public void setParameter(final PredictorPrameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case APPEND_PREDICTION:
                 m_appendPrediction = (SettingsModelBoolean)createParameter(enumerate);
@@ -99,9 +98,8 @@ public class PredictorParameterSettingsModels implements IParameterSettingsModel
                 addToSet(m_appendScore);
                 break;
             default:
-                break;
+                throw new IllegalArgumentException("No case defined for Predictor Parameter: " + enumerate);
         }
-
     }
 
     private void addToSet(final SettingsModel model) {

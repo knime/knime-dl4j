@@ -86,8 +86,8 @@ public class RealValueTargetDataRowToDataSetConverter extends AbstractDataRowToD
         if (!isTrain) {
             m_targetColumnsIndices = new ArrayList<Integer>();
             setTargetLength(-1);
-        } else if (isTrain && (targetColumnsIndices == null || targetColumnsIndices.isEmpty())) {
-            throw new Exception("List of target columns indices must not be null or empty.");
+        } else if (targetColumnsIndices == null || targetColumnsIndices.isEmpty()) {
+            throw new IllegalArgumentException("List of target columns indices must not be null or empty.");
         } else {
             m_targetColumnsIndices = targetColumnsIndices;
             setTargetLength(TableUtils.calculateFeatureVectorLengthOnlyIndices(referenceRow, m_targetColumnsIndices));

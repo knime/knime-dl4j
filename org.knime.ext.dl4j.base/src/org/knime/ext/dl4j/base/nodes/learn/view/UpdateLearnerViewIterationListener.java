@@ -40,10 +40,11 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.learn;
+package org.knime.ext.dl4j.base.nodes.learn.view;
 
 import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.optimize.api.IterationListener;
+import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
 
 /**
  * Implementation of {@link IterationListener} using a {@link AbstractDLLearnerNodeModel} for score reporting and view
@@ -89,7 +90,7 @@ public class UpdateLearnerViewIterationListener implements IterationListener {
         invoke();
         final double result = model.score();
         //pass the current score to the view
-        m_nodeModel.passObjToView(result + "");
+        m_nodeModel.passObjToView(Double.toString(result));
         //update score in node model
         m_nodeModel.setScore(result);
     }

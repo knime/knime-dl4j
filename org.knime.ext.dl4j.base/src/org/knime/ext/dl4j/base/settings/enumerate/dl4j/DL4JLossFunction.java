@@ -46,19 +46,19 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
  * Wrapper for {@link LossFunction} for better String representation of values. Also hides unsupported LossFunction
- * {@link LossFunction#CUSTOM}
+ * {@link LossFunction#CUSTOM}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JLossFunction {
-        /** Mean Squared Error: Linear Regression */
-    MSE(LossFunction.MSE), /** Exponential log likelihood: Poisson Regression */
-    EXPLL(LossFunction.EXPLL), /** Cross Entropy: Binary Classification */
-    XENT(LossFunction.XENT), /** Multiclass Cross Entropy */
-    MCXENT(LossFunction.MCXENT), /** RMSE Cross Entropy */
-    RMSE_XENT(LossFunction.RMSE_XENT), /** Squared Loss */
-    SQUARED_LOSS(LossFunction.SQUARED_LOSS), /** Reconstruction Cross Entropy */
-    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY), /** Negative Log Likelihood */
+        /** Mean Squared Error: Linear Regression. */
+    MSE(LossFunction.MSE), /** Exponential log likelihood: Poisson Regression. */
+    EXPLL(LossFunction.EXPLL), /** Cross Entropy: Binary Classification. */
+    XENT(LossFunction.XENT), /** Multiclass Cross Entropy. */
+    MCXENT(LossFunction.MCXENT), /** RMSE Cross Entropy. */
+    RMSE_XENT(LossFunction.RMSE_XENT), /** Squared Loss. */
+    SQUARED_LOSS(LossFunction.SQUARED_LOSS), /** Reconstruction Cross Entropy. */
+    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY), /** Negative Log Likelihood. */
     NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
 
     /** the corresponding dl4j value of this enum */
@@ -69,7 +69,7 @@ public enum DL4JLossFunction {
     }
 
     /**
-     * Converts string representation of this enum back to this enum
+     * Converts string representation of this enum back to this enum.
      *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
@@ -84,7 +84,7 @@ public enum DL4JLossFunction {
     }
 
     /**
-     * Get the in dl4j usable {@link LossFunction} corresponding to this enum
+     * Get the in dl4j usable {@link LossFunction} corresponding to this enum.
      *
      * @return dl4j usable {@link LossFunction}
      */

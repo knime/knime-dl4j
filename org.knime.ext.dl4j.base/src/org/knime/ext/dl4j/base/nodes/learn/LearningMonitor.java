@@ -51,23 +51,23 @@ public class LearningMonitor {
     private boolean m_earlyStopping = false;
 
     /**
-     * Set early stopping flag
+     * Set early stopping flag.
      */
     public void stopLearning() {
         m_earlyStopping = true;
     }
 
     /**
-     * Returns value of early stopping flag
+     * Returns value of early stopping flag.
      *
-     * @return
+     * @return the value of the flag
      */
     public boolean checkStopLearning() {
         return m_earlyStopping;
     }
 
     /**
-     * Set early stopping flag to false
+     * Set early stopping flag to false.
      */
     public void reset() {
         m_earlyStopping = false;

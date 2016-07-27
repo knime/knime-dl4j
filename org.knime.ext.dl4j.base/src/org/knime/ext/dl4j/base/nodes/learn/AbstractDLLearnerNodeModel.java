@@ -47,6 +47,8 @@ import java.util.List;
 
 import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.api.Updater;
+import org.deeplearning4j.nn.conf.layers.Layer;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.CanceledExecutionException;
@@ -71,6 +73,9 @@ import org.nd4j.linalg.dataset.DataSet;
  */
 public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(AbstractDLLearnerNodeModel.class);
+
     private boolean isConvolutional;
 
     private boolean isRecurrent;
@@ -79,15 +84,21 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 
     protected DLModelPortObjectSpec m_outputSpec;
 
-    /** the current score of this learner */
+    /** The current score of this learner. */
     private Double m_score = null;
 
-    /** the current learning status */
+    /** The current learning status. */
     private LearningStatus m_learningStatus = null;
 
-    /** a learning monitor for this learner storing if learning should be stopped */
+    /** A learning monitor for this learner storing if learning should be stopped. */
     private final LearningMonitor m_learningMonitor = new LearningMonitor();
 
+    /**
+     * Super constructor for class AbstractDLLearnerNodeModel passing through parameters to node model class.
+     *
+     * @param inPortTypes
+     * @param outPortTypes
+     */
     protected AbstractDLLearnerNodeModel(final PortType[] inPortTypes, final PortType[] outPortTypes) {
         super(inPortTypes, outPortTypes);
     }
@@ -98,12 +109,11 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      *
      * @param inSpecs the specs of the model to learn (index 0) and the specs of the table to learn on (index 1)
      * @param selectedColumns name of columns to use for learning
-     * @param logger a logger to log errors
      * @return checked port object spec with set list of feature columns and empty list of labels
      * @throws InvalidSettingsException
      */
-    protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs, final List<String> selectedColumns,
-        final NodeLogger logger) throws InvalidSettingsException {
+    protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs, final List<String> selectedColumns)
+        throws InvalidSettingsException {
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
@@ -302,6 +312,53 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     }
 
     /**
+     * Checks if the last layer in the specified list of layers is a {@link OutputLayer}.
+     *
+     * @param layers the list of layers to check
+     * @return true if the last layer is of type {@link OutputLayer}, false if not
+     */
+    protected boolean checkOutputLayer(final List<Layer> layers) {
+        if (layers.isEmpty()) {
+            return false;
+        }
+        if (layers.get(layers.size() - 1) instanceof OutputLayer) {
+            logger.debug("Last layer is output layer. Should be replaced in Learner Node for uptraining.");
+            return true;
+        } else {
+            for (final Layer l : layers) {
+                if (l instanceof OutputLayer) {
+                    logger.coding("The Output Layer is not the last layer of the network");
+                    return false;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Updates the view using the specified values.
+     *
+     * @param currentEpoch the current training epoch
+     * @param maxEpochs the maximum number of epochs
+     * @param trainingMethod a string describing the training method
+     */
+    protected void updateView(final int currentEpoch, final int maxEpochs, final String trainingMethod) {
+        final LearningStatus currentStatus = new LearningStatus(currentEpoch, maxEpochs, getScore(), trainingMethod);
+        notifyViews(currentStatus);
+        setLearningStatus(currentStatus);
+    }
+
+    /**
+     * Logs score of specified model at specified epoch.
+     *
+     * @param m the model to get score from
+     * @param epoch the epoch number to print into log message
+     */
+    protected void logEpochScore(final MultiLayerNetwork m, final int epoch) {
+        logger.info("Loss after epoch " + epoch + " is " + m.score());
+    }
+
+    /**
      * Call notifyViews on this {@link NodeModel} with the specified Object.
      *
      * @param obj the object to pass
@@ -311,10 +368,12 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     }
 
     /**
-     * Sets score and learning status to null and reset {@link LearningMonitor} of this Learner
+     * Sets score and learning status to null and reset {@link LearningMonitor} of this Learner.
      */
     @Override
     protected void reset() {
+        //reset the view, if view receives null it resets to default values
+        notifyViews(null);
         m_score = null;
         m_learningStatus = null;
         m_learningMonitor.reset();

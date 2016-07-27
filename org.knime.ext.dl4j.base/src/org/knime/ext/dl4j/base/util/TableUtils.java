@@ -60,8 +60,6 @@ import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
-//import org.knime.knip.base.data.img.ImgPlusCell;
-//import org.knime.knip.base.data.img.ImgPlusValue;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**

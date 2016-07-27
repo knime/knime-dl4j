@@ -47,7 +47,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Utility class to create String/s from Enum/s
+ * Utility class to create String/s from Enum/s.
  *
  * @author David Kolb, KNIME.com GmbH
  */

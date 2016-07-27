@@ -49,7 +49,7 @@ public enum DL4JActivationFunction {
         relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),
         leakyrelu("leakyrelu"), maxout("maxout"), softsign("softsign"), softplus("softplus"), identity("identity");
 
-    /** the corresponding dl4j value of this enum */
+    /** the corresponding dl4j value of this enum. */
     private String m_DL4JValue;
 
     private DL4JActivationFunction(final String activation) {
@@ -57,7 +57,7 @@ public enum DL4JActivationFunction {
     }
 
     /**
-     * Converts string representation of this enum back to this enum
+     * Converts string representation of this enum back to this enum.
      *
      * @param toString the value from toString of this enum
      * @return this enum corresponding to toString
@@ -72,7 +72,7 @@ public enum DL4JActivationFunction {
     }
 
     /**
-     * Get the in dl4j usable activation function string corresponding to this enum
+     * Get the in dl4j usable activation function string corresponding to this enum.
      *
      * @return dl4j usable activation function string
      */

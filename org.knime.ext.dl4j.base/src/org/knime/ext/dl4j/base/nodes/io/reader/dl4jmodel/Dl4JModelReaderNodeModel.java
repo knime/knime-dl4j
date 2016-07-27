@@ -153,7 +153,7 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
         final File file = FileUtil.getFileFromURL(url);
 
         final FileInputStream fileIn = new FileInputStream(file);
-        ;
+
         final ZipInputStream zipIn = new ZipInputStream(fileIn);
 
         final DLModelPortObjectSpec spec = DLModelPortObjectUtils.loadSpecFromZip(zipIn);

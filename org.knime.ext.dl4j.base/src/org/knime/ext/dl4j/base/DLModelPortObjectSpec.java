@@ -88,15 +88,24 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
     private List<String> m_labels;
 
     /**
-     * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}
+     * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}.
      */
     public DLModelPortObjectSpec() {
 
     }
 
-    public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList,
+    /**
+     * Constructor for class DLModelPortObjectSpec.
+     *
+     * @param types the list of possible network types for this deep learning model
+     * @param layerTypeList the list of layer types contained in this deep learning model
+     * @param featureColumns the list columns used for training
+     * @param labels the list of possible labels
+     * @param isTrained whether the model is trained or not
+     */
+    public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
-        this.m_netTypes = type;
+        this.m_netTypes = types;
         this.m_layerTypes = layerTypeList;
         this.m_isTrained = isTrained;
         this.m_featureColumns = featureColumns;
@@ -104,13 +113,17 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     }
 
-    public DLModelPortObjectSpec(final List<DNNType> type, final List<DNNLayerType> layerTypeList,
+    /**
+     * Constructor for class DLModelPortObjectSpec. Equal to calling
+     * <code>DLModelPortObjectSpec(types, layerTypeList, new ArrayList<>(), new ArrayList<>(), isTrained);</code>
+     *
+     * @param types the list of possible network types for this deep learning model
+     * @param layerTypeList the list of layer types contained in this deep learning model
+     * @param isTrained whether the model is trained or not
+     */
+    public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final boolean isTrained) {
-        this.m_netTypes = type;
-        this.m_layerTypes = layerTypeList;
-        this.m_isTrained = isTrained;
-        m_featureColumns = new ArrayList<>();
-        m_labels = new ArrayList<>();
+        this(types, layerTypeList, new ArrayList<>(), new ArrayList<>(), isTrained);
     }
 
     @Override

@@ -54,7 +54,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * Utility class for {@link INDArray}
+ * Utility class for {@link INDArray}.
  *
  * @author David Kolb, KNIME.com GmbH
  */
@@ -78,6 +78,12 @@ public class NDArrayUtils {
         return cells;
     }
 
+    /**
+     * Copies {@link DoubleValue}s contained in {@link CollectionDataValue} to {@link INDArray}.
+     *
+     * @param cell the collection cell to convert
+     * @return INDArray containing double values of collection cell
+     */
     public static INDArray fromListOfDoubleValues(final CollectionDataValue cell) {
         final Iterator<DataCell> iter = cell.iterator();
         final INDArray doubles = Nd4j.create(cell.size());
@@ -100,12 +106,12 @@ public class NDArrayUtils {
      * @param labels labels corresponding to positions in softmax activation array
      * @param softmaxActivation softmax activation array
      * @return the label corresponding to the highest probability
-     * @throws Exception if number of labels doesn't match length of softmax activation array
+     * @throws IllegalArgumentException if number of labels doesn't match length of softmax activation array
      */
     public static String softmaxActivationToLabel(final List<String> labels, final INDArray softmaxActivation)
-        throws Exception {
+        throws IllegalArgumentException {
         if (labels.size() != softmaxActivation.length()) {
-            throw new Exception("The number of labels: " + labels.size()
+            throw new IllegalArgumentException("The number of labels: " + labels.size()
                 + " does not match the length of the softmaxActivation " + "vector: " + softmaxActivation.length());
         }
         final List<Double> classProbabilities = new ArrayList<>();
@@ -125,7 +131,7 @@ public class NDArrayUtils {
      * @return array concatenated array or null if list is empty
      */
     public static INDArray linearHConcat(final List<INDArray> arrs) {
-        if(arrs.isEmpty()){
+        if (arrs.isEmpty()) {
             return null;
         }
         int l = 0;

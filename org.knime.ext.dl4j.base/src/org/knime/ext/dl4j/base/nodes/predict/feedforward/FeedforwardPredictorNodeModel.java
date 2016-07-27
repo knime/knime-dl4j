@@ -212,7 +212,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
      * @param exec {@link ExecutionContext} for progress reporting
      * @return array containing the output of the network for each row of the input
      */
-    private INDArray predict(final MultiLayerNetwork mln, final INDArray input) {
+    private INDArray predict(final MultiLayerNetwork mln, final INDArray input) throws InvalidSettingsException {
         final INDArray output = Nd4j.create(input.rows(), getNumberOfOutputs(mln));
         for (int i = 0; i < input.rows(); i++) {
             output.putRow(i, mln.output(input.getRow(i), false));

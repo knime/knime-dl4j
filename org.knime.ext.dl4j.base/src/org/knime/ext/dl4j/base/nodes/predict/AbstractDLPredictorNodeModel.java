@@ -159,16 +159,16 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      *
      * @param mln the network to use
      * @return number of outputs of a network
+     * @throws InvalidSettingsException if the last layer is not an output layer
      */
-    protected int getNumberOfOutputs(final MultiLayerNetwork mln) {
+    protected int getNumberOfOutputs(final MultiLayerNetwork mln) throws InvalidSettingsException {
         final int numberOfLayers = mln.getLayerWiseConfigurations().getConfs().size();
 
         final Layer l = mln.getLayerWiseConfigurations().getConf(numberOfLayers - 1).getLayer();
         if (l instanceof OutputLayer) {
             return ((OutputLayer)l).getNOut();
         } else {
-            new InvalidSettingsException("Last layer is not a Output Layer");
+            throw new InvalidSettingsException("Last layer is not a Output Layer");
         }
-        return 0;
     }
 }

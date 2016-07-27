@@ -48,9 +48,9 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  * @author David Kolb, KNIME.com GmbH
  */
 public enum PredictorPrameter {
-        /** whether to append the full output vector to the output table or not */
-    APPEND_PREDICTION, /** wheter to append the score for each test example to the output */
-    APPEND_SCORE, /** whether to create output for every step of a sequence or the sequence as a whole */
+        /** Whether to append the full output vector to the output table or not. */
+    APPEND_PREDICTION, /** Whether to append the score for each test example to the outpu.t */
+    APPEND_SCORE, /** Whether to create output for every step of a sequence or the sequence as a whole. */
     PREDICT_STEPS
 
 }

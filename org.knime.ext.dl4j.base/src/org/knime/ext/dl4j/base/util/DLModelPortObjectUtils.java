@@ -125,28 +125,28 @@ public class DLModelPortObjectUtils {
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("isTrained")) {//read flag
+            if (entry.getName().matches("isTrained")) { //read flag
                 final Integer read = inStream.read();
                 if (read == 1) {
                     isTrained = true;
                 } else {
                     isTrained = false;
                 }
-            } else if (entry.getName().matches("layer_type[0123456789]+")) {//read layer type
+            } else if (entry.getName().matches("layer_type[0123456789]+")) { //read layer type
                 final String read = readStringFromZipStream(inStream);
                 layerTypes.add(DNNLayerType.valueOf(read));
 
-            } else if (entry.getName().matches("dnn_type[0123456789]+")) {//read dnn type
+            } else if (entry.getName().matches("dnn_type[0123456789]+")) { //read dnn type
                 final String read = readStringFromZipStream(inStream);
                 networkTypes.add(DNNType.valueOf(read));
-            } else if (entry.getName().matches("input_column[0123456789]+")) {//read input type
+            } else if (entry.getName().matches("input_column[0123456789]+")) { //read input type
                 final String read = readStringFromZipStream(inStream);
                 final String columnName = read.split(",")[0];
                 final String columnType = (read.split(",")[1]);
 
                 learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
 
-            } else if (entry.getName().matches("label[0123456789]+")) {//read label
+            } else if (entry.getName().matches("label[0123456789]+")) { //read label
                 final String read = readStringFromZipStream(inStream);
                 labels.add(read);
 
@@ -154,10 +154,7 @@ public class DLModelPortObjectUtils {
                 // ignore unrecognised ZipEntries
             }
         }
-
-        final DLModelPortObjectSpec spec =
-            new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
-        return spec;
+        return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
     }
 
     /**
@@ -177,15 +174,15 @@ public class DLModelPortObjectUtils {
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("layer[0123456789]+")) {//read layers
+            if (entry.getName().matches("layer[0123456789]+")) { //read layers
                 final String read = readStringFromZipStream(inStream);
                 layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
-            } else if (entry.getName().matches("mln_config")) {//read MultilayerNetwork
+            } else if (entry.getName().matches("mln_config")) { //read MultilayerNetwork
                 final String read = readStringFromZipStream(inStream);
                 mln_config = MultiLayerConfiguration.fromJson(read.toString());
-            } else if (entry.getName().matches("mln_params")) {
+            } else if (entry.getName().matches("mln_params")) { //read params
                 mln_params = Nd4j.read(inStream);
-            } else if (entry.getName().matches("mln_updater")) {
+            } else if (entry.getName().matches("mln_updater")) { //read updater
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
                 final ObjectInputStream ois = new ObjectInputStream(inStream);
                 try {
@@ -212,9 +209,7 @@ public class DLModelPortObjectUtils {
             mln = null;
         }
 
-        final DLModelPortObject newPortObject = new DLModelPortObject(layers, mln, null);
-
-        return newPortObject;
+        return new DLModelPortObject(layers, mln, null);
     }
 
     private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
@@ -262,9 +257,9 @@ public class DLModelPortObjectUtils {
         entry = new ZipEntry("isTrained");
         out.putNextEntry(entry);
         if (isTrained) {
-            out.write(new Integer(1));
+            out.write(Integer.valueOf(1));
         } else {
-            out.write(new Integer(0));
+            out.write(Integer.valueOf(0));
         }
     }
 
@@ -355,7 +350,8 @@ public class DLModelPortObjectUtils {
     /**
      * Converts layers to list of Strings in json format.
      *
-     * @return list of Strings in json format of converted layers
+     * @param layers the list of layers to convert
+     * @return the list of converted layers to json
      */
     public static List<String> convertLayersToJSONs(final List<Layer> layers) {
         final List<String> allLayersAsJson = new ArrayList<>();

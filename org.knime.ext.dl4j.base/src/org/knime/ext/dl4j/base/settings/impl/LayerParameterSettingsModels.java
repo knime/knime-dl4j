@@ -101,7 +101,7 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
     private final List<SettingsModel> m_allInitializedSettings = new ArrayList<>();
 
     @Override
-    public SettingsModel createParameter(final LayerParameter enumerate) throws IllegalStateException {
+    public SettingsModel createParameter(final LayerParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             //Integer parameters
             case NUMBER_OF_OUTPUTS:
@@ -146,12 +146,12 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
             case CORRUPTION_LEVEL:
                 return new SettingsModelDoubleBounded("corruption_level", DEFAULT_DOUBLE, 0, 1);
             default:
-                throw new IllegalStateException("LayerParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Layer Parameter: " + enumerate);
         }
     }
 
     @Override
-    public void setParameter(final LayerParameter enumerate) throws IllegalStateException {
+    public void setParameter(final LayerParameter enumerate) throws IllegalArgumentException {
         switch (enumerate) {
             case ACTIVATION:
                 m_activation = (SettingsModelString)createParameter(enumerate);
@@ -244,7 +244,7 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
                 addToSet(m_corruption_level);
                 break;
             default:
-                throw new IllegalStateException("LayerParameter does not exist: " + enumerate.toString());
+                throw new IllegalArgumentException("No case defined for Layer Parameter: " + enumerate);
         }
     }
 

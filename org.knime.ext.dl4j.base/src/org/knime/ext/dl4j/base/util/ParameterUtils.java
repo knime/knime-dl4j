@@ -55,23 +55,23 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
  */
 public class ParameterUtils {
 
-    /** regex pattern for expected format of image size parameter */
-    private final static String imageSizePattern = "\\d+,\\d+,\\d+";
+    /** Regex pattern for expected format of image size parameter. */
+    private static final String imageSizePattern = "\\d+,\\d+,\\d+";
 
-    /** regex pattern for expected format of kernel parameter */
-    private final static String strideKernelSizePattern = "\\d+,\\d+";
+    /** Regex pattern for expected format of kernel parameter. */
+    private static final String strideKernelSizePattern = "\\d+,\\d+";
 
     /**
-     * regex pattern for expected format of a string representation of a map. e.g. momentum after parameter
+     * Regex pattern for expected format of a string representation of a map. e.g. momentum after parameter.
      */
-    private final static String mapAsStringPattern = "(\\d+:\\d+\\.\\d+)?(\\d+:\\d+\\.\\d+,)*(\\d+:\\d+\\.\\d+)";
+    private static final String mapAsStringPattern = "(\\d+:\\d+\\.\\d+)?(\\d+:\\d+\\.\\d+,)*(\\d+:\\d+\\.\\d+)";
 
     private ParameterUtils() {
         // Utility class
     }
 
     /**
-     * Check if string of stride parameter matches corresponding regex
+     * Check if string of stride parameter matches corresponding regex.
      *
      * @param stride the string to check
      * @throws InvalidSettingsException if string doesn't match regex
@@ -84,30 +84,27 @@ public class ParameterUtils {
     }
 
     /**
-     * Check if string of image size parameter matches corresponding regex
+     * Check if string of image size parameter matches corresponding regex.
      *
-     * @param stride the string to check
-     * @throws InvalidSettingsException if string doesn't match regex
+     * @param imageSize the string to check
+     * @throws InvalidSettingsException
      */
-    public static void validateImageSizeParameter(final String imageSize, final boolean isConv)
-        throws InvalidSettingsException {
-        if (isConv) {
-            if (imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)) {
-                throw new InvalidSettingsException("Image size needs to be set for convolutional"
-                    + " networks. Set image size in learner dialog -> Data Parameters.");
-            }
-            if (!imageSize.matches(imageSizePattern)) {
-                throw new InvalidSettingsException("string for image size is incorrect. "
-                    + "Has to be three Integers separated by a comma (x-size,y-size,channels)");
-            }
+    public static void validateImageSizeParameter(final String imageSize) throws InvalidSettingsException {
+        if (imageSize.equals(DataParameter.DEFAULT_IMAGE_SIZE)) {
+            throw new InvalidSettingsException("Image size needs to be set for convolutional"
+                + " networks. Set image size in learner dialog -> Data Parameters.");
+        }
+        if (!imageSize.matches(imageSizePattern)) {
+            throw new InvalidSettingsException("string for image size is incorrect. "
+                + "Has to be three Integers separated by a comma (x-size,y-size,channels)");
         }
     }
 
     /**
-     * Check if string of kernel size parameter matches corresponding regex
+     * Check if string of kernel size parameter matches corresponding regex.
      *
-     * @param stride the string to check
-     * @throws InvalidSettingsException if string doesn't match regex
+     * @param kernel
+     * @throws InvalidSettingsException
      */
     public static void validateKernelSizeParameter(final String kernel) throws InvalidSettingsException {
         if (!kernel.matches(strideKernelSizePattern)) {
@@ -117,10 +114,10 @@ public class ParameterUtils {
     }
 
     /**
-     * Check if string of momentum after parameter matches corresponding regex
+     * Check if string of kernel momentum schedule matches corresponding regex.
      *
-     * @param stride the string to check
-     * @throws InvalidSettingsException if string doesn't match regex
+     * @param momentumAfter
+     * @throws InvalidSettingsException
      */
     public static void validateMomentumAfterParameter(final String momentumAfter) throws InvalidSettingsException {
         if (momentumAfter.isEmpty()) {
@@ -144,7 +141,7 @@ public class ParameterUtils {
         final int[] ints = new int[split.length];
         int i = 0;
         for (final String s : split) {
-            ints[i] = new Integer(s);
+            ints[i] = Integer.valueOf(s);
             i++;
         }
         return ints;
@@ -161,7 +158,7 @@ public class ParameterUtils {
         final int[] ints = new int[strings.length];
         int i = 0;
         for (final String s : strings) {
-            ints[i] = new Integer(s);
+            ints[i] = Integer.valueOf(s);
             i++;
         }
         return ints;
@@ -186,8 +183,8 @@ public class ParameterUtils {
         int i = 0;
         for (final String keyValue : keysValues) {
             final String[] kV = keyValue.split(":");
-            keys[i] = new Integer(kV[0]);
-            values[i] = new Double(kV[1]);
+            keys[i] = Integer.valueOf(kV[0]);
+            values[i] = Double.valueOf(kV[1]);
             i++;
         }
 
