@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: KNIME Deeplearning4J Integration Testing
 Bundle-SymbolicName: org.knime.ext.dl4j.testing;singleton:=true
 Bundle-Version: 3.2.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.knime.core;bundle-version="3.2.0",
  org.knime.ext.dl4j.libs;bundle-version="0.4.310",
  org.knime.ext.dl4j.base;bundle-version="3.2.0",
  org.knime.workbench.repository;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

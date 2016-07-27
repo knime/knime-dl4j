@@ -4,6 +4,12 @@ Bundle-Name: KNIME Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.base;singleton:=true
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
+Export-Package: org.knime.ext.dl4j.base,
+ org.knime.ext.dl4j.base.data.iter,
+ org.knime.ext.dl4j.base.settings,
+ org.knime.ext.dl4j.base.settings.enumerate,
+ org.knime.ext.dl4j.base.settings.impl,
+ org.knime.ext.dl4j.base.util
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.11.0,4.0.0)",
  org.knime.workbench.core;bundle-version="[3.2.0,4.0.0)",
  org.knime.workbench.repository;bundle-version="[3.2.0,4.0.0)",
@@ -13,11 +19,3 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.11.0,4.0.0)",
  org.knime.ext.dl4j.libs;bundle-version="[0.4.0,0.5.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.knime.ext.dl4j.base,
- org.knime.ext.dl4j.base.data.iter,
- org.knime.ext.dl4j.base.settings,
- org.knime.ext.dl4j.base.settings.enumerate,
- org.knime.ext.dl4j.base.settings.impl,
- org.knime.ext.dl4j.base.util
-
-
