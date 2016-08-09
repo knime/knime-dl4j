@@ -78,7 +78,7 @@ public class CachedConverter {
      * Constructor for class {@link CachedConverter}. Creates a new cache to save converter factories.
      */
     public CachedConverter() {
-        m_converterFactoryCache = CacheBuilder.newBuilder().maximumSize(10).recordStats().build();
+        m_converterFactoryCache = CacheBuilder.newBuilder().maximumSize(10).build();
     }
 
     /**
