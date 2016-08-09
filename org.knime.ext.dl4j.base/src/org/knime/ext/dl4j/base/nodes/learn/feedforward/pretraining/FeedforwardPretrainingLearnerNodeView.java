@@ -40,47 +40,26 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.exception;
+package org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining;
 
-import org.knime.core.data.DataType;
+import org.knime.ext.dl4j.base.nodes.learn.view.AbstractSimpleLearnerNodeView;
 
 /**
- * This exception is thrown if a {@link DataType} is not supported by a method.
+ * NodeView for feedforward pretraining learner node. Displays current training method, epoch information and score. Has
+ * button for early stopping.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class UnsupportedDataTypeException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message. Use a helpful message
-     * here as it will be displayed to the user, and it is the only hint ones understands to actual the problem.
-     *
-     * @param s the detail message.
-     */
-    public UnsupportedDataTypeException(final String s) {
-        super(s);
-    }
+public class FeedforwardPretrainingLearnerNodeView
+    extends AbstractSimpleLearnerNodeView<FeedforwardPretrainingLearnerNodeModel> {
 
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified cause.
+     * Constructor for Class FeedforwardLearnerNodeView which extends the basic learner node view. So just call super
+     * constructor.
      *
-     * @param cause the original cause of the execption
+     * @param nodeModel
      */
-    public UnsupportedDataTypeException(final Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message and a cause. Use a
-     * helpful message here as it will be displayed to the user, and it is the only hint ones understands to actual the
-     * problem.
-     *
-     * @param msg the detail message
-     * @param cause the root cause
-     */
-    public UnsupportedDataTypeException(final String msg, final Throwable cause) {
-        super(msg, cause);
+    protected FeedforwardPretrainingLearnerNodeView(final FeedforwardPretrainingLearnerNodeModel nodeModel) {
+        super(nodeModel);
     }
 }

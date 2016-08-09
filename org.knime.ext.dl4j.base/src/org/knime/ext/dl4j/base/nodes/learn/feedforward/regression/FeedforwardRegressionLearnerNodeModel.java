@@ -163,7 +163,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
 
         //attempt to transfer weights between nets
         final boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();
-        logWarnings(logger, transferFullInitialization(oldMln, newMln, usePretrainedUpdater));
+        transferFullInitialization(oldMln, newMln, usePretrainedUpdater);
 
         //set listener that updates the view and the score of this model
         newMln.setListeners(new UpdateLearnerViewIterationListener(this));
@@ -193,7 +193,14 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         logger.info("Constructed network recognized as: "
             + ConfigurationUtils.typesToString(specWithoutLabels.getNeuralNetworkTypes()));
 
-        //if several learners are used in sequence the spec already contains a output layer
+        //check if there layers in the network which can be trained supervised
+        if (!specWithoutLabels.getLayerTypes().isEmpty()
+            && !ConfigurationUtils.containsSupervised(specWithoutLabels.getLayerTypes())) {
+            throw new InvalidSettingsException(
+                "Can't perform regression because network does not contain layers that can be trained supervised.");
+        }
+
+        //if several learners are used in sequence the spec already contains an output layer
         final List<DNNLayerType> newLayerTypes = new ArrayList<DNNLayerType>();
         newLayerTypes.addAll(specWithoutLabels.getLayerTypes());
         if (newLayerTypes.isEmpty() || !newLayerTypes.get(newLayerTypes.size() - 1).equals(DNNLayerType.OUTPUT_LAYER)) {
@@ -306,7 +313,8 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     }
 
     /**
-     * Creates an new {@link OutputLayer} using the specified layer parameters and number of output units.
+     * Creates an new {@link OutputLayer} using the specified layer parameters and number of output units. For
+     * regression the activation function is hardcoded to 'identity'.
      *
      * @param settings the parameter settings models object holding the layer parameter
      * @param nOut the number of outputs for the layer

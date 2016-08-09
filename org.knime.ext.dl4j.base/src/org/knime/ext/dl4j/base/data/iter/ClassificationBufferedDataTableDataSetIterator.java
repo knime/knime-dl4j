@@ -55,7 +55,8 @@ import org.knime.core.node.BufferedDataTable;
 import org.knime.ext.dl4j.base.data.convert.row.LabelTargetDataRowToDataSetConverter;
 
 /**
- * Implementation of {@link AbstractBufferedDataTableDataSetIterator} for classification.
+ * Implementation of {@link AbstractBufferedDataTableDataSetIterator} for classification. Expects a table containing
+ * feature columns, which will be flattened, and one label column, which will be converted to one-hot.
  *
  * @author David Kolb, KNIME.com GmbH
  */

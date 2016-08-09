@@ -18,6 +18,11 @@
             deprecated="false"
             factory-class="org.knime.ext.dl4j.testing.nodes.conversion.regression.RegressionInputToDL4JVectorNodeFactory">
       </node>
+      <node
+            category-path="/labs/deeplearning/testing"
+            deprecated="false"
+            factory-class="org.knime.ext.dl4j.testing.nodes.conversion.pretraining.PretrainingInputToDL4JVectorNodeFactory">
+      </node>
    </extension>
 
 </plugin>

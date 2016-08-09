@@ -65,18 +65,27 @@ import javax.swing.JPanel;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeView;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
+import org.knime.ext.dl4j.base.nodes.learn.LearningMonitor;
 import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
-import org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeModel;
 
 /**
+ * Simple node view for learner nodes which extend {@link AbstractDLLearnerNodeModel}. The view displays some
+ * information about the current learning status, meaning the used training method and epoch. Additionally, the error of
+ * the network is displayed. The view also contains a button for early stopping of the learning process. <br>
+ * <br>
+ * The learning will be updated calling updateView() in the learner node model. The error is updated using a
+ * {@link UpdateLearnerViewIterationListener}. If the early stopping button is pushed this will update the stop flag in
+ * the {@link LearningMonitor} which can be retrieved using {@link AbstractDLLearnerNodeModel#getLearningMonitor()}.
  *
- * @author David Kolb
+ * @author David Kolb, KNIME.com GmbH
  * @param <T>
  */
-public abstract class AbstractBaseLearnerNodeView<T extends AbstractDLLearnerNodeModel> extends NodeView<T> {
+public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerNodeModel> extends NodeView<T> {
+
+    private static final String WHITESPACE = "  ";
 
     // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(AbstractBaseLearnerNodeView.class);
+    private static final NodeLogger logger = NodeLogger.getLogger(AbstractSimpleLearnerNodeView.class);
 
     private final JLabel m_scoreDisplay = new JLabel("Not available");
 
@@ -84,12 +93,19 @@ public abstract class AbstractBaseLearnerNodeView<T extends AbstractDLLearnerNod
 
     private final JButton m_stopButton = new JButton("Stop Learning");
 
+    private int m_numberOfUpdates = 0;
+
+    private int m_numberOfDots = 0;
+
+    private String m_dotAppend = WHITESPACE;
+
     /**
-     * Creates a new view.
+     * Super constructor for class AbstractSimpleLearnerNodeView specifying the {@link AbstractDLLearnerNodeModel} to
+     * use.
      *
-     * @param nodeModel The model (class: {@link FeedforwardLearnerNodeModel})
+     * @param nodeModel the node model to use
      */
-    protected AbstractBaseLearnerNodeView(final T nodeModel) {
+    protected AbstractSimpleLearnerNodeView(final T nodeModel) {
         super(nodeModel);
         //set font sizes of labels
         m_scoreDisplay.setFont(new Font(m_scoreDisplay.getFont().getName(), m_scoreDisplay.getFont().getStyle(), 18));
@@ -173,7 +189,9 @@ public abstract class AbstractBaseLearnerNodeView<T extends AbstractDLLearnerNod
         if (arg == null) {
             resetView();
         } else if (arg instanceof String) {
-            m_scoreDisplay.setText((String)arg);
+            String loss = (String)arg;
+            m_scoreDisplay.setText(addProgressDots(loss, m_numberOfUpdates));
+            m_numberOfUpdates++;
         } else if (arg instanceof LearningStatus) {
             final LearningStatus status = (LearningStatus)arg;
             m_learningInfo.setText(status.getEpochDescription());
@@ -189,6 +207,9 @@ public abstract class AbstractBaseLearnerNodeView<T extends AbstractDLLearnerNod
     private void resetView() {
         m_scoreDisplay.setText("Not available");
         m_learningInfo.setText("No data available");
+        m_numberOfUpdates = 0;
+        m_numberOfDots = 0;
+        m_dotAppend = WHITESPACE;
     }
 
     /**
@@ -215,4 +236,24 @@ public abstract class AbstractBaseLearnerNodeView<T extends AbstractDLLearnerNod
         //nothing to do here
     }
 
+    /**
+     * Adds a dot (".") to the specified String at every second update of the loss displayed in the view. A maximum of
+     * four dots are added, then they will be deleted. This helps to monitor the progress even if the score is not
+     * changing.
+     *
+     * @param s the String to add dots to
+     * @param numberOfUpdates the current update count
+     * @return specified String with added progress dots
+     */
+    private String addProgressDots(final String s, final int numberOfUpdates) {
+        if (m_numberOfDots > 4) {
+            m_dotAppend = WHITESPACE;
+            m_numberOfDots = 0;
+        }
+        if (numberOfUpdates % 2 == 0) {
+            m_dotAppend += " .";
+            m_numberOfDots++;
+        }
+        return s + m_dotAppend;
+    }
 }

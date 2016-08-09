@@ -42,16 +42,16 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.learn.feedforward.regression;
 
-import org.knime.ext.dl4j.base.nodes.learn.view.AbstractBaseLearnerNodeView;
+import org.knime.ext.dl4j.base.nodes.learn.view.AbstractSimpleLearnerNodeView;
 
 /**
- * NodeView for feedforward learne node. Displays current training method, epoch information and score. Has button for
- * early stopping.
+ * NodeView for feedforward regression learner node. Displays current training method, epoch information and score. Has
+ * button for early stopping.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public class FeedforwardRegressionLearnerNodeView
-    extends AbstractBaseLearnerNodeView<FeedforwardRegressionLearnerNodeModel> {
+    extends AbstractSimpleLearnerNodeView<FeedforwardRegressionLearnerNodeModel> {
 
     /**
      * Constructor for Class FeedforwardRegressionLearnerNodeView which extends the basic learner node view. So just

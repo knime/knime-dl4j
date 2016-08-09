@@ -150,7 +150,7 @@ public class TableUtils {
      *
      * @param cell the {@link DataCell} which is expected for conversion
      * @return the calculated feature vector length
-     * @throws UnsupportedDataTypeException
+     * @throws UnsupportedDataTypeException if the cell is not supported for conversion
      */
     public static int calculateFeatureVectorLength(final DataCell cell) throws UnsupportedDataTypeException {
         int recordLength = 0;
@@ -164,6 +164,22 @@ public class TableUtils {
             recordLength += ConverterUtils.convertDataCellToJava(cell, INDArray.class).length();
         }
 
+        return recordLength;
+    }
+
+    /**
+     * Calculate the resulting feature vector length if the cells of the specified {@link DataRow} is converted into
+     * vector format for deep learning.
+     *
+     * @param row the {@link DataRow} which is expected for conversion
+     * @return the calculated feature vector length
+     * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
+     */
+    public static int calculateFeatureVectorLength(final DataRow row) throws UnsupportedDataTypeException {
+        int recordLength = 0;
+        for (DataCell cell : row) {
+            recordLength += calculateFeatureVectorLength(cell);
+        }
         return recordLength;
     }
 

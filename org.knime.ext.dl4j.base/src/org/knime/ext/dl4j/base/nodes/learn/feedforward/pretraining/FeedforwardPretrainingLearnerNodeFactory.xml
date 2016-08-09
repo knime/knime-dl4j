@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./learn.png" type="Learner" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>DL4J Feedforward Learner (Regression)</name>
+    <name>DL4J Feedforward Learner (Pretraining)</name>
     
     <shortDescription>
-        Regression Learner for Feedforward Deep Learning Models.
+        Learner for Feedforward Deep Learning Models.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        This node performs supervised training of a feedforward deep learning model for regression. Thereby, the learning procedure
+        This node performs unsupervised pretraining of a feedforward deep learning model. Thereby, the learning procedure
         can be adjusted using several training methods and parameters, which can be customized in the node dialog. Additionally, 
         the node supplies further methods for regularization, gradient normalization and learning refinements. The learner 
         node automatically adds an output layer to the network configuration, which can be also configured in the node
-        dialog. For regression, the output layer will always use 'identity' as the activation function and the number
-        of outputs will be automatically set to match the number target values. The output of the node is a trained deep 
-        learning model which can be used to predict target values.          
+        dialog. For pretraining the network architecture needs to contain layers which are can be trained unsupervised.
+        Such layers are for example an RBM or a Autoencoder. Usually, this node is used together with a classification 
+        learner node which performs finetuning of the output layer after the network was pretrained. The output of the 
+        node is a pretrained deep learning model.
         </intro>
 
         <tab name="Learning Parameters">           
             <option name="Use Seed">
-            Whether to use a seed value for training. Used to make different learning runs comparable. 
+            Whether to use a seed value for training. Used to make different learning runs comparable. If the same seed was used and 
+            the configuration didn't change, the results will the same between learning runs.
             </option>
             <option name="Seed">
             The seed value which should be used. Any Integer number may be used.
@@ -36,7 +38,7 @@
 				<li><a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">LBFGS</a></li>
 				<li>STOCHASTIC_GRADIENT_DESCENTT - gradient descent using minibatches</li>		
 			</ul>	
-            </option>           
+            </option>          
             <option name="Use Pretrained Updater">
             Whether to use a pretrained updater of a trained model. Some updaters contain a history of previous gradients, hence, it can be 
             specified if a supplied updater should be taken or a new should be created. This option will only take effect if the deep learning 
@@ -44,7 +46,7 @@
             </option>
             <option name="Updater Type">
             The type of updater to use. These specify how the raw gradients will be modified. If a pretrained updater is used this option
-            will be ignored. The following methods are available:
+            will be ignored. The The following methods are available:
             <ul>
 				<li>SGD</li>
 				<li>ADAM</li>
@@ -126,24 +128,19 @@
             </option>
             <option name="Epochs">
             The number of epochs to train the network, hence the number of training runs on the whole data set.
-            </option>
-            <option name="Size of Input Image">
-            If the input table contains images and a convolutional network is used, the dimensionality of the 
-            images needs to be specified. This value needs to be three numbers separated by a comma specifying 
-            the dimension sizes of the images (size x,size y,number of channels). E.g. 64,64,3 
-            </option>
+            </option>           
         </tab>
         <tab name="Column Selection">
-            <option name="Target Column Selection">
-            The column/s of the input table that should be used as targets for regression. These will also
-            specify the length of the resulting output vector created by a Predictor Node. This means that the
-            number of outputs will be set to the length of the target vector.
+            <option name="Label Column">
+            The column of the input table containing labels for supervised learning.
             </option>
-            <option name="Feature Column Selection">
-            The column/s of the input table containing the training data for the network.
+            <option name="Input Column Selection">
+            The columns of the input table containing the training data for the network.
             </option>
         </tab>
-        <tab name="Output Layer Parameter">            
+        <tab name="Output Layer Parameter">
+            <option name="Number of Output Units">The number of output units of the output layer. This value
+            specifies the length of the output vector of the network.</option>
         	<option name="Learning Rate">The learning rate that should be used for this layer.</option>
         	<option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>
         	<option name="Loss Function">The type of loss function that should be used for this layer.</option>

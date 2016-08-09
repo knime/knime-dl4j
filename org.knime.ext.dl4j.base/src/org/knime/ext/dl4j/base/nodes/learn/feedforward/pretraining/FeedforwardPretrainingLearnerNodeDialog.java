@@ -40,24 +40,18 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.learn.feedforward;
+package org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.core.data.DoubleValue;
-import org.knime.core.data.NominalValue;
 import org.knime.core.data.collection.CollectionDataValue;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
-import org.knime.core.node.defaultnodesettings.DialogComponentButtonGroup;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnFilter;
-import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
 import org.knime.core.node.defaultnodesettings.DialogComponentString;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
@@ -69,7 +63,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
-import org.knime.ext.dl4j.base.settings.enumerate.TrainingMode;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
@@ -89,61 +82,32 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
- * @deprecated
  */
-@Deprecated
-public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
+public class FeedforwardPretrainingLearnerNodeDialog extends DefaultNodeSettingsPane {
 
     private final int DEFAULT_WIDTH = 4;
 
     /**
      * New pane for configuring the DL4JLearner node.
      */
-    protected FeedforwardLearnerNodeDialog() {
+    protected FeedforwardPretrainingLearnerNodeDialog() {
         final LearnerParameterSettingsModels learnerSettingsModels = new LearnerParameterSettingsModels();
         final DataParameterSettingsModels dataSettingsModels = new DataParameterSettingsModels();
         final LayerParameterSettingsModels layerSettingsModels = new LayerParameterSettingsModels();
 
         setDefaultTabTitle("Learning Parameters");
-        final SettingsModelString trainingModeSettings =
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_MODE);
-        final SettingsModelString labelColumnSettings =
-            (SettingsModelString)dataSettingsModels.createParameter(DataParameter.LABEL_COLUMN);
         final SettingsModelFilterString columnSelectionSettings =
             (SettingsModelFilterString)dataSettingsModels.createParameter(DataParameter.FEATURE_COLUMN_SELECTION);
         final SettingsModelIntegerBounded numberOfOutputs =
             (SettingsModelIntegerBounded)layerSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS);
-
-        trainingModeSettings.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(final ChangeEvent arg0) {
-                final TrainingMode mode = TrainingMode.valueOf(trainingModeSettings.getStringValue());
-                switch (mode) {
-                    case SUPERVISED:
-                        labelColumnSettings.setEnabled(true);
-                        columnSelectionSettings.setEnabled(true);
-                        numberOfOutputs.setEnabled(false);
-                        break;
-                    case UNSUPERVISED:
-                        labelColumnSettings.setEnabled(false);
-                        columnSelectionSettings.setEnabled(true);
-                        numberOfOutputs.setEnabled(true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        addDialogComponent(new DialogComponentButtonGroup(trainingModeSettings, false, "Training Mode",
-            EnumUtils.getStringListFromToString(TrainingMode.values())));
 
         createNewGroup("Seed");
         addDialogComponent(new DialogComponentBoolean(
             (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_SEED), "Use Seed"));
 
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed", DEFAULT_WIDTH));
+            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed",
+            DEFAULT_WIDTH));
         closeCurrentGroup();
 
         createNewGroup("Training Method");
@@ -153,17 +117,6 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
         addDialogComponent(new DialogComponentStringSelection(
             (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.OPTIMIZATION_ALGORITHM),
             "Optimization Algorithm", EnumUtils.getStringCollectionFromToString(DL4JOptimizationAlgorithm.values())));
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_BACKPROP),
-            "Do Backpropagation"));
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAIN),
-            "Do Pretraining"));
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_FINETUNE),
-            "Do Finetuning"));
-        setHorizontalPlacement(false);
         closeCurrentGroup();
 
         createNewGroup("Updater");
@@ -266,10 +219,9 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
             (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.BATCH_SIZE), "Batch Size",
             DEFAULT_WIDTH));
         addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs", DEFAULT_WIDTH));
+            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs",
+            DEFAULT_WIDTH));
         setHorizontalPlacement(false);
-        addDialogComponent(new DialogComponentString(
-            (SettingsModelString)dataSettingsModels.createParameter(DataParameter.IMAGE_SIZE), "Size of Input Image"));
 
         createNewTab("Output Layer Parameters");
         addDialogComponent(new DialogComponentNumberEdit(numberOfOutputs, "Number of Output Units", DEFAULT_WIDTH));
@@ -299,8 +251,6 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
             (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
 
         createNewTab("Column Selection");
-        addDialogComponent(
-            new DialogComponentColumnNameSelection(labelColumnSettings, "Label Column", 1, false, NominalValue.class));
         addDialogComponent(new DialogComponentColumnFilter(columnSelectionSettings, 1, true, possibleTypesArray));
     }
 }

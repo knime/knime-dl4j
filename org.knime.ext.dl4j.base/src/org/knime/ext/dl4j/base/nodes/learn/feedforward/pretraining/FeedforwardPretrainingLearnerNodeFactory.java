@@ -40,47 +40,59 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.exception;
+package org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining;
 
-import org.knime.core.data.DataType;
+import org.knime.core.node.NodeDialogPane;
+import org.knime.core.node.NodeFactory;
+import org.knime.core.node.NodeView;
 
 /**
- * This exception is thrown if a {@link DataType} is not supported by a method.
+ * <code>NodeFactory</code> for the "DL4JLearner" Node.
  *
- * @author David Kolb, KNIME.com GmbH
+ *
+ * @author
  */
-public class UnsupportedDataTypeException extends Exception {
-
-    private static final long serialVersionUID = 1L;
+public class FeedforwardPretrainingLearnerNodeFactory extends NodeFactory<FeedforwardPretrainingLearnerNodeModel> {
 
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message. Use a helpful message
-     * here as it will be displayed to the user, and it is the only hint ones understands to actual the problem.
-     *
-     * @param s the detail message.
+     * {@inheritDoc}
      */
-    public UnsupportedDataTypeException(final String s) {
-        super(s);
+    @Override
+    public FeedforwardPretrainingLearnerNodeModel createNodeModel() {
+        return new FeedforwardPretrainingLearnerNodeModel();
     }
 
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified cause.
-     *
-     * @param cause the original cause of the execption
+     * {@inheritDoc}
      */
-    public UnsupportedDataTypeException(final Throwable cause) {
-        super(cause);
+    @Override
+    public int getNrNodeViews() {
+        return 1;
     }
 
     /**
-     * Constructs an <code>UnsupportedDataTypeException</code> with the specified detail message and a cause. Use a
-     * helpful message here as it will be displayed to the user, and it is the only hint ones understands to actual the
-     * problem.
-     *
-     * @param msg the detail message
-     * @param cause the root cause
+     * {@inheritDoc}
      */
-    public UnsupportedDataTypeException(final String msg, final Throwable cause) {
-        super(msg, cause);
+    @Override
+    public NodeView<FeedforwardPretrainingLearnerNodeModel> createNodeView(final int viewIndex,
+        final FeedforwardPretrainingLearnerNodeModel nodeModel) {
+        return new FeedforwardPretrainingLearnerNodeView(nodeModel);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasDialog() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NodeDialogPane createNodeDialogPane() {
+        return new FeedforwardPretrainingLearnerNodeDialog();
+    }
+
 }

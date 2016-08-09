@@ -57,6 +57,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
+import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 
 /**
@@ -312,5 +313,39 @@ public class ConfigurationUtils {
             //save number of outputs of current layer
             previousOutNum = ffl.getNOut();
         }
+    }
+
+    /**
+     * Check if the specified list of layer types contains a layer that can be trained unsupervised.
+     *
+     * @param layerTypes the list of layer types to check
+     * @return true if a layer can be trained unsupervised, else false
+     */
+    public static boolean containsUnsupervised(final List<DNNLayerType> layerTypes) {
+        if (layerTypes.contains(DNNLayerType.AUTOENCODER)) {
+            return true;
+        } else if (layerTypes.contains(DNNLayerType.RBM_LAYER)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the specified list of layer types contains a layer that can be trained supervised.
+     *
+     * @param layerTypes the list of layer types to check
+     * @return true if a layer can be trained supervised, else false
+     */
+    public static boolean containsSupervised(final List<DNNLayerType> layerTypes) {
+        if (layerTypes.contains(DNNLayerType.CONVOLUTION_LAYER)) {
+            return true;
+        } else if (layerTypes.contains(DNNLayerType.DENSE_LAYER)) {
+            return true;
+        } else if (layerTypes.contains(DNNLayerType.GRAVES_LSTM)) {
+            return true;
+        } else if (layerTypes.contains(DNNLayerType.GRU)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -108,7 +108,8 @@ public class RealValueTargetDataRowToDataSetConverter extends AbstractDataRowToD
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc} Features are converted to a flat vector and label to a flat vector containing target. In test mode
+     * label will be empty.
      */
     @Override
     public DataSet convert(final DataRow row) throws Exception {

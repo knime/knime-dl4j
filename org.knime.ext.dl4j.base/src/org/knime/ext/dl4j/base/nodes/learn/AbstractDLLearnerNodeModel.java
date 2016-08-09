@@ -153,20 +153,16 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      *
      * @param from the network to get the updater from
      * @param to the network to transfer the updater to
-     * @return a list of messages if the transfer was successful and if not a reason of the problem
      */
-    protected List<String> transferUpdater(final MultiLayerNetwork from, final MultiLayerNetwork to) {
-        final List<String> messages = new ArrayList<>();
+    protected void transferUpdater(final MultiLayerNetwork from, final MultiLayerNetwork to) {
         final org.deeplearning4j.nn.api.Updater updater = from.getUpdater();
 
         if (updater == null) {
-            messages.add("Could not transfer updater between nets as there is no updater set in the source net");
+            logger.warn("Could not transfer updater between nets as there is no updater set in the source net");
         } else {
             to.setUpdater(updater);
-            messages.add("Successfully transfered updater between nets.");
+            logger.info("Successfully transfered updater between nets.");
         }
-
-        return messages;
     }
 
     /**
@@ -176,10 +172,8 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      *
      * @param from the network to get the weights from
      * @param to the network to transfer the weights to
-     * @return a list of messages if the transfer was successful and if not a reason of the problem
      */
-    protected List<String> transferWeights(final MultiLayerNetwork from, final MultiLayerNetwork to) {
-        final List<String> messages = new ArrayList<>();
+    protected void transferWeights(final MultiLayerNetwork from, final MultiLayerNetwork to) {
         final List<INDArray> oldWeights = new ArrayList<>();
 
         for (final org.deeplearning4j.nn.api.Layer layer : from.getLayers()) {
@@ -191,22 +185,20 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
             if (i < oldWeights.size()) {
                 try {
                     layer.setParams(oldWeights.get(i));
-                    messages.add("Successfully transfered weights from layer: " + (i + 1) + " ("
+                    logger.info("Successfully transfered weights from layer: " + (i + 1) + " ("
                         + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
                         + layer.getClass().getName() + ") of new network");
                 } catch (final Exception e) {
-                    messages.add("Could not transfer weights from layer: " + (i + 1) + " ("
+                    logger.warn("Could not transfer weights from layer: " + (i + 1) + " ("
                         + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
                         + layer.getClass().getName() + ") of new network");
-                    messages.add("Reason: " + e.getMessage());
+                    logger.warn("Reason: " + e.getMessage());
                 }
                 i++;
             } else {
                 break;
             }
         }
-
-        return messages;
     }
 
     /**
@@ -218,18 +210,15 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      * @param from the network to get initialisation from
      * @param to the network to transfer initialisation to
      * @param transferUpdater whether to transfer {@link Updater} or not
-     * @return a list of messages if the transfer was successful and if not a reason of the problem
      */
-    protected List<String> transferFullInitialization(final MultiLayerNetwork from, final MultiLayerNetwork to,
+    protected void transferFullInitialization(final MultiLayerNetwork from, final MultiLayerNetwork to,
         final boolean transferUpdater) {
-        final List<String> messages = new ArrayList<>();
         if (from != null) {
-            messages.addAll(transferWeights(from, to));
+            transferWeights(from, to);
             if (transferUpdater) {
-                messages.addAll(transferUpdater(from, to));
+                transferUpdater(from, to);
             }
         }
-        return messages;
     }
 
     /**

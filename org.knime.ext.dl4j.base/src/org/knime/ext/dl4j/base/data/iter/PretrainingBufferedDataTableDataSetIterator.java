@@ -44,60 +44,45 @@
  * ---------------------------------------------------------------------
  *
  * History
- *   15.07.2016 (David Kolb): created
+ *   27.07.2016 (David Kolb): created
  */
 package org.knime.ext.dl4j.base.data.iter;
 
 import java.util.List;
 
 import org.knime.core.node.BufferedDataTable;
-import org.knime.ext.dl4j.base.data.convert.row.RealValueTargetDataRowToDataSetConverter;
+import org.knime.ext.dl4j.base.data.convert.row.ReconstructionTargetDataRowToDataSetConverter;
 
 /**
  * Implementation of {@link AbstractBufferedDataTableDataSetIterator} for regression. Expects a table containing feature
- * columns, which will be flattened, and target columns, which will also be flattened.
+ * columns, which will be flattened.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class RegressionBufferedDataTableDataSetIterator extends AbstractBufferedDataTableDataSetIterator {
+public class PretrainingBufferedDataTableDataSetIterator extends AbstractBufferedDataTableDataSetIterator {
 
     /**
      *
      */
-    private static final long serialVersionUID = 1675071345700506498L;
+    private static final long serialVersionUID = -3107054424092020573L;
 
     /**
      * Constructor for class RegressionBufferedDataTableDataSetIterator specifying the table to iterate, the batch size,
-     * the list of indices of target columns in the table, and if in train mode.
+     * and if in train mode.
      *
      * @param table the table to iterate
      * @param batchSize the batch size
-     * @param targetColumnsIndices the list of indices of target columns in the table
      * @param isTrain if in train mode or not
      * @throws Exception
      */
-    public RegressionBufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize,
-        final List<Integer> targetColumnsIndices, final boolean isTrain) throws Exception {
+    public PretrainingBufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize,
+        final boolean isTrain) throws Exception {
 
-        super(table, batchSize,
-            new RealValueTargetDataRowToDataSetConverter(table.iterator().next(), targetColumnsIndices, isTrain));
+        super(table, batchSize, new ReconstructionTargetDataRowToDataSetConverter(table.iterator().next(), isTrain));
     }
 
     /**
-     * Convenience constructor for class RegressionBufferedDataTableDataSetIterator specifying the table to iterate and
-     * the batch size, hence test mode is used.
-     *
-     * @param table
-     * @param batchSize
-     * @throws Exception
-     */
-    public RegressionBufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize)
-        throws Exception {
-        super(table, batchSize, new RealValueTargetDataRowToDataSetConverter(table.iterator().next()));
-    }
-
-    /**
-     * No labels for regression, will always return null.
+     * No labels for pretraining, will always return null.
      */
     @Override
     public List<String> getLabels() {

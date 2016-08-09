@@ -51,7 +51,9 @@ import org.knime.core.node.NodeView;
  *
  *
  * @author
+ * @deprecated
  */
+@Deprecated
 public class FeedforwardLearnerNodeFactory extends NodeFactory<FeedforwardLearnerNodeModel> {
 
     /**

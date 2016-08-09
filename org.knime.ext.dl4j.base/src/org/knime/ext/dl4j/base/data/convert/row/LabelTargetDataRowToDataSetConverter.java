@@ -118,7 +118,8 @@ public class LabelTargetDataRowToDataSetConverter extends AbstractDataRowToDataS
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc} Features are converted to a flat vector and label to a one-hot vector. In test mode label will be
+     * empty.
      */
     @Override
     public DataSet convert(final DataRow row) throws Exception {

@@ -19,7 +19,7 @@
 <node category-path="/labs/deeplearning/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.convolution.ConvolutionLayerNodeFactory"/>
-<node category-path="/labs/deeplearning/learn" factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
+<node category-path="/labs/deeplearning/deprecated" factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
 <node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
 <node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
 <node category-path="/labs/deeplearning/predict" factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.FeedforwardPredictorNodeFactory"/>
@@ -29,9 +29,19 @@
       factory-class="org.knime.ext.dl4j.base.nodes.layer.autoencoder.AutoEncoderLayerNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/learn"
+      category-path="/labs/deeplearning/learn/supervised"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.regression.FeedforwardRegressionLearnerNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/learn/supervised"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.classification.FeedforwardClassificationLearnerNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/learn/unsupervised"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining.FeedforwardPretrainingLearnerNodeFactory">
 </node>
 </extension>
    <extension point="org.knime.core.PortType">
@@ -69,6 +79,27 @@
             level-id="testing"
             locked="true"
             name="Testing"
+            path="/labs/deeplearning/">
+      </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="supervised"
+            locked="true"
+            name="Supervised"
+            path="/labs/deeplearning/learn">
+      </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="unsupervised"
+            locked="true"
+            name="Unsupervised"
+            path="/labs/deeplearning/learn">
+      </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="deprecated"
+            locked="true"
+            name="Deprecated"
             path="/labs/deeplearning/">
       </category>
    </extension>

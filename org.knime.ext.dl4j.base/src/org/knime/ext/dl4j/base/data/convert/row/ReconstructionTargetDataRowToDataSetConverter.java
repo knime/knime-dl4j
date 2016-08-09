@@ -44,64 +44,84 @@
  * ---------------------------------------------------------------------
  *
  * History
- *   15.07.2016 (David Kolb): created
+ *   27.07.2016 (David Kolb): created
  */
-package org.knime.ext.dl4j.base.data.iter;
+package org.knime.ext.dl4j.base.data.convert.row;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.knime.core.node.BufferedDataTable;
-import org.knime.ext.dl4j.base.data.convert.row.RealValueTargetDataRowToDataSetConverter;
+import org.knime.core.data.DataCell;
+import org.knime.core.data.DataRow;
+import org.knime.ext.dl4j.base.util.ConverterUtils;
+import org.knime.ext.dl4j.base.util.NDArrayUtils;
+import org.knime.ext.dl4j.base.util.TableUtils;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * Implementation of {@link AbstractBufferedDataTableDataSetIterator} for regression. Expects a table containing feature
- * columns, which will be flattened, and target columns, which will also be flattened.
+ * Implementation of {@link AbstractDataRowToDataSetConverter} for rows containing features and no label or target
+ * columns. If in train mode the target will be the same as the feature.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class RegressionBufferedDataTableDataSetIterator extends AbstractBufferedDataTableDataSetIterator {
+public class ReconstructionTargetDataRowToDataSetConverter extends AbstractDataRowToDataSetConverter {
 
     /**
+     * Constructor for class ReconstructionTargetDataRowToDataSetConverter specifying a reference row for expected
+     * feature length calculation and if in train mode.
      *
-     */
-    private static final long serialVersionUID = 1675071345700506498L;
-
-    /**
-     * Constructor for class RegressionBufferedDataTableDataSetIterator specifying the table to iterate, the batch size,
-     * the list of indices of target columns in the table, and if in train mode.
-     *
-     * @param table the table to iterate
-     * @param batchSize the batch size
-     * @param targetColumnsIndices the list of indices of target columns in the table
+     * @param referenceRow a reference row
      * @param isTrain if in train mode or not
      * @throws Exception
      */
-    public RegressionBufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize,
-        final List<Integer> targetColumnsIndices, final boolean isTrain) throws Exception {
-
-        super(table, batchSize,
-            new RealValueTargetDataRowToDataSetConverter(table.iterator().next(), targetColumnsIndices, isTrain));
-    }
-
-    /**
-     * Convenience constructor for class RegressionBufferedDataTableDataSetIterator specifying the table to iterate and
-     * the batch size, hence test mode is used.
-     *
-     * @param table
-     * @param batchSize
-     * @throws Exception
-     */
-    public RegressionBufferedDataTableDataSetIterator(final BufferedDataTable table, final int batchSize)
+    public ReconstructionTargetDataRowToDataSetConverter(final DataRow referenceRow, final boolean isTrain)
         throws Exception {
-        super(table, batchSize, new RealValueTargetDataRowToDataSetConverter(table.iterator().next()));
+        super(isTrain);
+
+        final int featureLength = TableUtils.calculateFeatureVectorLength(referenceRow);
+        setFeatureLength(featureLength);
+
+        if (!isTrain) {
+            setTargetLength(-1);
+        } else {
+            //set target length to the same value as feature length in train mode as target
+            //will contain the same values as feature
+            setTargetLength(featureLength);
+        }
     }
 
     /**
-     * No labels for regression, will always return null.
+     * {@inheritDoc} Features and label are converted to a flat vector. In test mode label will be empty.
      */
     @Override
-    public List<String> getLabels() {
-        throw new UnsupportedOperationException("no labels for regression");
+    public DataSet convert(final DataRow row) throws Exception {
+        INDArray featureVector = null;
+        INDArray targetVector = null;
+        List<INDArray> featureVectorElements = new ArrayList<INDArray>();
+
+        for (DataCell cell : row) {
+            if (cell.getType().isCollectionType()) {
+                final INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
+                featureVectorElements.addAll(Arrays.asList(convertedCollction));
+                //else convert directly
+            } else {
+                featureVectorElements.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
+            }
+        }
+
+        featureVector = NDArrayUtils.linearHConcat(featureVectorElements);
+        if (isTrain()) {
+            targetVector = featureVector;
+        } else {
+            //if in test mode create empty array
+            targetVector = Nd4j.create(1);
+        }
+
+        validateDataSet(featureVector, targetVector, row.getKey());
+        return new DataSet(featureVector, targetVector);
     }
 
 }
