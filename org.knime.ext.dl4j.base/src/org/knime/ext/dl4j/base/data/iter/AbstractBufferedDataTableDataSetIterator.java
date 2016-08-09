@@ -127,7 +127,7 @@ public abstract class AbstractBufferedDataTableDataSetIterator implements DataSe
             try {
                 rows.add(m_rowConverter.convert(row));
             } catch (Exception e) {
-                LOGGER.error(e);
+                LOGGER.error("Error in row " + row.getKey() + " : " + e);
             }
             m_cursor++;
         }

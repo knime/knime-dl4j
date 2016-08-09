@@ -48,8 +48,13 @@
  */
 package org.knime.ext.dl4j.base.data.convert.row;
 
-import org.knime.core.data.RowKey;
+import org.apache.commons.lang3.ArrayUtils;
+import org.knime.core.data.DataCell;
+import org.knime.ext.dl4j.base.data.convert.framework.CachedConverter;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.indexing.INDArrayIndex;
+import org.nd4j.linalg.indexing.NDArrayIndex;
 
 /**
  * Abstract superclass for data row to data set converters which have a train(convert with target value) or test(convert
@@ -65,6 +70,8 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
 
     private final boolean m_isTrain;
 
+    private final CachedConverter m_cachedConverter;
+
     /**
      * Super constructor for class AbstractDataRowToDataSetConverter specifying if the converter should convert in train
      * or test mode.
@@ -73,6 +80,8 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
      */
     public AbstractDataRowToDataSetConverter(final boolean isTrain) {
         m_isTrain = isTrain;
+        m_cachedConverter = new CachedConverter();
+
     }
 
     /**
@@ -123,18 +132,17 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
      *
      * @param features the feature vector to check
      * @param targets the target vector to check
-     * @param rowKey the {@link RowKey} of the current row for error reporting
      * @throws Exception if features are null, if the length of the feature vector does not match the expected feature
      *             vector length of this converter, if in train mode and target is null
      */
-    protected void validateDataSet(final INDArray features, final INDArray targets, final RowKey rowKey)
-        throws Exception {
+    protected void validateDataSet(final INDArray features, final INDArray targets) throws Exception {
         if (features == null) {
             throw new Exception("Features expected but was null.");
         }
         if (features.length() != m_featureLength) {
-            throw new Exception("Length of current input in row: " + rowKey
-                + " does not match expected length. Possible images or collections " + "may not be of same size.");
+            throw new Exception(
+                "Length of current input does not match expected length. Possible images or collections "
+                    + "may not be of same size.");
         }
         if (isTrain()) {
             if (targets == null) {
@@ -142,6 +150,56 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
             }
         }
 
+    }
+
+    /**
+     * Converts the specified cell to a flattened vector and appends it to the specified vector at the specified start
+     * index.
+     *
+     * @param array the array to append to
+     * @param cell the cell to convert and append
+     * @param putIndex the start index to put the cell
+     * @return the position where the last value was put plus one, so the next free position
+     * @throws Exception if the specified array is no row vector, if there is a problem with conversion
+     */
+    protected int putCellToVector(final INDArray array, final DataCell cell, final int putIndex) throws Exception {
+        if (!array.isRowVector()) {
+            throw new IllegalArgumentException("Expected specified array to be a row vector.");
+        }
+        final Double[] convertedCell = m_cachedConverter.convertDataCellToJava(cell, Double[].class);
+        //if we have a scalar we do not need to convert to primitive and can put directly
+        if (isScalar(convertedCell)) {
+            array.put(0, putIndex, convertedCell[0]);
+            return putIndex + 1;
+            //else convert to primitive and put whole array
+        } else {
+            final double[] primitive = ArrayUtils.toPrimitive(convertedCell);
+            //write to interval exclusive last index so point to next free position of interval end
+            int intervalEnd = putIndex + primitive.length;
+
+            //we can't write outside of our array
+            if (intervalEnd > array.length()) {
+                throw new IllegalArgumentException(
+                    "Length of current input does not match expected length. Possible images or collections "
+                        + "may not be of same size.");
+            }
+
+            array.put(new INDArrayIndex[]{NDArrayIndex.interval(putIndex, intervalEnd, false)}, Nd4j.create(primitive));
+            return intervalEnd;
+        }
+    }
+
+    /**
+     * Checks if the specified array is an scalar, meaning that its length is equal to one.
+     *
+     * @param array the array to check
+     * @return true if the length of the array is one, else false
+     */
+    private boolean isScalar(final Double[] array) {
+        if (array.length == 1) {
+            return true;
+        }
+        return false;
     }
 
 }

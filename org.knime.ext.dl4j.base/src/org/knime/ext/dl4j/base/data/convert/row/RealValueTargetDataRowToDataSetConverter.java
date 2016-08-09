@@ -49,13 +49,10 @@
 package org.knime.ext.dl4j.base.data.convert.row;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
-import org.knime.ext.dl4j.base.util.ConverterUtils;
-import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -113,43 +110,38 @@ public class RealValueTargetDataRowToDataSetConverter extends AbstractDataRowToD
      */
     @Override
     public DataSet convert(final DataRow row) throws Exception {
-        INDArray featureVector = null;
+        INDArray featureVector = Nd4j.create(featureLength());
+        int featureVectorCursor = 0;
         INDArray targetVector = null;
-        List<INDArray> featureVectorElements = new ArrayList<INDArray>();
-        List<INDArray> targetVectorElements = new ArrayList<INDArray>();
-
-        for (int i = 0; i < row.getNumCells(); i++) {
-            final DataCell cell = row.getCell(i);
-            // convert cell and add either to feature or target depending on column index
-            if (cell.getType().isCollectionType()) {
-                final INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-
-                if ((m_targetColumnsIndices.contains(i)) && isTrain()) {
-                    targetVectorElements.addAll(Arrays.asList(convertedCollction));
-                } else {
-                    featureVectorElements.addAll(Arrays.asList(convertedCollction));
-                }
-
-            } else {
-                final INDArray convertedCell = ConverterUtils.convertDataCellToJava(cell, INDArray.class);
-
-                if ((m_targetColumnsIndices.contains(i)) && isTrain()) {
-                    targetVectorElements.add(convertedCell);
-                } else {
-                    featureVectorElements.add(convertedCell);
-                }
-
-            }
-        }
-        featureVector = NDArrayUtils.linearHConcat(featureVectorElements);
+        //do not create array in test mode, target length may be < 1
         if (isTrain()) {
-            targetVector = NDArrayUtils.linearHConcat(targetVectorElements);
-        } else {
+            targetVector = Nd4j.create(targetLength());
+        }
+        int targetVectorCursor = 0;
+
+        int i = 0;
+        for (DataCell cell : row) {
+            if ((m_targetColumnsIndices.contains(i)) && isTrain()) {
+                int newTargetCursorPos = putCellToVector(targetVector, cell, targetVectorCursor);
+                targetVectorCursor = newTargetCursorPos;
+            } else {
+                int newFeatureCursorPos = putCellToVector(featureVector, cell, featureVectorCursor);
+                featureVectorCursor = newFeatureCursorPos;
+            }
+            i++;
+        }
+        //arrays not fully filled with data
+        if (featureVectorCursor != featureLength() || (isTrain() && targetVectorCursor != targetLength())) {
+            throw new IllegalArgumentException(
+                "Length of current input does not match expected length. Possible images or collections "
+                    + "may not be of same size.");
+        }
+        if (!isTrain()) {
             //if in test mode create empty array
             targetVector = Nd4j.create(1);
         }
 
-        validateDataSet(featureVector, targetVector, row.getKey());
+        validateDataSet(featureVector, targetVector);
         return new DataSet(featureVector, targetVector);
     }
 }

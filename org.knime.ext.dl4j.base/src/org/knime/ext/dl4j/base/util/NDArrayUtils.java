@@ -134,20 +134,6 @@ public class NDArrayUtils {
         if (arrs.isEmpty()) {
             return null;
         }
-        int l = 0;
-        //calculate resulting vector length
-        for (final INDArray arr : arrs) {
-            l += arr.length();
-        }
-        final INDArray concat = Nd4j.create(l);
-        int globalPos = 0;
-        //fill with data
-        for (final INDArray arr : arrs) {
-            for (int i = 0; i < arr.length(); i++) {
-                concat.putScalar(globalPos, arr.getDouble(i));
-                globalPos++;
-            }
-        }
-        return concat;
+        return Nd4j.hstack(arrs);
     }
 }

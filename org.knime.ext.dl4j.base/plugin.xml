@@ -106,7 +106,10 @@
    <extension
          point="org.knime.core.DataCellToJavaConverter">
       <DataCellToJavaConverter
-            factoryClass="org.knime.ext.dl4j.base.data.convert.DoubleValueToINDArrayConverterFactory"></DataCellToJavaConverter>
+            factoryClass="org.knime.ext.dl4j.base.data.convert.framework.DoubleValueToINDArrayConverterFactory"></DataCellToJavaConverter>
+      <DataCellToJavaConverter
+            factoryClass="org.knime.ext.dl4j.base.data.convert.framework.DoubleValueToDoubleArrayConverterFactory">
+      </DataCellToJavaConverter>
    </extension>
    
 </plugin>

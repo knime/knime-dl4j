@@ -48,15 +48,12 @@
  */
 package org.knime.ext.dl4j.base.data.convert.row;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
-import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -123,33 +120,37 @@ public class LabelTargetDataRowToDataSetConverter extends AbstractDataRowToDataS
      */
     @Override
     public DataSet convert(final DataRow row) throws Exception {
-        INDArray featureVector = null;
-        INDArray labelVector = null;
-        List<INDArray> featureVectorElements = new ArrayList<INDArray>();
+        INDArray featureVector = Nd4j.create(featureLength());
+        int featureVectorCursor = 0;
 
-        for (int i = 0; i < row.getNumCells(); i++) {
-            final DataCell cell = row.getCell(i);
+        INDArray labelVector = null;
+
+        int i = 0;
+        for (DataCell cell : row) {
             //if label convert to one hot vector
             if ((i == m_labelColumnIndex) && isTrain()) {
                 //first convert nominal value to string
                 final String label = ConverterUtils.convertDataCellToJava(cell, String.class);
                 labelVector = FeatureUtil.toOutcomeVector(m_distinctLabels.indexOf(label), m_distinctLabels.size());
                 //if collection convert every entry using existing converters
-            } else if (cell.getType().isCollectionType()) {
-                final INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-                featureVectorElements.addAll(Arrays.asList(convertedCollction));
-                //else convert directly
             } else {
-                featureVectorElements.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
+                int newCursorPos = putCellToVector(featureVector, cell, featureVectorCursor);
+                featureVectorCursor = newCursorPos;
             }
+            i++;
         }
-        featureVector = NDArrayUtils.linearHConcat(featureVectorElements);
+        //array not fully filled with data
+        if (featureVectorCursor != featureLength()) {
+            throw new IllegalArgumentException(
+                "Length of current input does not match expected length. Possible images or collections "
+                    + "may not be of same size.");
+        }
         if (!isTrain()) {
             //if in test mode create empty array
             labelVector = Nd4j.create(1);
         }
 
-        validateDataSet(featureVector, labelVector, row.getKey());
+        validateDataSet(featureVector, labelVector);
         return new DataSet(featureVector, labelVector);
     }
 }

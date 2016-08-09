@@ -48,14 +48,8 @@
  */
 package org.knime.ext.dl4j.base.data.convert.row;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
-import org.knime.ext.dl4j.base.util.ConverterUtils;
-import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -98,21 +92,22 @@ public class ReconstructionTargetDataRowToDataSetConverter extends AbstractDataR
      */
     @Override
     public DataSet convert(final DataRow row) throws Exception {
-        INDArray featureVector = null;
+        INDArray featureVector = Nd4j.create(featureLength());
+        int featureVectorCursor = 0;
+
         INDArray targetVector = null;
-        List<INDArray> featureVectorElements = new ArrayList<INDArray>();
 
         for (DataCell cell : row) {
-            if (cell.getType().isCollectionType()) {
-                final INDArray[] convertedCollction = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-                featureVectorElements.addAll(Arrays.asList(convertedCollction));
-                //else convert directly
-            } else {
-                featureVectorElements.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
-            }
+            int newCursorPos = putCellToVector(featureVector, cell, featureVectorCursor);
+            featureVectorCursor = newCursorPos;
         }
 
-        featureVector = NDArrayUtils.linearHConcat(featureVectorElements);
+        //array not fully filled with data
+        if (featureVectorCursor != featureLength()) {
+            throw new IllegalArgumentException(
+                "Length of current input does not match expected length. Possible images or collections "
+                    + "may not be of same size.");
+        }
         if (isTrain()) {
             targetVector = featureVector;
         } else {
@@ -120,7 +115,7 @@ public class ReconstructionTargetDataRowToDataSetConverter extends AbstractDataR
             targetVector = Nd4j.create(1);
         }
 
-        validateDataSet(featureVector, targetVector, row.getKey());
+        validateDataSet(featureVector, targetVector);
         return new DataSet(featureVector, targetVector);
     }
 

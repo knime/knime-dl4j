@@ -42,28 +42,22 @@
  *  when such Node is propagated with or for interoperation with KNIME.
  * -------------------------------------------------------------------
  */
-package org.knime.ext.dl4j.base.data.convert;
+package org.knime.ext.dl4j.base.data.convert.framework;
 
 import org.knime.core.data.DoubleValue;
 import org.knime.core.data.convert.java.DataCellToJavaConverter;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
 /**
- * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to INDArray.
+ * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to Double array.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, INDArray> {
+public class DoubleValueToDoubleArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, Double[]> {
 
-    /**
-     * Create a new converter from {@link DoubleValue} to {@link INDArray}. The convert method will return an INDArray
-     * containing {@link DoubleValue#getDoubleValue()}.
-     */
     @Override
-    public DataCellToJavaConverter<DoubleValue, INDArray> create() {
-        return (v) -> Nd4j.create(new double[]{v.getDoubleValue()});
+    public DataCellToJavaConverter<DoubleValue, Double[]> create() {
+        return (v) -> new Double[]{v.getDoubleValue()};
     }
 
     @Override
@@ -72,13 +66,13 @@ public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConv
     }
 
     @Override
-    public Class<INDArray> getDestinationType() {
-        return INDArray.class;
+    public Class<Double[]> getDestinationType() {
+        return Double[].class;
     }
 
     @Override
     public String getIdentifier() {
-        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + ","
+        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + Double[].class.toString() + ","
             + "" + ")";
     }
 }
