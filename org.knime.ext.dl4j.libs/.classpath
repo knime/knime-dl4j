@@ -12,11 +12,9 @@
 	<classpathentry exported="true" kind="lib" path="libs/cleartk-util-2.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/common-image-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/common-io-3.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/common-lang-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-compress-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-configuration-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-logging-api-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-pool2-2.4.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/compiler-0.8.17.jar"/>
