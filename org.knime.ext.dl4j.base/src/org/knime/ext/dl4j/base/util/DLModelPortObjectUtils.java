@@ -44,6 +44,7 @@
  */
 package org.knime.ext.dl4j.base.util;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -60,6 +61,7 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.knime.core.node.NodeLogger;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
@@ -75,6 +77,8 @@ import org.nd4j.linalg.factory.Nd4j;
  * @author David Kolb, KNIME.com GmbH
  */
 public class DLModelPortObjectUtils {
+
+    private static final NodeLogger logger = NodeLogger.getLogger(DLModelPortObjectUtils.class);
 
     private DLModelPortObjectUtils() {
         // Utility class
@@ -181,7 +185,11 @@ public class DLModelPortObjectUtils {
                 final String read = readStringFromZipStream(inStream);
                 mln_config = MultiLayerConfiguration.fromJson(read.toString());
             } else if (entry.getName().matches("mln_params")) { //read params
-                mln_params = Nd4j.read(inStream);
+                try {
+                    mln_params = Nd4j.read(inStream);
+                } catch (Exception e) {
+                    throw new IOException("Could not load network parameters. Please re-execute the Node.");
+                }
             } else if (entry.getName().matches("mln_updater")) { //read updater
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
                 final ObjectInputStream ois = new ObjectInputStream(inStream);
@@ -277,9 +285,13 @@ public class DLModelPortObjectUtils {
                 final INDArray params = mln.params();
                 entry = new ZipEntry("mln_params");
                 out.putNextEntry(entry);
-                Nd4j.write(out, params);
+                //use this write call, Nd4j.write(OutputStream,INDArray) is outdated
+                Nd4j.write(params, new DataOutputStream(out));
+            } catch (final IOException e) {
+                throw e;
             } catch (final Exception e) {
                 //net does not contain params so we just write nothing
+                logger.debug("Cought Exception writing multi layer network parameter." + e);
             }
 
             //write updater
@@ -291,8 +303,11 @@ public class DLModelPortObjectUtils {
                     final ObjectOutputStream oos = new ObjectOutputStream(out);
                     oos.writeObject(mln.getUpdater());
                 }
+            } catch (final IOException e) {
+                throw e;
             } catch (final Exception e) {
                 //net does not contain updater because no backprop was done
+                logger.debug("Cought Exception writing multi layer network updater." + e);
             }
         }
     }

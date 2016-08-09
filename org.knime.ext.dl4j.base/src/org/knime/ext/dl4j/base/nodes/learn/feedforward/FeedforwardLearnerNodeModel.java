@@ -45,7 +45,6 @@ package org.knime.ext.dl4j.base.nodes.learn.feedforward;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -83,6 +82,7 @@ import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**

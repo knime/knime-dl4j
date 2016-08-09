@@ -45,7 +45,6 @@ package org.knime.ext.dl4j.base.nodes.learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.api.Updater;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -65,6 +64,7 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 /**
  * Abstract superclass for learner node models of Deeplearning4J integration.

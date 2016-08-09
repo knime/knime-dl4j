@@ -3,7 +3,6 @@ package org.knime.ext.dl4j.testing.nodes.conversion.pretraining;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.RowKey;
@@ -20,6 +19,7 @@ import org.knime.ext.dl4j.base.data.iter.PretrainingBufferedDataTableDataSetIter
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 /**
  * This is the model implementation of DL4JModelTester.

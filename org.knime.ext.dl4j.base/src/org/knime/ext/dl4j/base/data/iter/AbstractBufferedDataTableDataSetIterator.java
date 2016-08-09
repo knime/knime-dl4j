@@ -52,13 +52,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.ext.dl4j.base.data.convert.row.IDataRowToDataSetConverter;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 /**
  * Abstract superclass for {@link DataSetIterator}s iterating a {@link BufferedDataTable}.
@@ -206,5 +206,21 @@ public abstract class AbstractBufferedDataTableDataSetIterator implements DataSe
     @Override
     public void setPreProcessor(final DataSetPreProcessor preProcessor) {
         throw new UnsupportedOperationException("setPreProcessor is not supported");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DataSetPreProcessor getPreProcessor() {
+        throw new UnsupportedOperationException("setPreProcessor is not supported");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean resetSupported() {
+        return true;
     }
 }

@@ -45,7 +45,6 @@ package org.knime.ext.dl4j.base.nodes.predict.feedforward;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.base.data.filter.column.FilterColumnTable;
 import org.knime.core.data.DataCell;
@@ -79,6 +78,7 @@ import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 
 /**
