@@ -180,4 +180,5 @@ Require-Bundle: com.google.guava;bundle-version="19.0.0",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.knime.ext.dl4j.libs.DL4JPluginActivator
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
+Eclipse-PlatformFilter: (osgi.arch=x86_64)
 
