@@ -71,6 +71,9 @@ public class ConverterUtils {
      */
     public static <T> T convertDataCellToJava(final DataCell cellToConvert, final Class<T> classOfResultType)
         throws UnsupportedDataTypeException {
+        if (cellToConvert.isMissing()) {
+            throw new IllegalArgumentException("Input table must not contain missing Values.");
+        }
 
         final Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
             .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);

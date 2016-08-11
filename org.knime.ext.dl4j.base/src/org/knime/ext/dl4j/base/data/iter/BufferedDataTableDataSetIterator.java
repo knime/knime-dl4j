@@ -107,6 +107,10 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
      */
     public BufferedDataTableDataSetIterator(final BufferedDataTable table, final String labelColumnName,
         final int batchSize, final List<String> distinctLabels, final boolean isTrain) throws Exception {
+        if (table.size() == 0) {
+            throw new IllegalArgumentException("Can't train with empty input table.");
+        }
+
         m_table = table;
         m_batchSize = batchSize;
 
@@ -189,7 +193,7 @@ public class BufferedDataTableDataSetIterator implements DataSetIterator {
                         dataRow.add(ConverterUtils.convertDataCellToJava(cell, INDArray.class));
                     }
                 } catch (final Exception e) {
-                    logger.coding("Problem with input conversion", e);
+                    throw new RuntimeException("Error in row " + row.getKey() + " : " + e.getMessage());
                 }
             }
             final INDArray linearConcat = NDArrayUtils.linearConcat(dataRow);
