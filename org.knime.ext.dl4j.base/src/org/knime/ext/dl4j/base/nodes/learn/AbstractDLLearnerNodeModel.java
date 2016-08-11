@@ -232,6 +232,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      */
     protected void pretrainOneEpoch(final MultiLayerNetwork mln, final DataSetIterator data,
         final ExecutionContext exec) throws CanceledExecutionException {
+        exec.setMessage("Performing Pretraining");
         while (data.hasNext()) {
             exec.checkCanceled();
             if (m_learningMonitor.checkStopLearning()) {
@@ -253,6 +254,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      */
     protected void finetuneOneEpoch(final MultiLayerNetwork mln, final DataSetIterator data,
         final ExecutionContext exec) throws CanceledExecutionException {
+        exec.setMessage("Performing Finetuning");
         while (data.hasNext()) {
             exec.checkCanceled();
             if (m_learningMonitor.checkStopLearning()) {
@@ -280,6 +282,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      */
     protected void backpropOneEpoch(final MultiLayerNetwork mln, final DataSetIterator data,
         final ExecutionContext exec) throws CanceledExecutionException {
+        exec.setMessage("Performing Backpropagation");
         final boolean isPretrain = mln.getLayerWiseConfigurations().isPretrain();
         /**
          * Need to set pretrain to false here because mln.fit() on a DataSetIterator performs pretraining and
