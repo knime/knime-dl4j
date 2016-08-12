@@ -101,26 +101,22 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
         return result;
 	}
 	
-	private void checkChanges(){
-		boolean currentUseGPU = DL4JPluginActivator.getDefault()
-				.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+	private void checkChanges() {
+		boolean currentUseGPU = DL4JPluginActivator.getDefault().getPreferenceStore()
+				.getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
 		boolean useGPUChanged = m_useGPU != currentUseGPU;
-		
-		if(useGPUChanged){
-			m_useGPU = currentUseGPU;
-			MessageBox mb =
-                    new MessageBox(Display.getDefault().getActiveShell(),
-                            SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-            mb.setText("Restart workbench...");
-            mb.setMessage("Changes of the used backend become "
-                    + "first available after restarting the workbench.\n"
-                    + "Do you want to restart the workbench now?");
-            if (mb.open() != SWT.YES) {
-                return;
-            }
 
-            PlatformUI.getWorkbench().restart();
+		if (useGPUChanged) {
+			m_useGPU = currentUseGPU;
+			MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+			mb.setText("Restart workbench...");
+			mb.setMessage("Changes of the used backend become first available after restarting the workbench.\n"
+					+ "Do you want to restart the workbench now?");
+			if (mb.open() != SWT.YES) {
+				return;
+			}
+
+			PlatformUI.getWorkbench().restart();
 		}
 	}
-
 }
