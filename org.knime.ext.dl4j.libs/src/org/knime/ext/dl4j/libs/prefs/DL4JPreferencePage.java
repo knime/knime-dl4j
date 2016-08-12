@@ -79,10 +79,19 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 		addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you \n"
 				+ "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
 				+ "installed on your system. A change in this option requires a restart \n"
-				+ "of the KNIME Analytics Platform in order to take effect."));
+				+ "of KNIME Analytics Platform in order to take effect."));
 		addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", 
 				BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void performApply() {
+		// call super method to not show restart dialog
+		super.performOk();
 	}
 	
 	@Override
