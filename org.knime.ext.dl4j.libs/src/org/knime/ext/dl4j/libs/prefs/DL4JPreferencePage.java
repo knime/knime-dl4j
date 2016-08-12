@@ -70,54 +70,54 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
         m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
     }
 
-	@Override
-	public void init(IWorkbench workbench) {
-		getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
-	}
+    @Override
+    public void init(final IWorkbench workbench) {
+        getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
+    }
 
-	@Override
-	protected void createFieldEditors() {
-		addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you \n"
-				+ "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
-				+ "installed on your system. A change in this option requires a restart \n"
-				+ "of KNIME Analytics Platform in order to take effect."));
-		addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?", 
-				BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
+    @Override
+    protected void createFieldEditors() {
+        addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you \n"
+                + "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
+                + "installed on your system. A change in this option requires a restart \n"
+                + "of KNIME Analytics Platform in order to take effect."));
+        addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?",
+            BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
 
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void performApply() {
-		// call super method to not show restart dialog
-		super.performOk();
-	}
-	
-	@Override
-	public boolean performOk() {
-		boolean result = super.performOk();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void performApply() {
+        // call super method to not show restart dialog
+        super.performOk();
+    }
+
+    @Override
+    public boolean performOk() {
+        boolean result = super.performOk();
         checkChanges();
         return result;
-	}
-	
-	private void checkChanges() {
-		boolean currentUseGPU = DL4JPluginActivator.getDefault().getPreferenceStore()
-				.getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
-		boolean useGPUChanged = m_useGPU != currentUseGPU;
+    }
 
-		if (useGPUChanged) {
-			m_useGPU = currentUseGPU;
-			MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-			mb.setText("Restart workbench...");
-			mb.setMessage("Changes of the used backend become first available after restarting the workbench.\n"
-					+ "Do you want to restart the workbench now?");
-			if (mb.open() != SWT.YES) {
-				return;
-			}
+    private void checkChanges() {
+        boolean currentUseGPU = DL4JPluginActivator.getDefault().getPreferenceStore()
+                .getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+        boolean useGPUChanged = m_useGPU != currentUseGPU;
 
-			PlatformUI.getWorkbench().restart();
+        if (useGPUChanged) {
+            m_useGPU = currentUseGPU;
+            MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+            mb.setText("Restart workbench...");
+            mb.setMessage("Changes of the used backend become first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?");
+            if (mb.open() != SWT.YES) {
+                return;
+            }
+
+            PlatformUI.getWorkbench().restart();
         }
     }
 }
