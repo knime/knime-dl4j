@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Libraries used by Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.libs;singleton:=true
-Bundle-Version: 0.4.310.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 0.5.0.qualifier
 Bundle-ClassPath: knime-dl4j-libs.jar,
  libs/annotations-2.0.1.jar,
  libs/aopalliance-1.0.jar,
@@ -125,6 +124,8 @@ Bundle-ClassPath: knime-dl4j-libs.jar,
  libs/uimaj-core-2.5.0.jar,
  libs/validation-api-1.1.0.Final.jar,
  libs/xz-1.5.jar
+Bundle-Activator: org.knime.ext.dl4j.libs.DL4JPluginActivator
+Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Export-Package: org.apache.log4j,
  org.deeplearning4j.berkeley,
  org.deeplearning4j.datasets.iterator,
@@ -177,8 +178,6 @@ Require-Bundle: com.google.guava;bundle-version="19.0.0",
  javax.servlet;bundle-version="[3.1.0,4.0.0)",
  org.eclipse.ui;bundle-version="3.107.0",
  org.apache.log4j;bundle-version="1.2.15"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.knime.ext.dl4j.libs.DL4JPluginActivator
-Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Eclipse-PlatformFilter: (osgi.arch=x86_64)
-
