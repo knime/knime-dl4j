@@ -66,11 +66,53 @@
             name="Testing"
             path="/labs/deeplearning/">
       </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="networks"
+            locked="true"
+            name="Networks"
+            path="/labs/deeplearning/">
+      </category>
    </extension>
    <extension
          point="org.knime.core.DataCellToJavaConverter">
       <DataCellToJavaConverter
             factoryClass="org.knime.ext.dl4j.base.data.convert.DoubleValueToINDArrayConverterFactory"></DataCellToJavaConverter>
+   </extension>
+   <extension
+         point="org.knime.workbench.repository.metanode">
+      <PersistedMetaNode
+            category-path="/labs/deeplearning/networks"
+            expert-flag="false"
+            icon="res/icons/net.png"
+            id="alexnet"
+            name="AlexNet"
+            workflowDir="metanodes/nets/AlexNet/">
+      </PersistedMetaNode>
+      <PersistedMetaNode
+            category-path="/labs/deeplearning/networks"
+            expert-flag="false"
+            icon="res/icons/net.png"
+            id="deepmlp"
+            name="DeepMLP"
+            workflowDir="metanodes/nets/DeepMLP/">
+      </PersistedMetaNode>
+      <PersistedMetaNode
+            category-path="/labs/deeplearning/networks"
+            expert-flag="false"
+            icon="res/icons/net.png"
+            id="lenet"
+            name="LeNet"
+            workflowDir="metanodes/nets/LeNet/">
+      </PersistedMetaNode>
+      <PersistedMetaNode
+            category-path="/labs/deeplearning/networks"
+            expert-flag="false"
+            icon="res/icons/net.png"
+            id="simplemlp"
+            name="SimpleMLP"
+            workflowDir="metanodes/nets/SimpleMLP/">
+      </PersistedMetaNode>
    </extension>
    
 </plugin>
