@@ -49,7 +49,7 @@ import org.knime.core.data.DataValue;
 import org.knime.core.data.convert.java.DataCellToJavaConverter;
 import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
-import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
+import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 
 /**
  * Utility class for type conversion using the converter extension point.
@@ -70,26 +70,40 @@ public class ConverterUtils {
      * @param cellToConvert the cell which should be converted
      * @param classOfResultType the class of the type which should be converted to
      * @return the result of the converter
-     * @throws UnsupportedDataTypeException if no converter is available for the specified cell and class if there are
+     * @throws DataCellConversionException if no converter is available for the specified cell and class, if there are
      *             errors during conversion
      */
     public static <T> T convertDataCellToJava(final DataCell cellToConvert, final Class<T> classOfResultType)
-        throws UnsupportedDataTypeException {
+        throws DataCellConversionException {
+
+        checkMissing(cellToConvert);
 
         final Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
             .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
 
         if (!converterFactory.isPresent()) {
-            throw new UnsupportedDataTypeException(
+            throw new DataCellConversionException(
                 "No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
         }
         final DataCellToJavaConverter<DataValue, T> converter = converterFactory.get().create();
         try {
             return converter.convert(cellToConvert);
         } catch (final Exception e) {
-            throw new UnsupportedDataTypeException(
+            throw new DataCellConversionException(
                 "Conversion of DataCell of type: " + cellToConvert.getType().getName()
                     + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Checks if the specified cell is missing. If so an Exception is thrown.
+     *
+     * @param cell the cell to check
+     * @throws DataCellConversionException if the cell is missing
+     */
+    public static void checkMissing(final DataCell cell) throws DataCellConversionException {
+        if(cell.isMissing()) {
+            throw new DataCellConversionException("Input table must not contain Missing Values.");
         }
     }
 }

@@ -129,6 +129,8 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
 
         //create input iterator
         final int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();
+
+        TableUtils.checkForEmptyTable(selectedTable);
         DataSetIterator input = new RegressionBufferedDataTableDataSetIterator(selectedTable, batchSize,
             TableUtils.indicesFromColumnNames(targetColumns, selectedTable.getSpec()), true);
 

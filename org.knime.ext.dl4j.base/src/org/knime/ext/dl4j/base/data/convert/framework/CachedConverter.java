@@ -59,6 +59,7 @@ import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
 import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
+import org.knime.ext.dl4j.base.util.ConverterUtils;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -95,6 +96,8 @@ public class CachedConverter {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public <T> T convertDataCellToJava(final DataCell cellToConvert, final Class<T> classOfResultType)
         throws ExecutionException, DataCellConversionException {
+
+        ConverterUtils.checkMissing(cellToConvert);
 
         String factoryIdent = cellToConvert.getClass().toString() + "," + classOfResultType.toString();
 

@@ -64,7 +64,7 @@ import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.ClassificationBufferedDataTableDataSetIterator;
-import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
+import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory;
 import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
@@ -82,6 +82,7 @@ import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
+import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -136,6 +137,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         //create input iterator
         final int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();
         DataSetIterator input;
+
+        TableUtils.checkForEmptyTable(selectedTable);
         if (trainingMode.equals(TrainingMode.SUPERVISED)) {
             input = new ClassificationBufferedDataTableDataSetIterator(selectedTable,
                 selectedTable.getSpec().findColumnIndex(labelColumnName), batchSize, m_labels, true);
@@ -213,7 +216,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
                 throw new InvalidSettingsException(
                     "Label column not available or not yet selected for SUPERVISED training. "
                         + "Domain of Label column may not be available.");
-            } catch (final UnsupportedDataTypeException e) {
+            } catch (final DataCellConversionException e) {
                 throw new InvalidSettingsException(e);
             }
         }

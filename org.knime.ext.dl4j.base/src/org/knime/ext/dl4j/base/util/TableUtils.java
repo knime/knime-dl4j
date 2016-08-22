@@ -52,6 +52,7 @@ import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
+import org.knime.core.data.DataTable;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataType;
 import org.knime.core.data.StringValue;
@@ -59,6 +60,7 @@ import org.knime.core.data.collection.CollectionDataValue;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataTable;
+import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
@@ -125,10 +127,10 @@ public class TableUtils {
      * @param cells the {@link DataRow} which is expected for conversion
      * @param indices List containing indices of columns which should be skipped
      * @return the calculated feature vector length
-     * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
+     * @throws DataCellConversionException if the row contains a type which is not yet supported for conversion
      */
     public static int calculateFeatureVectorLengthExcludingIndices(final DataRow cells, final List<Integer> indices)
-        throws UnsupportedDataTypeException {
+        throws DataCellConversionException {
         int recordLength = 0;
 
         int i = 0;
@@ -150,9 +152,9 @@ public class TableUtils {
      *
      * @param cell the {@link DataCell} which is expected for conversion
      * @return the calculated feature vector length
-     * @throws UnsupportedDataTypeException if the cell is not supported for conversion
+     * @throws DataCellConversionException if the cell is not supported for conversion
      */
-    public static int calculateFeatureVectorLength(final DataCell cell) throws UnsupportedDataTypeException {
+    public static int calculateFeatureVectorLength(final DataCell cell) throws DataCellConversionException {
         int recordLength = 0;
 
         if (cell.getType().isCollectionType()) {
@@ -173,9 +175,9 @@ public class TableUtils {
      *
      * @param row the {@link DataRow} which is expected for conversion
      * @return the calculated feature vector length
-     * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
+     * @throws DataCellConversionException if the row contains a type which is not yet supported for conversion
      */
-    public static int calculateFeatureVectorLength(final DataRow row) throws UnsupportedDataTypeException {
+    public static int calculateFeatureVectorLength(final DataRow row) throws DataCellConversionException {
         int recordLength = 0;
         for (DataCell cell : row) {
             recordLength += calculateFeatureVectorLength(cell);
@@ -190,10 +192,10 @@ public class TableUtils {
      * @param cells the {@link DataRow} which is expected for conversion
      * @param indices List containing indices of columns which should be used
      * @return the calculated feature vector length
-     * @throws UnsupportedDataTypeException if the row contains a type which is not yet supported for conversion
+     * @throws DataCellConversionException if the row contains a type which is not yet supported for conversion
      */
     public static int calculateFeatureVectorLengthOnlyIndices(final DataRow cells, final List<Integer> indices)
-        throws UnsupportedDataTypeException {
+        throws DataCellConversionException {
         int recordLength = 0;
 
         int i = 0;
@@ -283,4 +285,14 @@ public class TableUtils {
         return indices;
     }
 
+    /**
+     * Checks if the table has rows. If not throws a RuntimeException.
+     *
+     * @param table the table to check
+     */
+    public static void checkForEmptyTable(final DataTable table){
+        if(!table.iterator().hasNext()){
+            throw new IllegalStateException("Input table must not be empty!");
+        }
+    }
 }

@@ -115,6 +115,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
             exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
 
         //create iterator and prediction
+        TableUtils.checkForEmptyTable(filteredTable);
         final DataSetIterator input = new ClassificationBufferedDataTableDataSetIterator(filteredTable, 1);
         final MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
 

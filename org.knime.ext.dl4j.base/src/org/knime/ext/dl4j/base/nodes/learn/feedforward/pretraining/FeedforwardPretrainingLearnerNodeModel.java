@@ -76,6 +76,7 @@ import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
+import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -119,6 +120,8 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
 
         //create input iterator
         final int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();
+
+        TableUtils.checkForEmptyTable(selectedTable);
         DataSetIterator input = new PretrainingBufferedDataTableDataSetIterator(selectedTable, batchSize, true);
 
         //build multi layer net
