@@ -82,7 +82,7 @@
             path="/labs/deeplearning/">
       </category>
       <category
-            icon="res/icons/missing.gif"
+            icon="res/icons/meta.png"
             level-id="supervised"
             locked="true"
             name="Supervised"
@@ -102,6 +102,13 @@
             name="Deprecated"
             path="/labs/deeplearning/">
       </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="networks"
+            locked="true"
+            name="Networks"
+            path="/labs/deeplearning/">
+      </category>      
    </extension>
    <extension
          point="org.knime.core.DataCellToJavaConverter">
@@ -116,7 +123,7 @@
       <PersistedMetaNode
             category-path="/labs/deeplearning/networks"
             expert-flag="false"
-            icon="res/icons/net.png"
+            icon="res/icons/meta.png"
             id="alexnet"
             name="AlexNet"
             workflowDir="metanodes/nets/AlexNet/">
@@ -124,7 +131,7 @@
       <PersistedMetaNode
             category-path="/labs/deeplearning/networks"
             expert-flag="false"
-            icon="res/icons/net.png"
+            icon="res/icons/meta.png"
             id="deepmlp"
             name="DeepMLP"
             workflowDir="metanodes/nets/DeepMLP/">
@@ -132,7 +139,7 @@
       <PersistedMetaNode
             category-path="/labs/deeplearning/networks"
             expert-flag="false"
-            icon="res/icons/net.png"
+            icon="res/icons/meta.png"
             id="lenet"
             name="LeNet"
             workflowDir="metanodes/nets/LeNet/">
@@ -140,10 +147,18 @@
       <PersistedMetaNode
             category-path="/labs/deeplearning/networks"
             expert-flag="false"
-            icon="res/icons/net.png"
+            icon="res/icons/meta.png"
             id="simplemlp"
             name="SimpleMLP"
             workflowDir="metanodes/nets/SimpleMLP/">
+      </PersistedMetaNode>
+      <PersistedMetaNode
+            category-path="/labs/deeplearning/networks"
+            expert-flag="false"
+            icon="res/icons/meta.png"
+            id="deepbelief"
+            name="DeepBelief"
+            workflowDir="metanodes/nets/DeepBelief/">
       </PersistedMetaNode>
    </extension>
    
