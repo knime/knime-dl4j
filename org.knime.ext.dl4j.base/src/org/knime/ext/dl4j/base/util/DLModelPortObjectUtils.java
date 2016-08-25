@@ -188,7 +188,7 @@ public class DLModelPortObjectUtils {
                 try {
                     mln_params = Nd4j.read(inStream);
                 } catch (Exception e) {
-                    throw new IOException("Could not load network parameters. Please re-execute the Node.");
+                    throw new IOException("Could not load network parameters. Please re-execute the Node.", e);
                 }
             } else if (entry.getName().matches("mln_updater")) { //read updater
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
@@ -196,7 +196,7 @@ public class DLModelPortObjectUtils {
                 try {
                     updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
                 } catch (final ClassNotFoundException e) {
-                    throw new IOException("Problem with updater loading: " + e.getMessage());
+                    throw new IOException("Problem with updater loading: " + e.getMessage(), e);
                 }
             }
         }
@@ -291,7 +291,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain params so we just write nothing
-                logger.debug("Cought Exception writing multi layer network parameter." + e);
+                logger.debug("Cought Exception writing multi layer network parameter.", e);
             }
 
             //write updater
@@ -307,7 +307,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain updater because no backprop was done
-                logger.debug("Cought Exception writing multi layer network updater." + e);
+                logger.debug("Cought Exception writing multi layer network updater.", e);
             }
         }
     }

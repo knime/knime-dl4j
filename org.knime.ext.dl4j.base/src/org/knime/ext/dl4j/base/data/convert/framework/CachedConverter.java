@@ -123,7 +123,7 @@ public class CachedConverter {
             return converter.convert(cellToConvert);
         } catch (final Exception e) {
             throw new DataCellConversionException("Conversion of DataCell of type: " + cellToConvert.getType().getName()
-                + " failed. Error message: " + e.getMessage());
+                + " failed. Error message: " + e.getMessage(), e);
         }
     }
 

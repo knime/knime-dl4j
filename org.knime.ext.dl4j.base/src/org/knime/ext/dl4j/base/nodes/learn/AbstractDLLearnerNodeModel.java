@@ -191,8 +191,8 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
                 } catch (final Exception e) {
                     logger.warn("Could not transfer weights from layer: " + (i + 1) + " ("
                         + from.getLayers()[i].getClass().getName() + ") of old network to " + "layer: " + (i + 1) + " ("
-                        + layer.getClass().getName() + ") of new network");
-                    logger.warn("Reason: " + e.getMessage());
+                        + layer.getClass().getName() + ") of new network", e);
+                    logger.warn("Reason: " + e.getMessage(), e);
                 }
                 i++;
             } else {

@@ -56,7 +56,6 @@ import org.knime.core.data.DataRow;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.ext.dl4j.base.data.convert.row.IDataRowToDataSetConverter;
-import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -127,10 +126,8 @@ public abstract class AbstractBufferedDataTableDataSetIterator implements DataSe
             final DataRow row = m_tableIterator.next();
             try {
                 rows.add(m_rowConverter.convert(row));
-            } catch (DataCellConversionException e) {
-                throw new RuntimeException("Error in row " + row.getKey() + " : " + e, e);
             } catch (Exception e) {
-                LOGGER.error("Error in row " + row.getKey() + " : " + e, e);
+                throw new RuntimeException("Error in row " + row.getKey() + " : " + e.getMessage(), e);
             }
             m_cursor++;
         }

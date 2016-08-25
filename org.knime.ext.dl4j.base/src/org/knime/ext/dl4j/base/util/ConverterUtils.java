@@ -91,7 +91,7 @@ public class ConverterUtils {
         } catch (final Exception e) {
             throw new DataCellConversionException(
                 "Conversion of DataCell of type: " + cellToConvert.getType().getName()
-                    + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage());
+                    + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage(), e);
         }
     }
 
@@ -103,7 +103,7 @@ public class ConverterUtils {
      */
     public static void checkMissing(final DataCell cell) throws DataCellConversionException {
         if(cell.isMissing()) {
-            throw new DataCellConversionException("Input table must not contain Missing Values.");
+            throw new DataCellConversionException("Input table must not contain Missing Values!");
         }
     }
 }

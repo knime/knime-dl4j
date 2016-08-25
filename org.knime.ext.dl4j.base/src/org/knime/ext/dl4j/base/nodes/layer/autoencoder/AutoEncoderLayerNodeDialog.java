@@ -76,7 +76,7 @@ public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
     protected AutoEncoderLayerNodeDialog() {
         final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
 
-        try {
+
             addDialogComponent(new DialogComponentNumberEdit(
                 (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS),
                 "Number of Output Units", 4));
@@ -95,9 +95,6 @@ public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
             addDialogComponent(new DialogComponentNumberEdit(
                 (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.CORRUPTION_LEVEL),
                 "Corruption Level", 4));
-        } catch (final IllegalStateException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
+ 
     }
 }

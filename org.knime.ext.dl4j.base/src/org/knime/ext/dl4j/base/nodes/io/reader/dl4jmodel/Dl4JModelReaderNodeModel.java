@@ -90,7 +90,7 @@ public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
             //read spec only for configure
             m_outSpec = loadSpec();
         } catch (final Exception e) {
-            throw new InvalidSettingsException(e.getMessage());
+            throw new InvalidSettingsException(e.getMessage(), e);
         }
         return new DLModelPortObjectSpec[]{m_outSpec};
     }
