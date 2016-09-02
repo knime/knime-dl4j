@@ -6,6 +6,7 @@ Bundle-Version: 3.3.0.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Export-Package: org.knime.ext.dl4j.base,
  org.knime.ext.dl4j.base.data.iter,
+ org.knime.ext.dl4j.base.exception,
  org.knime.ext.dl4j.base.settings,
  org.knime.ext.dl4j.base.settings.enumerate,
  org.knime.ext.dl4j.base.settings.impl,
