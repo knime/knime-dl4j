@@ -57,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -559,9 +558,8 @@ public abstract class AbstractGridBagDialogComponentGroup implements IDialogComp
         m_components.add(booleanComponent);
 
         JLabel labelComp = new JLabel(label);
-        JCheckBox checkBoxComp = getFirstComponent(booleanComponent, JCheckBox.class);
 
-        addDoubleColumnRow(checkBoxComp, labelComp);
+        addDoubleColumnRow(booleanComponent.getComponentPanel(), labelComp);
     }
 
     /**
