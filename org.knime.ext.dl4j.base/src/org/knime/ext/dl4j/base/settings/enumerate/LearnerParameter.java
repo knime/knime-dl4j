@@ -53,7 +53,8 @@ public enum LearnerParameter {
     SEED, /** The number of training iterations. */
     TRAINING_ITERATIONS, /** The type of optimization algorithm to use. */
     OPTIMIZATION_ALGORITHM, /** The global learning rate to use. */
-    GLOBAL_LEARNING_RATE, /** Whether to use global learning or not. */
+    GLOBAL_LEARNING_RATE, /** The learning rate to use for every iteration. */
+    LEARNING_RATE_AFTER, /** Whether to use global learning or not. */
     USE_GLOBAL_LEARNING_RATE, /** Whether to use regularization or not. */
     USE_REGULARIZATION, /** The l1 regularization coefficient. */
     L1, /** The l2 regularization coefficient. */
@@ -79,21 +80,65 @@ public enum LearnerParameter {
     USE_DROP_CONNECT, /** The drop out rate. */
     GLOBAL_DROP_OUT, /** Whether to overwrite the drop out rate of each layer. */
     USE_GLOBAL_DROP_OUT, /** Whether to use the updater of a previously trained net or create a new one. */
-    USE_PRETRAINED_UPDATER, /** The kind of training to do. e.g. supervised, unsupervised. */
+    USE_PRETRAINED_UPDATER, /** Whether to use the specified updater. */
+    USE_UPDATER, /** The kind of training to do. e.g. supervised, unsupervised. */
     TRAINING_MODE, /** The global weight initialization strategy. */
     GLOBAL_WEIGHT_INIT, /** Whether to overwrite weight initialization strategy of each layer. */
-    USE_GLOBAL_WEIGHT_INIT;
+    USE_GLOBAL_WEIGHT_INIT, /**
+                             * The maximum number of line search iterations. Only applicable for CONJUGATE_GRADIENT,
+                             * LBFGS ,and LINE_GRADIENT_DESCENT.
+                             */
+    MAX_NUMBER_LINE_SEARCH_ITERATIONS, /** Ada delta coefficient. */
+    ADADELTA_RHO, /** Mean decay rate for Adam updater. Only applies if using .updater(Updater.ADAM). */
+    ADAM_MEAN_DECAY, /** Variance decay rate for Adam updater. Only applies if using .updater(Updater.ADAM). */
+    ADAM_VAR_DECAY, /** Decay rate for RMSProp. Only applies if using .updater(Updater.RMSPROP). */
+    RMS_DECAY, /** The kind of distribution to draw the initial weights from. */
+    DISTRIBUTION, /** Distribution parameter for binomial distribution. */
+    DISTRIBUTION_BINOMIAL_TRAILS, /** Distribution parameter for binomial distribution. */
+    DISTRIBUTION_BINOMIAL_PROBABILITY, /** Mean for normal distribution. */
+    DISTRIBUTION_MEAN, /** Standard deviation for normal distribution. */
+    DISTRIBUTION_STD, /** Lower bound for uniform distribution. */
+    DISTRIBUTION_LOWER_BOUND, /** Upper bound for uniform distribution. */
+    DISTRIBUTION_UPPER_BOUND, /** The kind of learning rate policy. */
+    LR_POLICY, /** Decay rate for learning rate policy. */
+    LR_POLICY_DECAY_RATE, /** Steps for learning rate policy. */
+    LR_POLICY_STEPS, /** Power for learning rate policy. */
+    LR_POLICY_POWER, /** Score based decay rate for learning rate policy. */
+    LR_POLICY_SCORE_DECAY, /** Whether to use advanced learning rate options or not. */
+    USE_ADVANCED_LEARNING_RATE, /** The bias learning rate. */
+    BIAS_LEARNING_RATE, /** Whether to use a bias learning rate. */
+    USE_BIAS_LEARNING_RATE, /** The value to initialise all bias values with. */
+    BIAS_INIT, /** Whether to use a bias initialisation value. */
+    USE_BIAS_INIT;
 
     //default values for learner parameters
+    public static final String DEFAULT_DISTRIBUTION = "UNIFORM";
+
+    public static final String DEFAULT_LEARNING_RATE_POLICY = "None";
+
     public static final int DEFAULT_INT = 1;
+
+    public static final int DEFAULT_MAX_NUMBER_LINE_SEARCH_ITERATIONS = 5;
 
     public static final Double DEFAULT_DOUBLE = 0.0;
 
     public static final Double DEFAULT_LEARNING_RATE = 0.1;
 
+    public static final Double DEFAULT_ADAM_MEAN_DECAY = 0.9;
+
+    public static final Double DEFAULT_ADAM_VAR_DECAY = 0.999;
+
+    public static final Double DEFAULT_ADADELTA_RHO = 0.95;
+
+    public static final Double DEFAULT_RMS_DECAY = 0.9;
+
+    public static final Double DEFAULT_MOMENTUM = 0.9;
+
+    public static final Double DEFAULT_GRADIENT_NORMALIZATION_THRESHOLD = 1.0;
+
     public static final String DEFAULT_OPTIMIZATION = "Stochastic Gradient Descent";
 
-    public static final String DEFAULT_GRADIENTNORM = "Clip Element Wise Absolute Value";
+    public static final String DEFAULT_GRADIENT_NORMALIZATION = "Clip Element Wise Absolute Value";
 
     public static final String DEFAULT_UPDATER = "NESTEROVS";
 
@@ -106,4 +151,7 @@ public enum LearnerParameter {
     public static final String DEFAULT_IN_OUT_OPTIONS = "NOT_OPTIONAL";
 
     public static final boolean DEFAULT_BOOLEAN = false;
+
+    public static final boolean DEFAULT_USE_UPDATER = true;
+
 }

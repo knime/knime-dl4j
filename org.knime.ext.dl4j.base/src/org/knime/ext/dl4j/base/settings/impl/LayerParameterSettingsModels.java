@@ -137,7 +137,8 @@ public class LayerParameterSettingsModels implements IParameterSettingsModels<La
             case DROP_OUT:
                 return new SettingsModelDoubleBounded("drop_out", DEFAULT_DOUBLE, 0, 1);
             case LEARNING_RATE:
-                return new SettingsModelDoubleBounded("learning_rate", DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
+                return new SettingsModelDoubleBounded("learning_rate", LayerParameter.DEFAULT_LAYER_LEARNING_RATE, 0,
+                    Double.MAX_VALUE);
             case LRN_ALPHA:
                 return new SettingsModelDoubleBounded("lrn_alpha", LayerParameter.DEFAULT_LRN_ALPHA, 0,
                     Double.MAX_VALUE);

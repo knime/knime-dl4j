@@ -43,10 +43,18 @@
 package org.knime.ext.dl4j.base.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.GradientNormalization;
+import org.deeplearning4j.nn.conf.LearningRatePolicy;
+import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
+
+import com.google.common.collect.Lists;
 
 /**
  * Utility class for parameter validation and conversion of Deeplearning4J Integration nodes.
@@ -54,6 +62,46 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
  * @author David Kolb, KNIME.com GmbH
  */
 public class ParameterUtils {
+
+    /** Condition for the parameter: maximum number of line search iterations. */
+    public static final List<OptimizationAlgorithm> MAX_LINE_SEARCH_ITERATIONS_CONDITION =
+        Lists.newArrayList(OptimizationAlgorithm.CONJUGATE_GRADIENT, OptimizationAlgorithm.LBFGS,
+            OptimizationAlgorithm.LINE_GRADIENT_DESCENT);
+
+    /** Condition for ADADELTA parameter: rho. */
+    public static final Updater ADADELTA_PARAMETER_CONDITION = Updater.ADADELTA;
+
+    /** Condition for RMSPROP parameter: rms decay. */
+    public static final Updater RMSPROP_PARAMETER_CONDITION = Updater.RMSPROP;
+
+    /** Condition for ADAM parameter: mean decay, var decay. */
+    public static final Updater ADAM_PARAMETER_CONDITION = Updater.ADAM;
+
+    /** Condition for NESTEROVS parameter: momentum rate, momentum schedule. */
+    public static final Updater NESTEROVS_PARAMETER_CONDITION = Updater.NESTEROVS;
+
+    /** Condition for the parameter: gradient normalization threshold. */
+    public static final List<GradientNormalization> GRADIENT_NORMALIZATION_THRESHOLD_CONDITION =
+        Lists.newArrayList(GradientNormalization.ClipElementWiseAbsoluteValue, GradientNormalization.ClipL2PerLayer,
+            GradientNormalization.ClipL2PerParamType);
+
+    /** Condition for the parameter: gradient normalization threshold. */
+    public static final WeightInit DISTRIBUTION_PARAMETER_CONDITION = WeightInit.DISTRIBUTION;
+
+    /** Conditions for Learning Rate Policy, NEEDS TO BE REVISED. */
+    public static final LearningRatePolicy LR_SCHEDULE_PARAMETER_CONDITION = LearningRatePolicy.Schedule;
+
+    /** Conditions for Learning Rate Policy, NEEDS TO BE REVISED. */
+    public static final LearningRatePolicy LR_STEPS_PARAMETER_CONDITION = LearningRatePolicy.Step;
+
+    /** Conditions for Learning Rate Policy, NEEDS TO BE REVISED. */
+    public static final LearningRatePolicy LR_SCORE_BASED_PARAMETER_CONDITION = LearningRatePolicy.Score;
+
+    /** Conditions for Learning Rate Policy, NEEDS TO BE REVISED. */
+    public static final LearningRatePolicy LR_POWER_PARAMETER_CONDITION = LearningRatePolicy.Inverse;
+
+    /** Conditions for Learning Rate Policy, NEEDS TO BE REVISED. */
+    public static final LearningRatePolicy LR_EXPONENTIAL_PARAMETER_CONDITION = LearningRatePolicy.Exponential;
 
     /** Regex pattern for expected format of image size parameter. */
     private static final String imageSizePattern = "\\d+,\\d+,\\d+";

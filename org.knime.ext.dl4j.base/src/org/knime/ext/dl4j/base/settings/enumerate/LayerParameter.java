@@ -87,4 +87,6 @@ public enum LayerParameter {
     public static final String DEFAULT_POOLING = "MAX";
 
     public static final String DEFAULT_MULTIINT = "2,2";
+
+    public static final double DEFAULT_LAYER_LEARNING_RATE = 0.1;
 }

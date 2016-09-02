@@ -47,6 +47,7 @@ import java.util.List;
 
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
@@ -61,9 +62,45 @@ import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
  */
 public class LearnerParameterSettingsModels implements IParameterSettingsModels<LearnerParameter> {
 
+    private SettingsModelString m_distribution;
+
+    private SettingsModelString m_lrPolicy;
+
+    private SettingsModelIntegerBounded m_distributionBinomialTrails;
+
+    private SettingsModelDoubleBounded m_distributionBinomialProbability;
+
+    private SettingsModelDouble m_distributionMean;
+
+    private SettingsModelDoubleBounded m_distributionSTD;
+
+    private SettingsModelDouble m_distributionUpperBound;
+
+    private SettingsModelDouble m_distributionLowerBound;
+
+    private SettingsModelDoubleBounded m_lrPolicyDecayRate;
+
+    private SettingsModelDoubleBounded m_lrPolicyPower;
+
+    private SettingsModelDoubleBounded m_lrPolicySteps;
+
+    private SettingsModelDoubleBounded m_lrPolicyScoreDecayRate;
+
+    private SettingsModelDoubleBounded m_biasLearningRate;
+
+    private SettingsModelDouble m_biasInit;
+
+    private SettingsModelBoolean m_useAdvancedLearningRate;
+
+    private SettingsModelBoolean m_useBiasLearningRate;
+
+    private SettingsModelBoolean m_useBiasInit;
+
     private SettingsModelIntegerBounded m_seed;
 
     private SettingsModelIntegerBounded m_trainingIterations;
+
+    private SettingsModelIntegerBounded m_maxNumLineSearchIterations;
 
     private SettingsModelString m_optimizationAlgorithm;
 
@@ -72,6 +109,8 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
     private SettingsModelString m_updater;
 
     private SettingsModelString m_momentumAfter;
+
+    private SettingsModelString m_learningRateAfter;
 
     private SettingsModelString m_trainingsMode;
 
@@ -88,6 +127,14 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
     private SettingsModelDoubleBounded m_gradientNormalizationThreshold;
 
     private SettingsModelDoubleBounded m_momentum;
+
+    private SettingsModelDoubleBounded m_adadeltaRho;
+
+    private SettingsModelDoubleBounded m_adamMeanDecay;
+
+    private SettingsModelDoubleBounded m_adamVarDecay;
+
+    private SettingsModelDoubleBounded m_rmsDecay;
 
     private SettingsModelBoolean m_useSeed;
 
@@ -107,6 +154,8 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
 
     private SettingsModelBoolean m_usePretrainedUpdater;
 
+    private SettingsModelBoolean m_useUpdater;
+
     private SettingsModelBoolean m_useGlobalDropOut;
 
     private SettingsModelBoolean m_useGlobalWeightInit;
@@ -125,12 +174,19 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
             case TRAINING_ITERATIONS:
                 return new SettingsModelIntegerBounded("training_iterations", LearnerParameter.DEFAULT_INT, 1,
                     Integer.MAX_VALUE);
+            case MAX_NUMBER_LINE_SEARCH_ITERATIONS:
+                return new SettingsModelIntegerBounded("max_number_line_search_iterations",
+                    LearnerParameter.DEFAULT_MAX_NUMBER_LINE_SEARCH_ITERATIONS, 1, Integer.MAX_VALUE);
+            case DISTRIBUTION_BINOMIAL_TRAILS:
+                return new SettingsModelIntegerBounded("distribution_binomial_trails", LearnerParameter.DEFAULT_INT, 1,
+                    Integer.MAX_VALUE);
 
             //String parameters
             case OPTIMIZATION_ALGORITHM:
                 return new SettingsModelString("optimization_algorithm", LearnerParameter.DEFAULT_OPTIMIZATION);
             case GRADIENT_NORMALIZATION:
-                return new SettingsModelString("gradient_normalization", LearnerParameter.DEFAULT_GRADIENTNORM);
+                return new SettingsModelString("gradient_normalization",
+                    LearnerParameter.DEFAULT_GRADIENT_NORMALIZATION);
             case UPDATER:
                 return new SettingsModelString("updater", LearnerParameter.DEFAULT_UPDATER);
             case MOMENTUM_AFTER:
@@ -139,6 +195,12 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 return new SettingsModelString("trainings_mode", LearnerParameter.DEFAULT_TRAININGS_MODE);
             case GLOBAL_WEIGHT_INIT:
                 return new SettingsModelString("global_weight_init", LearnerParameter.DEFAULT_WEIGHT_INIT);
+            case LEARNING_RATE_AFTER:
+                return new SettingsModelString("learning_rate_after", LearnerParameter.DEFAULT_MAP);
+            case DISTRIBUTION:
+                return new SettingsModelString("distribution", LearnerParameter.DEFAULT_DISTRIBUTION);
+            case LR_POLICY:
+                return new SettingsModelString("lr_policy", LearnerParameter.DEFAULT_LEARNING_RATE_POLICY);
 
             //Double parameters
             case GLOBAL_DROP_OUT:
@@ -152,9 +214,49 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 return new SettingsModelDoubleBounded("l2", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
             case GRADIENT_NORMALIZATION_THRESHOLD:
                 return new SettingsModelDoubleBounded("gradient_normalization_threshold",
-                    LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
+                    LearnerParameter.DEFAULT_GRADIENT_NORMALIZATION_THRESHOLD, 0, Double.MAX_VALUE);
             case MOMENTUM:
-                return new SettingsModelDoubleBounded("momentum", LearnerParameter.DEFAULT_DOUBLE, 0, Double.MAX_VALUE);
+                return new SettingsModelDoubleBounded("momentum", LearnerParameter.DEFAULT_MOMENTUM, 0,
+                    Double.MAX_VALUE);
+            case ADADELTA_RHO:
+                return new SettingsModelDoubleBounded("adadelta_rho", LearnerParameter.DEFAULT_ADADELTA_RHO, 0,
+                    Double.MAX_VALUE);
+            case ADAM_MEAN_DECAY:
+                return new SettingsModelDoubleBounded("adam_mean_decay", LearnerParameter.DEFAULT_ADAM_MEAN_DECAY, 0,
+                    Double.MAX_VALUE);
+            case ADAM_VAR_DECAY:
+                return new SettingsModelDoubleBounded("adam_var_decay", LearnerParameter.DEFAULT_ADAM_VAR_DECAY, 0,
+                    Double.MAX_VALUE);
+            case RMS_DECAY:
+                return new SettingsModelDoubleBounded("rms_decay", LearnerParameter.DEFAULT_RMS_DECAY, 0,
+                    Double.MAX_VALUE);
+            case BIAS_INIT:
+                return new SettingsModelDouble("bias_init", LearnerParameter.DEFAULT_DOUBLE);
+            case BIAS_LEARNING_RATE:
+                return new SettingsModelDoubleBounded("bias_learning_rate", LearnerParameter.DEFAULT_LEARNING_RATE, 0,
+                    Double.MAX_VALUE);
+            case DISTRIBUTION_BINOMIAL_PROBABILITY:
+                return new SettingsModelDoubleBounded("distribution_binomial_probability",
+                    LearnerParameter.DEFAULT_DOUBLE, 0, 1);
+            case DISTRIBUTION_LOWER_BOUND:
+                return new SettingsModelDouble("distribution_lower_bound", LearnerParameter.DEFAULT_DOUBLE);
+            case DISTRIBUTION_MEAN:
+                return new SettingsModelDouble("distribution_mean", LearnerParameter.DEFAULT_DOUBLE);
+            case DISTRIBUTION_STD:
+                return new SettingsModelDoubleBounded("distribution_std", LearnerParameter.DEFAULT_DOUBLE, 0,
+                    Double.MAX_VALUE);
+            case DISTRIBUTION_UPPER_BOUND:
+                return new SettingsModelDouble("distribution_upper_bound", LearnerParameter.DEFAULT_DOUBLE);
+            case LR_POLICY_DECAY_RATE:
+                return new SettingsModelDoubleBounded("lr_policy_decay_rate", LearnerParameter.DEFAULT_DOUBLE, 0,
+                    Double.MAX_VALUE);
+            case LR_POLICY_POWER:
+                return new SettingsModelDoubleBounded("lr_policy_power", LearnerParameter.DEFAULT_DOUBLE, 0,
+                    Double.MAX_VALUE);
+            case LR_POLICY_SCORE_DECAY:
+                return new SettingsModelDoubleBounded("lr_policy_score_decay", LearnerParameter.DEFAULT_DOUBLE, 0, 1);
+            case LR_POLICY_STEPS:
+                return new SettingsModelDoubleBounded("lr_policy_steps", 1, 1, Double.MAX_VALUE);
 
             //boolean parameters
             case USE_SEED:
@@ -181,6 +283,14 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 return new SettingsModelBoolean("use_global_weight_init", LearnerParameter.DEFAULT_BOOLEAN);
             case USE_GLOBAL_LEARNING_RATE:
                 return new SettingsModelBoolean("use_global_learning_rate", LearnerParameter.DEFAULT_BOOLEAN);
+            case USE_UPDATER:
+                return new SettingsModelBoolean("use_updater", LearnerParameter.DEFAULT_USE_UPDATER);
+            case USE_ADVANCED_LEARNING_RATE:
+                return new SettingsModelBoolean("use_advanced_learning_rate", LearnerParameter.DEFAULT_BOOLEAN);
+            case USE_BIAS_INIT:
+                return new SettingsModelBoolean("use_bias_init", LearnerParameter.DEFAULT_BOOLEAN);
+            case USE_BIAS_LEARNING_RATE:
+                return new SettingsModelBoolean("use_bias_learning_rate", LearnerParameter.DEFAULT_BOOLEAN);
             default:
                 throw new IllegalArgumentException("No case defined for Learner Parameter: " + enumerate);
         }
@@ -303,9 +413,7 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 break;
             case USE_PRETRAINED_UPDATER:
                 m_usePretrainedUpdater = (SettingsModelBoolean)createParameter(enumerate);
-                if (!m_allInitializedSettings.contains(m_usePretrainedUpdater)) {
-                    m_allInitializedSettings.add(m_usePretrainedUpdater);
-                }
+                addToSet(m_usePretrainedUpdater);
                 break;
             case TRAINING_MODE:
                 m_trainingsMode = (SettingsModelString)createParameter(enumerate);
@@ -327,6 +435,102 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
                 m_useGlobalLearningRate = (SettingsModelBoolean)createParameter(enumerate);
                 addToSet(m_useGlobalLearningRate);
                 break;
+            case MAX_NUMBER_LINE_SEARCH_ITERATIONS:
+                m_maxNumLineSearchIterations = (SettingsModelIntegerBounded)createParameter(enumerate);
+                addToSet(m_maxNumLineSearchIterations);
+                break;
+            case ADADELTA_RHO:
+                m_adadeltaRho = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_adadeltaRho);
+                break;
+            case ADAM_MEAN_DECAY:
+                m_adamMeanDecay = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_adamMeanDecay);
+                break;
+            case ADAM_VAR_DECAY:
+                m_adamVarDecay = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_adamVarDecay);
+                break;
+            case RMS_DECAY:
+                m_rmsDecay = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_rmsDecay);
+                break;
+            case USE_UPDATER:
+                m_useUpdater = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_useUpdater);
+                break;
+            case LEARNING_RATE_AFTER:
+                m_learningRateAfter = (SettingsModelString)createParameter(enumerate);
+                addToSet(m_learningRateAfter);
+                break;
+            case BIAS_INIT:
+                m_biasInit = (SettingsModelDouble)createParameter(enumerate);
+                addToSet(m_biasInit);
+                break;
+            case BIAS_LEARNING_RATE:
+                m_biasLearningRate = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_biasLearningRate);
+                break;
+            case DISTRIBUTION:
+                m_distribution = (SettingsModelString)createParameter(enumerate);
+                addToSet(m_distribution);
+                break;
+            case DISTRIBUTION_BINOMIAL_PROBABILITY:
+                m_distributionBinomialProbability = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_distributionBinomialProbability);
+                break;
+            case DISTRIBUTION_BINOMIAL_TRAILS:
+                m_distributionBinomialTrails = (SettingsModelIntegerBounded)createParameter(enumerate);
+                addToSet(m_distributionBinomialTrails);
+                break;
+            case DISTRIBUTION_LOWER_BOUND:
+                m_distributionLowerBound = (SettingsModelDouble)createParameter(enumerate);
+                addToSet(m_distributionLowerBound);
+                break;
+            case DISTRIBUTION_MEAN:
+                m_distributionMean = (SettingsModelDouble)createParameter(enumerate);
+                addToSet(m_distributionMean);
+                break;
+            case DISTRIBUTION_STD:
+                m_distributionSTD = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_distributionSTD);
+                break;
+            case DISTRIBUTION_UPPER_BOUND:
+                m_distributionUpperBound = (SettingsModelDouble)createParameter(enumerate);
+                addToSet(m_distributionUpperBound);
+                break;
+            case LR_POLICY:
+                m_lrPolicy = (SettingsModelString)createParameter(enumerate);
+                addToSet(m_lrPolicy);
+                break;
+            case LR_POLICY_DECAY_RATE:
+                m_lrPolicyDecayRate = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_lrPolicyDecayRate);
+                break;
+            case LR_POLICY_POWER:
+                m_lrPolicyPower = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_lrPolicyPower);
+                break;
+            case LR_POLICY_SCORE_DECAY:
+                m_lrPolicyScoreDecayRate = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_lrPolicyScoreDecayRate);
+                break;
+            case LR_POLICY_STEPS:
+                m_lrPolicySteps = (SettingsModelDoubleBounded)createParameter(enumerate);
+                addToSet(m_lrPolicySteps);
+                break;
+            case USE_ADVANCED_LEARNING_RATE:
+                m_useAdvancedLearningRate = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_useAdvancedLearningRate);
+                break;
+            case USE_BIAS_INIT:
+                m_useBiasInit = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_useBiasInit);
+                break;
+            case USE_BIAS_LEARNING_RATE:
+                m_useBiasLearningRate = (SettingsModelBoolean)createParameter(enumerate);
+                addToSet(m_useBiasLearningRate);
+                break;
             default:
                 throw new IllegalArgumentException("No case defined for Learner Parameter: " + enumerate);
         }
@@ -336,6 +540,14 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
         if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
+    }
+
+    public SettingsModelString getLearningRateAfter() {
+        return m_learningRateAfter;
+    }
+
+    public SettingsModelIntegerBounded getMaxNumLineSearchIterations() {
+        return m_maxNumLineSearchIterations;
     }
 
     public SettingsModelBoolean getUseGlobalLearningRate() {
@@ -440,6 +652,94 @@ public class LearnerParameterSettingsModels implements IParameterSettingsModels<
 
     public SettingsModelBoolean getUseGlobalWeightInit() {
         return m_useGlobalWeightInit;
+    }
+
+    public SettingsModelDoubleBounded getAdadeltaRho() {
+        return m_adadeltaRho;
+    }
+
+    public SettingsModelDoubleBounded getAdamMeanDecay() {
+        return m_adamMeanDecay;
+    }
+
+    public SettingsModelDoubleBounded getAdamVarDecay() {
+        return m_adamVarDecay;
+    }
+
+    public SettingsModelDoubleBounded getRmsDecay() {
+        return m_rmsDecay;
+    }
+
+    public SettingsModelBoolean getUseUpdater() {
+        return m_useUpdater;
+    }
+
+    public SettingsModelString getDistribution() {
+        return m_distribution;
+    }
+
+    public SettingsModelString getLrPolicy() {
+        return m_lrPolicy;
+    }
+
+    public SettingsModelIntegerBounded getDistributionBinomialTrails() {
+        return m_distributionBinomialTrails;
+    }
+
+    public SettingsModelDoubleBounded getDistributionBinomialProbability() {
+        return m_distributionBinomialProbability;
+    }
+
+    public SettingsModelDouble getDistributionMean() {
+        return m_distributionMean;
+    }
+
+    public SettingsModelDoubleBounded getDistributionSTD() {
+        return m_distributionSTD;
+    }
+
+    public SettingsModelDouble getDistributionUpperBound() {
+        return m_distributionUpperBound;
+    }
+
+    public SettingsModelDouble getDistributionLowerBound() {
+        return m_distributionLowerBound;
+    }
+
+    public SettingsModelDoubleBounded getLrPolicyDecayRate() {
+        return m_lrPolicyDecayRate;
+    }
+
+    public SettingsModelDoubleBounded getLrPolicyPower() {
+        return m_lrPolicyPower;
+    }
+
+    public SettingsModelDoubleBounded getLrPolicySteps() {
+        return m_lrPolicySteps;
+    }
+
+    public SettingsModelDoubleBounded getLrPolicyScoreDecayRate() {
+        return m_lrPolicyScoreDecayRate;
+    }
+
+    public SettingsModelDoubleBounded getBiasLearningRate() {
+        return m_biasLearningRate;
+    }
+
+    public SettingsModelDouble getBiasInit() {
+        return m_biasInit;
+    }
+
+    public SettingsModelBoolean getUseAdvancedLearningRate() {
+        return m_useAdvancedLearningRate;
+    }
+
+    public SettingsModelBoolean getUseBiasLearningRate() {
+        return m_useBiasLearningRate;
+    }
+
+    public SettingsModelBoolean getUseBiasInit() {
+        return m_useBiasInit;
     }
 
     @Override

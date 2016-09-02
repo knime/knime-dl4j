@@ -82,7 +82,7 @@
             path="/labs/deeplearning/">
       </category>
       <category
-            icon="res/icons/meta.png"
+            icon="res/icons/missing.gif"
             level-id="supervised"
             locked="true"
             name="Supervised"
