@@ -42,37 +42,23 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.deeplearning4j.nn.weights.WeightInit;
-import org.knime.core.data.DoubleValue;
-import org.knime.core.data.collection.CollectionDataValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
-import org.knime.core.node.defaultnodesettings.DialogComponentColumnFilter;
-import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
-import org.knime.core.node.defaultnodesettings.DialogComponentString;
-import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
-import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
-import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
-import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
-import org.knime.core.node.defaultnodesettings.SettingsModelString;
-import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
-import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
-import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JUpdater;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.DefaultLearnerNodeDialogPane;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.BiasParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.DataParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.DropOutParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.GradientNormalizationParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.LearningRateParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.OutputLayerParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.PretrainingColumnSelectionComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.RegularizationParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.SeedParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.TrainingMethodParametersComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.UpdaterParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.WeightInitParameterComponentGroup;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
-import org.knime.ext.dl4j.base.util.EnumUtils;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * <code>NodeDialog</code> for the "DL4JLearner" Node.
@@ -83,7 +69,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class FeedforwardPretrainingLearnerNodeDialog extends DefaultNodeSettingsPane {
+public class FeedforwardPretrainingLearnerNodeDialog extends DefaultLearnerNodeDialogPane {
 
     private final int DEFAULT_WIDTH = 4;
 
@@ -91,166 +77,59 @@ public class FeedforwardPretrainingLearnerNodeDialog extends DefaultNodeSettings
      * New pane for configuring the DL4JLearner node.
      */
     protected FeedforwardPretrainingLearnerNodeDialog() {
-        final LearnerParameterSettingsModels learnerSettingsModels = new LearnerParameterSettingsModels();
-        final DataParameterSettingsModels dataSettingsModels = new DataParameterSettingsModels();
-        final LayerParameterSettingsModels layerSettingsModels = new LayerParameterSettingsModels();
+        final LearnerParameterSettingsModels learnerSettings = new LearnerParameterSettingsModels();
+        final DataParameterSettingsModels dataSettings = new DataParameterSettingsModels();
+        final LayerParameterSettingsModels layerSettings = new LayerParameterSettingsModels();
 
-        setDefaultTabTitle("Learning Parameters");
-        final SettingsModelFilterString columnSelectionSettings =
-            (SettingsModelFilterString)dataSettingsModels.createParameter(DataParameter.FEATURE_COLUMN_SELECTION);
-        final SettingsModelIntegerBounded numberOfOutputs =
-            (SettingsModelIntegerBounded)layerSettingsModels.createParameter(LayerParameter.NUMBER_OF_OUTPUTS);
+        setDefaultTabTitle("Learning Parameter");
 
-        createNewGroup("Seed");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_SEED), "Use Seed"));
+        TrainingMethodParametersComponentGroup trainingComp =
+            new TrainingMethodParametersComponentGroup(learnerSettings, false);
+        addDialogComponentGroupWithBorder(trainingComp, "Training Method");
 
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.SEED), "Seed",
-            DEFAULT_WIDTH));
-        closeCurrentGroup();
+        UpdaterParameterComponentGroup updaterComp = new UpdaterParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(updaterComp, "Updater");
 
-        createNewGroup("Training Method");
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)learnerSettingsModels.createParameter(LearnerParameter.TRAINING_ITERATIONS),
-            "Number of Training Iterations", 4));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.OPTIMIZATION_ALGORITHM),
-            "Optimization Algorithm", EnumUtils.getStringCollectionFromToString(DL4JOptimizationAlgorithm.values())));
-        closeCurrentGroup();
+        SeedParameterComponentGroup seedComp = new SeedParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(seedComp, "Random Seed");
 
-        createNewGroup("Updater");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_PRETRAINED_UPDATER),
-            "Use Pretrained Updater"));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.UPDATER), "Updater Type",
-            EnumUtils.getStringCollectionFromToString(DL4JUpdater.values())));
-        closeCurrentGroup();
+        RegularizationParameterComponentGroup regularizationComp =
+            new RegularizationParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(regularizationComp, "Regularization");
 
-        createNewGroup("Regularization");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_REGULARIZATION),
-            "Use Regularization"));
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L1),
-            "L1 Regularization Coefficient", DEFAULT_WIDTH));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.L2),
-            "L2 Regularization Coefficient", DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        GradientNormalizationParameterComponentGroup gradientNorComp =
+            new GradientNormalizationParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(gradientNorComp, "Gradient Normalization");
 
-        createNewGroup("Gradient Normalization");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GRADIENT_NORMALIZATION),
-            "Use Gradient Normalization"));
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GRADIENT_NORMALIZATION),
-            "Gradient Normalization Strategy",
-            EnumUtils.getStringCollectionFromToString(DL4JGradientNormalization.values())));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels
-                .createParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD),
-            "Gradient Normalization Threshold", DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        createNewTab("Global Parameter");
 
-        createNewGroup("Momentum");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_MOMENTUM),
-            "Use Momentum"));
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM),
-            "Momentum Rate", DEFAULT_WIDTH));
-        addDialogComponent(new DialogComponentString(
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.MOMENTUM_AFTER),
-            "Momentum After", false, DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        LearningRateParameterComponentGroup learningRateComp = new LearningRateParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(learningRateComp, "Global Learning Rate");
 
-        createNewGroup("Drop Connect");
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_DROP_CONNECT),
-            "Use Drop Connect"));
-        closeCurrentGroup();
+        DropOutParameterComponentGroup dropOutComp = new DropOutParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(dropOutComp, "Global Drop-Out Rate");
 
-        createNewTab("Global Parameters");
+        WeightInitParameterComponentGroup weightInitComp = new WeightInitParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(weightInitComp, "Global Weight Initialization Strategy");
 
-        createNewGroup("Global Learning Rate");
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_LEARNING_RATE),
-            "Use Global Learning Rate"));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_LEARNING_RATE),
-            "Global Learning Rate", DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        BiasParameterComponentGroup biasComp = new BiasParameterComponentGroup(learnerSettings);
+        addDialogComponentGroupWithBorder(biasComp, "Global Bias");
 
-        createNewGroup("Global Drop Out Rate");
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_DROP_OUT),
-            "Use Global Drop Out Rate"));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_DROP_OUT),
-            "Global Drop Our Rate", DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        createNewTab("Data Parameter");
 
-        createNewGroup("Global Weight Initialization");
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentBoolean(
-            (SettingsModelBoolean)learnerSettingsModels.createParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT),
-            "Use Global Weight Initialization Strategy"));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)learnerSettingsModels.createParameter(LearnerParameter.GLOBAL_WEIGHT_INIT),
-            "Global Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
-        setHorizontalPlacement(false);
-        closeCurrentGroup();
+        DataParameterComponentGroup dataComp = new DataParameterComponentGroup(dataSettings, false);
+        addDialogComponentGroup(dataComp);
 
-        createNewTab("Data Parameters");
-        setHorizontalPlacement(true);
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.BATCH_SIZE), "Batch Size",
-            DEFAULT_WIDTH));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelIntegerBounded)dataSettingsModels.createParameter(DataParameter.EPOCHS), "Epochs",
-            DEFAULT_WIDTH));
-        setHorizontalPlacement(false);
+        createNewTab("Output Layer Parameter");
 
-        createNewTab("Output Layer Parameters");
-        addDialogComponent(new DialogComponentNumberEdit(numberOfOutputs, "Number of Output Units", DEFAULT_WIDTH));
-        addDialogComponent(new DialogComponentNumberEdit(
-            (SettingsModelDoubleBounded)layerSettingsModels.createParameter(LayerParameter.LEARNING_RATE),
-            "Learning Rate", DEFAULT_WIDTH));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.WEIGHT_INIT),
-            "Weight Initialization Strategy", EnumUtils.getStringCollectionFromToString(WeightInit.values())));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.LOSS_FUNCTION), "Loss Function",
-            EnumUtils.getStringCollectionFromToString(DL4JLossFunction.values())));
-        addDialogComponent(new DialogComponentStringSelection(
-            (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.ACTIVATION), "Activation Function",
-            EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
-
-        //get all types from where we can convert to INDArray
-        final Set<Class<?>> possibleTypes =
-            DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
-                // Get the destination type of factories which can handle mySourceType
-                .stream().map((factory) -> factory.getSourceType())
-                // Put all the destination types into a set
-                .collect(Collectors.toSet());
-        //we can also convert collections
-        possibleTypes.add(CollectionDataValue.class);
-        final Class<? extends DoubleValue>[] possibleTypesArray =
-            (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
+        OutputLayerParameterComponentGroup outputComp =
+            new OutputLayerParameterComponentGroup(layerSettings, true, true);
+        addDialogComponentGroup(outputComp);
 
         createNewTab("Column Selection");
-        addDialogComponent(new DialogComponentColumnFilter(columnSelectionSettings, 1, true, possibleTypesArray));
+
+        PretrainingColumnSelectionComponentGroup columnSelectionComp =
+            new PretrainingColumnSelectionComponentGroup(dataSettings, 1);
+        addDialogComponentGroup(columnSelectionComp);
     }
 }

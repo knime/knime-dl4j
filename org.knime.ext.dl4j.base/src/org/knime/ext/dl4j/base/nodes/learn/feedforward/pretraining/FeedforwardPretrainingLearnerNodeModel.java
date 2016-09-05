@@ -49,6 +49,7 @@ import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.container.ColumnRearranger;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
@@ -79,6 +80,8 @@ import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
+
+import com.google.common.collect.Lists;
 
 /**
  * Learner for feedforward networks of Deeplearning4J integration.
@@ -111,7 +114,8 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
 
         //select columns from input table
         final List<String> selectedColumns = new ArrayList<>();
-        selectedColumns.addAll(m_dataParameterSettings.getFeatureColumnSelection().getIncludeList());
+        String[] includes = m_dataParameterSettings.getFeatureColumnSelection2().applyTo(table.getSpec()).getIncludes();
+        selectedColumns.addAll(Lists.newArrayList(includes));
 
         //select columns from table
         ColumnRearranger crr = new ColumnRearranger(table.getSpec());
@@ -147,8 +151,8 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
         }
 
         //attempt to transfer weights between nets
-        final boolean usePretrainedUpdater = m_learnerParameterSettings.getUsePretrainedUpdater().getBooleanValue();
-        transferFullInitialization(oldMln, newMln, usePretrainedUpdater);
+        final boolean useUpdater = m_learnerParameterSettings.getUseUpdater().getBooleanValue();
+        transferFullInitialization(oldMln, newMln, !useUpdater);
 
         //set listener that updates the view and the score of this model
         newMln.setListeners(new UpdateLearnerViewIterationListener(this));
@@ -163,8 +167,12 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
 
     @Override
     protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-        final DLModelPortObjectSpec specWithoutLabels = (DLModelPortObjectSpec)configure(inSpecs,
-            m_dataParameterSettings.getFeatureColumnSelection().getIncludeList())[0];
+        final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
+
+        String[] includes = m_dataParameterSettings.getFeatureColumnSelection2().applyTo(tableSpec).getIncludes();
+
+        final DLModelPortObjectSpec specWithoutLabels =
+            (DLModelPortObjectSpec)configure(inSpecs, Lists.newArrayList(includes))[0];
 
         logger.info("Constructed network recognized as: "
             + ConfigurationUtils.typesToString(specWithoutLabels.getNeuralNetworkTypes()));
@@ -202,31 +210,46 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
         m_dataParameterSettings = new DataParameterSettingsModels();
         m_dataParameterSettings.setParameter(DataParameter.BATCH_SIZE);
         m_dataParameterSettings.setParameter(DataParameter.EPOCHS);
-        m_dataParameterSettings.setParameter(DataParameter.FEATURE_COLUMN_SELECTION);
+        m_dataParameterSettings.setParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
 
         m_learnerParameterSettings = new LearnerParameterSettingsModels();
-        m_learnerParameterSettings.setParameter(LearnerParameter.SEED);
-        m_learnerParameterSettings.setParameter(LearnerParameter.TRAINING_ITERATIONS);
-        m_learnerParameterSettings.setParameter(LearnerParameter.OPTIMIZATION_ALGORITHM);
-        m_learnerParameterSettings.setParameter(LearnerParameter.GRADIENT_NORMALIZATION);
-        m_learnerParameterSettings.setParameter(LearnerParameter.UPDATER);
-        m_learnerParameterSettings.setParameter(LearnerParameter.MOMENTUM_AFTER);
+        m_learnerParameterSettings.setParameter(LearnerParameter.ADADELTA_RHO);
+        m_learnerParameterSettings.setParameter(LearnerParameter.ADAM_MEAN_DECAY);
+        m_learnerParameterSettings.setParameter(LearnerParameter.ADAM_VAR_DECAY);
+        m_learnerParameterSettings.setParameter(LearnerParameter.BIAS_INIT);
+        m_learnerParameterSettings.setParameter(LearnerParameter.BIAS_LEARNING_RATE);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_BINOMIAL_PROBABILITY);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_BINOMIAL_TRAILS);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_LOWER_BOUND);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_UPPER_BOUND);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_MEAN);
+        m_learnerParameterSettings.setParameter(LearnerParameter.DISTRIBUTION_STD);
+        m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_DROP_OUT);
         m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_LEARNING_RATE);
-        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_LEARNING_RATE);
+        m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_WEIGHT_INIT);
+        m_learnerParameterSettings.setParameter(LearnerParameter.GRADIENT_NORMALIZATION);
+        m_learnerParameterSettings.setParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD);
         m_learnerParameterSettings.setParameter(LearnerParameter.L1);
         m_learnerParameterSettings.setParameter(LearnerParameter.L2);
-        m_learnerParameterSettings.setParameter(LearnerParameter.GRADIENT_NORMALIZATION_THRESHOLD);
+        m_learnerParameterSettings.setParameter(LearnerParameter.MAX_NUMBER_LINE_SEARCH_ITERATIONS);
         m_learnerParameterSettings.setParameter(LearnerParameter.MOMENTUM);
+        m_learnerParameterSettings.setParameter(LearnerParameter.MOMENTUM_AFTER);
+        m_learnerParameterSettings.setParameter(LearnerParameter.OPTIMIZATION_ALGORITHM);
+        m_learnerParameterSettings.setParameter(LearnerParameter.RMS_DECAY);
+        m_learnerParameterSettings.setParameter(LearnerParameter.SEED);
+        m_learnerParameterSettings.setParameter(LearnerParameter.TRAINING_ITERATIONS);
+        m_learnerParameterSettings.setParameter(LearnerParameter.UPDATER);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_BIAS_INIT);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_BIAS_LEARNING_RATE);
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_DROP_CONNECT);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_DROP_OUT);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_LEARNING_RATE);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT);
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_GRADIENT_NORMALIZATION);
-        m_learnerParameterSettings.setParameter(LearnerParameter.USE_MOMENTUM);
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_REGULARIZATION);
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_SEED);
-        m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_DROP_OUT);
-        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_DROP_OUT);
-        m_learnerParameterSettings.setParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT);
-        m_learnerParameterSettings.setParameter(LearnerParameter.GLOBAL_WEIGHT_INIT);
-        m_learnerParameterSettings.setParameter(LearnerParameter.USE_PRETRAINED_UPDATER);
+        m_learnerParameterSettings.setParameter(LearnerParameter.USE_UPDATER);
 
         m_layerParameterSettings = new LayerParameterSettingsModels();
         m_layerParameterSettings.setParameter(LayerParameter.LOSS_FUNCTION);

@@ -56,7 +56,15 @@ public enum DataParameter {
     IMAGE_SIZE, /** The column holding the documents. */
     DOCUMENT_COLUMN, /** The column holding the sequence to train on. */
     SEQUENCE_COLUMN, /** The columns holding the targets for regression. */
-    TARGET_COLUMN_SELECTION;
+    TARGET_COLUMN_SELECTION, /**
+                              * Same as TARGET_COLUMN_SELECTION but with different settings model
+                              * (SettingsModelColumnFilter2) associated with it.
+                              */
+    TARGET_COLUMN_SELECTION2, /**
+                               * Same as FEATURE_COLUMN_SELECTION but with different settings model
+                               * (SettingsModelColumnFilter2) associated with it.
+                               */
+    FEATURE_COLUMN_SELECTION2;
 
     //default values for learner parameters
     public static final String DEFAULT_IMAGE_SIZE = "0,0,0";

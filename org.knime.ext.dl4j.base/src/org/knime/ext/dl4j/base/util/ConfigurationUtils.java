@@ -60,6 +60,8 @@ import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 
+import com.google.common.collect.Lists;
+
 /**
  * Utility class to validate deep neural network configurations and {@link DLModelPortObjectSpec}.
  *
@@ -179,18 +181,37 @@ public class ConfigurationUtils {
      *
      * @param fs1
      * @param fs2
-     * @throws InvalidSettingsException if the include lists contain duplicate columns
+     * @throws InvalidSettingsException if the lists contain duplicate columns
      */
-    public static void validateFilterStringSettings(final SettingsModelFilterString fs1,
+    public static void validateMutuallyExclusive(final SettingsModelFilterString fs1,
         final SettingsModelFilterString fs2) throws InvalidSettingsException {
-        List<String> include_fs1 = new ArrayList<>();
-        include_fs1.addAll(fs1.getIncludeList());
+        validateMutuallyExclusive(fs1.getIncludeList(), fs2.getIncludeList());
+    }
 
-        List<String> include_fs2 = new ArrayList<>();
-        include_fs2.addAll(fs2.getIncludeList());
+    /**
+     * Checks two arrays if they contain duplicate columns.
+     *
+     * @param cols1
+     * @param cols2
+     * @throws InvalidSettingsException if the lists contain duplicate columns
+     */
+    public static void validateMutuallyExclusive(final String[] cols1, final String[] cols2)
+        throws InvalidSettingsException {
+        validateMutuallyExclusive(Lists.newArrayList(cols1), Lists.newArrayList(cols2));
+    }
 
-        for (String s : include_fs1) {
-            if (include_fs2.contains(s)) {
+    /**
+     *
+     * Checks two lists if they contain duplicate columns.
+     *
+     * @param cols1
+     * @param cols2
+     * @throws InvalidSettingsException if the lists contain duplicate columns
+     */
+    public static void validateMutuallyExclusive(final List<String> cols1, final List<String> cols2)
+        throws InvalidSettingsException {
+        for (String s : cols1) {
+            if (cols2.contains(s)) {
                 throw new InvalidSettingsException(
                     "The list of feature and target columns must not contain duplicate columns. Duplicate Column: "
                         + s);

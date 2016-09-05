@@ -44,6 +44,8 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
 /**
  * Activation function types supported by DL4J. Enumeration wrapper as there is no enum in DL4J.
+ *
+ * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JActivationFunction {
         relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),

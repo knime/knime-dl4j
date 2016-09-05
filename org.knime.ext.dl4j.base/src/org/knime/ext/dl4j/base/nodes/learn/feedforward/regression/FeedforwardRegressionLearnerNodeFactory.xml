@@ -17,109 +17,83 @@
         learning model which can be used to predict target values.          
         </intro>
 
-        <tab name="Learning Parameters">           
-            <option name="Use Seed">
-            Whether to use a seed value for training. Used to make different learning runs comparable. 
-            </option>
-            <option name="Seed">
-            The seed value which should be used. Any Integer number may be used.
-            </option>
-            <option name="Number of Training Iterations">
+        <tab name="Learning Parameters">          
+             <option name="Number of Training Iterations">
             The number of parameter updates that will be done on one batch of input data.
             </option>
-            <option name="Optimization Algorithm">
+             <option name="Optimization Algorithm">
             The type of optimization method to use. The following algorithms are available:
-            <ul>
-				<li>LINE_GRADIENT_DESCENT - normal gradient descent</li>
-				<li><a href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">CONJUGATE_GRADIENT</a></li>
-				<li>HESSIAN_FREE</li>
+            <br/><br/><ul>
+				<li>Line Gradient Descent</li>
+				<li><a href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">Conjugate Gradient Descent</a></li>
+				<li>Hessian Free</li>
 				<li><a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">LBFGS</a></li>
-				<li>STOCHASTIC_GRADIENT_DESCENTT - gradient descent using minibatches</li>		
-			</ul>	
-            </option>           
-            <option name="Use Pretrained Updater">
-            Whether to use a pretrained updater of a trained model. Some updaters contain a history of previous gradients, hence, it can be 
-            specified if a supplied updater should be taken or a new should be created. This option will only take effect if the deep learning 
-            model supplied at the input was previously trained and contains a saved updater.
-            </option>
-            <option name="Updater Type">
-            The type of updater to use. These specify how the raw gradients will be modified. If a pretrained updater is used this option
-            will be ignored. The following methods are available:
-            <ul>
+				<li>Stochastic Gradient Descent</li>		
+			</ul><br/>
+			For Line Gradient Descent, Conjugate Gradient Descent, and LBFGS the maximum number of line search iterations can be specified.
+            </option>                      
+            <option name="Updater">
+            The type of updater to use. These specify how the raw gradients will be modified. If this option is unchecked the node tries
+            to use an updater from a previously trained network if available. If not available the default will be used (NESTEROVS). Some
+            of the updater types may have additional coefficients which can be adjusted. The The following methods are available:
+            <br/><br/><ul>
 				<li>SGD</li>
-				<li>ADAM</li>
-				<li>ADADELTA</li>
-				<li>NESTEROVS</li>
+				<li>ADAM (ADAM Mean Decay, ADAM Var Decay)</li>					
+				<li>ADADELTA (RHO)</li>				
+				<li>NESTEROVS (Momentum, Schedule)<br/>
+				Nesterovs Schedule:<br/>
+            	Schedule -  Schedule for momentum value change during training. This is specified in the following format:<br/>
+            	'iteration':'momentum rate','iteration':'momentum rate'  ... <br/>
+           	 	This creates a map, which maps the iteration to the momentum rate that should be used. E.g. '2:0.8' means that 
+            	the rate '0.8' should be used in iteration '2'. Leave empty if you do not want to use a schedule.    				
+				</li>													
 				<li>ADAGRAD</li>
-				<li>ADAGRAD</li>
-				<li>RMSPROP</li>
-			</ul>	
-			An explanation of some of the methods can be found 
-			<a href="http://sebastianruder.com/optimizing-gradient-descent/index.html#stochasticgradientdescent">here</a>. 
-            </option>
-            <option name="Use Regularization">
-            Whether to use regularization techniques to prevent overfitting.
-            </option>
-            <option name="L1 Regularization Coefficient">
-            Strength of L1 regularization.
-            </option>
-            <option name="L2 Regularization Coefficient">
-            Strength of L2 regularization.
-            </option>
-            <option name="Use Gradient Normalization">
-            Whether to use gradient normalization.
-            </option>
-            <option name="Gradient Normalization Strategy">
+				<li>RMSPROP (RMS Decay)</li>				
+			</ul><br/>
+			An explanation of these methods and their coefficients can be found 
+			<a href="http://sebastianruder.com/optimizing-gradient-descent/index.html#stochasticgradientdescent">here</a>.                                     
+            </option>                                              
+            <option name="Random Seed">
+            The seed value which should be used in order to compare training runs. Any Integer number may be used.
+            </option>                                         
+            <option name="Regularization">
+            The L1 and L2 regularization coefficients.        
+            </option>                     
+            <option name="Gradient Normalization">
             Gradient normalization strategies. These are applied on raw gradients, before the gradients are passed to the updater. 
-            An explanation can be found at:<br/>
-            <a href="http://deeplearning4j.org/doc/org/deeplearning4j/nn/conf/GradientNormalization.html">http://deeplearning4j.org/doc/org/deeplearning4j/nn/conf/GradientNormalization.html</a>
-             <ul>
-				<li>RenormalizeL2PerLayer</li>
-				<li>RenormalizeL2PerParamType</li>
-				<li>ClipElementWiseAbsoluteValue</li>
-				<li>ClipL2PerLayer</li>
-				<li>ClipL2PerParamType</li>
-			</ul>	
-            </option>
-            <option name="Gradient Normalization Threshold">
-            	Threshold value for gradient normalization.
-            </option>
-            <option name="Use Momentum">
-            Whether to use momentum.
-            </option>
-            <option name="Momentum Rate">
-            Rate of influence of the momentum term.
-            </option>
-            <option name="Momentum After">
-            Schedule for momentum value change during training. This is specified in the following format:<br/>
-            'iteration':'momentum rate','iteration':'momentum rate'  ... <br/>
-            This creates a map, which maps the iteration to the momentum rate that should be used. E.g. '2:0.8' means that 
-            the rate '0.8' should be used in iteration '2'. Leave empty if you do not want to use a schedule.
-            </option>
-            <option name="Use Drop Connect">
-            Whether to use <a href="http://www.matthewzeiler.com/pubs/icml2013/icml2013.pdf">Drop Connect</a>. 
-            </option>                       
+            An explanation can be found <a href="http://deeplearning4j.org/doc/org/deeplearning4j/nn/conf/GradientNormalization.html">here</a>.
+            <br/><br/><ul>
+				<li>Renormalize L2 Per Layer</li>
+				<li>Renormalize L2 Per Param Type</li>
+				<li>ClipElement Wise Absolute Value</li>
+				<li>Clip L2 Per Layer</li>
+				<li>Clip L2 Per Param Type</li>
+			</ul><br/>
+			For 'ClipElement Wise Absolute Value', 'Clip L2 Per Layer', and 'Clip L2 Per Param Type' you can additionally specify a threshold value.	
+            </option>                        
         </tab>
-        <tab name="Global Parameters">
-            <option name="Use Global Learning Rate">
-            Whether to overwrite the learning rates specified in the layers of the network for all layers.
-            </option>
+        
+        <tab name="Global Parameters">               
             <option name="Global Learning Rate">
-            The learning rate to use for all layers.
+            The learning rate for the whole network. If not used the learning rate specified in each layer will be used.
+            </option>          
+            <option name="Global Drop-Out Rate">
+            The drop-out rate for the whole network. If not used the drop-out rate specified in each layer will be used.            
             </option>
-            <option name="Use Global Drop Out Rate">
-            Whether to overwrite the drop out rates specified in the layers of the network for all layers.
+            <option name="Use Drop-Connect? ">
+            Whether to use <a href="http://www.matthewzeiler.com/pubs/icml2013/icml2013.pdf">Drop Connect</a>. 
             </option>
-            <option name="Global Drop Out Rate">
-            The drop out rate to use for all layers.
-            </option>
-            <option name="Use Global Weight Initialization Strategy">
-            Whether to overwrite the weight initialization strategy specified in the layers of the network for all layers.
-            </option>
-            <option name="Global Weight Initilialization Strategy">
-            The weight initialization strategy to use for all layers.
-            </option>
+            <option name="Global Weight Initialization Strategy">
+            The weight initialization strategy to use for the whole network.
+            </option>    
+            <option name="Global Bias - Learning Rate">
+            The bias learning rate for the whole network if you want to use a different learning rate for the bias.
+            </option>     
+            <option name="Global Bias - Initialization">
+            The value to initialize all biases with.
+            </option>                 
         </tab>
+        
         <tab name="Data Parameters">
             <option name="Batch Size">
             The number of examples used for one minibatch.
@@ -133,6 +107,7 @@
             the dimension sizes of the images (size x,size y,number of channels). E.g. 64,64,3 
             </option>
         </tab>
+        
         <tab name="Column Selection">
             <option name="Target Column Selection">
             The column/s of the input table that should be used as targets for regression. These will also
@@ -143,6 +118,7 @@
             The column/s of the input table containing the training data for the network.
             </option>
         </tab>
+        
         <tab name="Output Layer Parameter">            
         	<option name="Learning Rate">The learning rate that should be used for this layer.</option>
         	<option name="Weight Initialization Strategy">The strategy which will be used to set the initial weights for this layer.</option>

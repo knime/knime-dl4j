@@ -45,7 +45,7 @@ package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 import org.deeplearning4j.nn.conf.Updater;
 
 /**
- * Wrapper for {@link Updater} to hide unsupported unsupported {@link Updater#CUSTOM} and {@link Updater#NONE}.
+ * Wrapper for {@link Updater} to hide unsupported {@link Updater#CUSTOM} and {@link Updater#NONE}.
  *
  * @author David Kolb, KNIME.com GmbH
  */

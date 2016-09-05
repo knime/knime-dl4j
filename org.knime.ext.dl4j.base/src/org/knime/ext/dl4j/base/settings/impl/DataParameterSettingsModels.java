@@ -44,13 +44,20 @@ package org.knime.ext.dl4j.base.settings.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.knime.core.data.DoubleValue;
+import org.knime.core.data.collection.CollectionDataValue;
+import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnFilter2;
 import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
+import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
@@ -60,13 +67,19 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
  */
 public class DataParameterSettingsModels implements IParameterSettingsModels<DataParameter> {
 
+    private Class<? extends DoubleValue>[] m_allowedTypes;
+
     private SettingsModelIntegerBounded m_batchSize;
 
     private SettingsModelIntegerBounded m_epochs;
 
     private SettingsModelString m_labelColumn;
 
-    private SettingsModelFilterString m_columnSelection;
+    private SettingsModelColumnFilter2 m_featureColumnSelection2;
+
+    private SettingsModelColumnFilter2 m_targetColumnSelection2;
+
+    private SettingsModelFilterString m_featureColumnSelection;
 
     private SettingsModelFilterString m_targetColumnSelection;
 
@@ -98,6 +111,10 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 return new SettingsModelString("sequence_column", "");
             case TARGET_COLUMN_SELECTION:
                 return new SettingsModelFilterString("target_column_selection");
+            case FEATURE_COLUMN_SELECTION2:
+                return new SettingsModelColumnFilter2("feature_column_selection2", getAllowedTypes());
+            case TARGET_COLUMN_SELECTION2:
+                return new SettingsModelColumnFilter2("target_column_selection2", getAllowedTypes());
             default:
                 throw new IllegalArgumentException("No case defined for Data Parameter: " + enumerate);
         }
@@ -117,9 +134,9 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 addToSet(m_epochs);
                 break;
             case FEATURE_COLUMN_SELECTION:
-                m_columnSelection = (SettingsModelFilterString)createParameter(enumerate);
-                if (!m_allInitializedSettings.contains(m_columnSelection)) {
-                    m_allInitializedSettings.add(m_columnSelection);
+                m_featureColumnSelection = (SettingsModelFilterString)createParameter(enumerate);
+                if (!m_allInitializedSettings.contains(m_featureColumnSelection)) {
+                    m_allInitializedSettings.add(m_featureColumnSelection);
                 }
                 break;
             case LABEL_COLUMN:
@@ -146,9 +163,25 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
                 m_targetColumnSelection = (SettingsModelFilterString)createParameter(enumerate);
                 addToSet(m_targetColumnSelection);
                 break;
+            case FEATURE_COLUMN_SELECTION2:
+                m_featureColumnSelection2 = (SettingsModelColumnFilter2)createParameter(enumerate);
+                addToSet(m_featureColumnSelection2);
+                break;
+            case TARGET_COLUMN_SELECTION2:
+                m_targetColumnSelection2 = (SettingsModelColumnFilter2)createParameter(enumerate);
+                addToSet(m_targetColumnSelection2);
+                break;
             default:
                 throw new IllegalArgumentException("No case defined for Data Parameter: " + enumerate);
         }
+    }
+
+    public SettingsModelColumnFilter2 getTargetColumnSelection2() {
+        return m_targetColumnSelection2;
+    }
+
+    public SettingsModelColumnFilter2 getFeatureColumnSelection2() {
+        return m_featureColumnSelection2;
     }
 
     public SettingsModelFilterString getTargetColumnSelection() {
@@ -168,7 +201,7 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
     }
 
     public SettingsModelFilterString getFeatureColumnSelection() {
-        return m_columnSelection;
+        return m_featureColumnSelection;
     }
 
     public SettingsModelString getImageSize() {
@@ -192,5 +225,26 @@ public class DataParameterSettingsModels implements IParameterSettingsModels<Dat
         if (!m_allInitializedSettings.contains(model)) {
             m_allInitializedSettings.add(model);
         }
+    }
+
+    /**
+     * Retrieve all convertible classes from the converter registry.
+     *
+     * @return
+     */
+    private Class<? extends DoubleValue>[] getAllowedTypes() {
+        if (m_allowedTypes == null) {
+            //get all types from where we can convert to INDArray
+            final Set<Class<?>> possibleTypes =
+                DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
+                    // Get the destination type of factories which can handle mySourceType
+                    .stream().map((factory) -> factory.getSourceType())
+                    // Put all the destination types into a set
+                    .collect(Collectors.toSet());
+            //we can also convert collections
+            possibleTypes.add(CollectionDataValue.class);
+            m_allowedTypes = (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
+        }
+        return m_allowedTypes;
     }
 }

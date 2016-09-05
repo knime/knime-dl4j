@@ -47,19 +47,25 @@ import java.util.Map;
 
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
+import org.deeplearning4j.nn.conf.LearningRatePolicy;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.distribution.BinomialDistribution;
+import org.deeplearning4j.nn.conf.distribution.Distribution;
+import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
+import org.deeplearning4j.nn.conf.distribution.UniformDistribution;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
+import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JDistribution;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
@@ -78,6 +84,8 @@ public class MultiLayerNetFactory {
     private int m_seed = LearnerParameter.DEFAULT_INT;
 
     private int m_iterations = LearnerParameter.DEFAULT_INT;
+
+    private int m_maxNumLineSearchIterations = LearnerParameter.DEFAULT_INT;
 
     private boolean m_useSeed = LearnerParameter.DEFAULT_BOOLEAN;
 
@@ -99,10 +107,14 @@ public class MultiLayerNetFactory {
 
     private boolean m_usePretrain = LearnerParameter.DEFAULT_BOOLEAN;
 
+    private boolean m_useUpdater = LearnerParameter.DEFAULT_USE_UPDATER;
+
     private GradientNormalization m_gradientNormalization =
-        DL4JGradientNormalization.fromToString(LearnerParameter.DEFAULT_GRADIENTNORM).getDL4JValue();
+        DL4JGradientNormalization.fromToString(LearnerParameter.DEFAULT_GRADIENT_NORMALIZATION).getDL4JValue();
 
     private Map<Integer, Double> m_momentumAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
+
+    private Map<Integer, Double> m_learningRateAfter = ParameterUtils.convertStringToMap(LearnerParameter.DEFAULT_MAP);
 
     private Updater m_updater = Updater.valueOf(LearnerParameter.DEFAULT_UPDATER);
 
@@ -111,17 +123,59 @@ public class MultiLayerNetFactory {
 
     private WeightInit m_weightInit = WeightInit.valueOf(LearnerParameter.DEFAULT_WEIGHT_INIT);
 
-    private double m_gradientNormalizationThreshold = LearnerParameter.DEFAULT_DOUBLE;
+    private double m_gradientNormalizationThreshold = LearnerParameter.DEFAULT_GRADIENT_NORMALIZATION_THRESHOLD;
 
     private double m_l1 = LearnerParameter.DEFAULT_DOUBLE;
 
     private double m_l2 = LearnerParameter.DEFAULT_DOUBLE;
 
-    private double m_momentum = LearnerParameter.DEFAULT_DOUBLE;
+    private double m_momentum = LearnerParameter.DEFAULT_MOMENTUM;
 
     private double m_learningRate = LearnerParameter.DEFAULT_DOUBLE;
 
     private double m_dropOut = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_rmsDecay = LearnerParameter.DEFAULT_RMS_DECAY;
+
+    private double m_adamMeanDecay = LearnerParameter.DEFAULT_ADAM_MEAN_DECAY;
+
+    private double m_adamVarDecay = LearnerParameter.DEFAULT_ADAM_VAR_DECAY;
+
+    private double m_adadeltaRho = LearnerParameter.DEFAULT_ADADELTA_RHO;
+
+    private DL4JDistribution m_distribution = DL4JDistribution.valueOf(LearnerParameter.DEFAULT_DISTRIBUTION);
+
+    private LearningRatePolicy m_lrPolicy = LearningRatePolicy.valueOf(LearnerParameter.DEFAULT_LEARNING_RATE_POLICY);
+
+    private Integer m_distributionBinomialTrails = LearnerParameter.DEFAULT_INT;
+
+    private double m_distributionBinomialProbability = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_distributionMean = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_distributionSTD = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_distributionUpperBound = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_distributionLowerBound = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_lrPolicyDecayRate = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_lrPolicyPower = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_lrPolicySteps = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_lrPolicyScoreDecayRate = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_biasLearningRate = LearnerParameter.DEFAULT_DOUBLE;
+
+    private double m_biasInit = LearnerParameter.DEFAULT_DOUBLE;
+
+    private boolean m_useAdvancedLearningRate = LearnerParameter.DEFAULT_BOOLEAN;
+
+    private boolean m_useBiasLearningRate = LearnerParameter.DEFAULT_BOOLEAN;
+
+    private boolean m_useBiasInit = LearnerParameter.DEFAULT_BOOLEAN;
 
     /**
      * The number of inputs of the first layer of the network. Used to set up input/output numbers of layers
@@ -160,7 +214,6 @@ public class MultiLayerNetFactory {
      * network hyper parameter. This means the default values defined by DL4J will be taken.
      *
      * @param layers the layers of the network
-     * @param learnerParameters the parameters of the learner
      * @return {@link MultiLayerNetwork} consisting of the given layers and parameters
      */
     public MultiLayerNetwork createMultiLayerNetwork(final List<Layer> layers) {
@@ -171,8 +224,7 @@ public class MultiLayerNetFactory {
      * Helper method for creating a new {@link MultiLayerNetwork} using layers and parameters.
      *
      * @param layers
-     * @param learnerParameters
-     * @return
+     * @return a network containing specified layers and learner parameter
      */
     protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
 
@@ -190,11 +242,11 @@ public class MultiLayerNetFactory {
      * default parameters.
      *
      * @param layers
-     * @param learnerParameters
-     * @return
+     * @return a network containing specified layers and default learner parameter
      */
     protected MultiLayerNetwork createMlnWithoutLearnerParameters(final List<Layer> layers) {
-        final NeuralNetConfiguration.ListBuilder listBuilder = new NeuralNetConfiguration.Builder().list();
+        final org.deeplearning4j.nn.conf.NeuralNetConfiguration.ListBuilder listBuilder =
+            new NeuralNetConfiguration.Builder().list();
         int currentLayerIndex = 0;
         for (final Layer layer : layers) {
             listBuilder.layer(currentLayerIndex, layer);
@@ -207,9 +259,9 @@ public class MultiLayerNetFactory {
     }
 
     /**
-     * Creates a {@link NeuralNetConfiguration.ListBuilder} using specified list of layers and parameter values from
-     * members. Need to make sure that the <code>init()</code> methods was called before calling this method if other
-     * values, than the default values, for the network parameters should be used.
+     * Creates a {@link org.deeplearning4j.nn.conf.NeuralNetConfiguration.ListBuilder} using specified list of layers
+     * and parameter values from members. Need to make sure that the <code>init()</code> methods was called before
+     * calling this method if other values, than the default values, for the network parameters should be used.
      *
      * @param layers the layers which should be used to create the network
      * @return builder with set layers and parameters
@@ -226,9 +278,30 @@ public class MultiLayerNetFactory {
         final List<Layer> layersCopy = DLModelPortObjectUtils.cloneLayers(layers);
         if (m_useGlobalDropOut) {
             overwriteDropOut(layersCopy, m_dropOut);
+            nnConfigBuilder.dropOut(m_dropOut);
         }
         if (m_useGlobalWeightInit) {
             overwriteWeightInit(layersCopy, m_weightInit);
+            nnConfigBuilder.weightInit(m_weightInit);
+
+            if (m_weightInit.equals(ParameterUtils.DISTRIBUTION_PARAMETER_CONDITION)) {
+                Distribution dist;
+                switch (m_distribution) {
+                    case BINOMIAL:
+                        dist =
+                            new BinomialDistribution(m_distributionBinomialTrails, m_distributionBinomialProbability);
+                        break;
+                    case NORMAL:
+                        dist = new NormalDistribution(m_distributionMean, m_distributionSTD);
+                        break;
+                    case UNIFORM:
+                        dist = new UniformDistribution(m_distributionLowerBound, m_distributionUpperBound);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("No case defined for DL4JDistribution: " + m_distribution);
+                }
+                nnConfigBuilder.dist(dist);
+            }
         }
         if (m_useGlobalLearningRate) {
             overwriteLearningRate(layersCopy, m_learningRate);
@@ -249,17 +322,66 @@ public class MultiLayerNetFactory {
             nnConfigBuilder.l1(m_l1);
             nnConfigBuilder.l2(m_l2);
         }
-        if (m_useMomentum) {
-            nnConfigBuilder.momentum(m_momentum);
-            nnConfigBuilder.momentumAfter(m_momentumAfter);
-        }
+
+        // momentum moved to updaters, will only be used with NESTEROVS
+        // if (m_useMomentum) {
+        // nnConfigBuilder.momentum(m_momentum);
+        // nnConfigBuilder.momentumAfter(m_momentumAfter);
+        // }
+
         if (m_useDropConnect) {
             nnConfigBuilder.useDropConnect(true);
         }
 
+        // the learning rate policy behaves strange, need to revise conditions if we want to add it
+        //        if (m_useAdvancedLearningRate) {
+        //            nnConfigBuilder.learningRateDecayPolicy(m_lrPolicy);
+        //            nnConfigBuilder.lrPolicyDecayRate(m_lrPolicyDecayRate);
+        //            if (m_lrPolicy.equals(ParameterUtils.LR_POWER_PARAMETER_CONDITION)) {
+        //                nnConfigBuilder.lrPolicyPower(m_lrPolicyPower);
+        //            } else if (m_lrPolicy.equals(ParameterUtils.LR_SCHEDULE_PARAMETER_CONDITION)) {
+        //                nnConfigBuilder.learningRateSchedule(m_learningRateAfter);
+        //            } else if (m_lrPolicy.equals(ParameterUtils.LR_SCORE_BASED_PARAMETER_CONDITION)) {
+        //                nnConfigBuilder.learningRateScoreBasedDecayRate(m_lrPolicyScoreDecayRate);
+        //            } else if (m_lrPolicy.equals(ParameterUtils.LR_STEPS_PARAMETER_CONDITION)) {
+        //                nnConfigBuilder.lrPolicySteps(m_lrPolicySteps);
+        //            } else if (m_lrPolicy.equals(ParameterUtils.LR_EXPONENTIAL_PARAMETER_CONDITION)) {
+        //                //no extra param
+        //            }
+        //        }
+
+        if (m_useBiasInit) {
+            nnConfigBuilder.biasInit(m_biasInit);
+        }
+        if (m_useBiasLearningRate) {
+            overwriteBiasLearningRate(layersCopy, m_biasLearningRate);
+        }
+
         nnConfigBuilder.iterations(m_iterations);
         nnConfigBuilder.updater(m_updater);
+        if (m_updater.equals(ParameterUtils.ADAM_PARAMETER_CONDITION)) {
+            nnConfigBuilder.adamMeanDecay(m_adamMeanDecay);
+            nnConfigBuilder.adamVarDecay(m_adamVarDecay);
+        } else if (m_updater.equals(ParameterUtils.ADADELTA_PARAMETER_CONDITION)) {
+            nnConfigBuilder.rho(m_adadeltaRho);
+        } else if (m_updater.equals(ParameterUtils.RMSPROP_PARAMETER_CONDITION)) {
+            nnConfigBuilder.rmsDecay(m_rmsDecay);
+        } else if (m_updater.equals(ParameterUtils.NESTEROVS_PARAMETER_CONDITION)) {
+            nnConfigBuilder.momentum(m_momentum);
+            nnConfigBuilder.momentumAfter(m_momentumAfter);
+        }
+        //The new dialogs have a use updater checkbox which is not present in the old dialogs and is true by default. Therefore,
+        //we overwrite the updater with the default values, if the checkbox is not checked. For the old dialog this will not happen
+        //as the value is true by default.
+        if (!m_useUpdater) {
+            nnConfigBuilder.updater(Updater.valueOf(LearnerParameter.DEFAULT_UPDATER));
+            nnConfigBuilder.momentum(LearnerParameter.DEFAULT_MOMENTUM);
+        }
+
         nnConfigBuilder.optimizationAlgo(m_optimization);
+        if (ParameterUtils.MAX_LINE_SEARCH_ITERATIONS_CONDITION.contains(m_optimization)) {
+            nnConfigBuilder.maxNumLineSearchIterations(m_maxNumLineSearchIterations);
+        }
 
         //very strange dl4j behaviour, for unsupervised layers (RBM, Autoencoder) we need
         //to modify the step function elswise learning does not work (error does not decrease)
@@ -276,6 +398,18 @@ public class MultiLayerNetFactory {
         listBuilder.backprop(m_useBackprop);
 
         return listBuilder;
+    }
+
+    /**
+     * Iterates over specified list of layers and overwrites the BiasLearningRate parameter with the specified value.
+     *
+     * @param layers
+     * @param newBiasLearningRate
+     */
+    private void overwriteBiasLearningRate(final List<Layer> layers, final double newBiasLearningRate) {
+        for (final Layer l : layers) {
+            l.setBiasLearningRate(newBiasLearningRate);
+        }
     }
 
     /**
@@ -331,6 +465,16 @@ public class MultiLayerNetFactory {
             m_iterations = intSettings.getIntValue();
         }
 
+        intSettings = learnerParameters.getDistributionBinomialTrails();
+        if (intSettings != null) {
+            m_distributionBinomialTrails = intSettings.getIntValue();
+        }
+
+        intSettings = learnerParameters.getMaxNumLineSearchIterations();
+        if (intSettings != null) {
+            m_maxNumLineSearchIterations = intSettings.getIntValue();
+        }
+
         SettingsModelBoolean booleanSettings = learnerParameters.getUseSeed();
         if (booleanSettings != null) {
             m_useSeed = booleanSettings.getBooleanValue();
@@ -376,9 +520,29 @@ public class MultiLayerNetFactory {
             m_useBackprop = booleanSettings.getBooleanValue();
         }
 
+        booleanSettings = learnerParameters.getUseUpdater();
+        if (booleanSettings != null) {
+            m_useUpdater = booleanSettings.getBooleanValue();
+        }
+
         booleanSettings = learnerParameters.getUsePretrain();
         if (booleanSettings != null) {
             m_usePretrain = booleanSettings.getBooleanValue();
+        }
+
+        booleanSettings = learnerParameters.getUseBiasInit();
+        if (booleanSettings != null) {
+            m_useBiasInit = booleanSettings.getBooleanValue();
+        }
+
+        booleanSettings = learnerParameters.getUseBiasLearningRate();
+        if (booleanSettings != null) {
+            m_useBiasLearningRate = booleanSettings.getBooleanValue();
+        }
+
+        booleanSettings = learnerParameters.getUseAdvancedLearningRate();
+        if (booleanSettings != null) {
+            m_useAdvancedLearningRate = booleanSettings.getBooleanValue();
         }
 
         SettingsModelString stringSettings = learnerParameters.getGradientNormalization();
@@ -390,6 +554,21 @@ public class MultiLayerNetFactory {
         stringSettings = learnerParameters.getMomentumAfter();
         if (stringSettings != null) {
             m_momentumAfter = ParameterUtils.convertStringToMap(stringSettings.getStringValue());
+        }
+
+        stringSettings = learnerParameters.getDistribution();
+        if (stringSettings != null) {
+            m_distribution = DL4JDistribution.valueOf(stringSettings.getStringValue());
+        }
+
+        stringSettings = learnerParameters.getLrPolicy();
+        if (stringSettings != null) {
+            m_lrPolicy = LearningRatePolicy.valueOf(stringSettings.getStringValue());
+        }
+
+        stringSettings = learnerParameters.getLearningRateAfter();
+        if (stringSettings != null) {
+            m_learningRateAfter = ParameterUtils.convertStringToMap(stringSettings.getStringValue());
         }
 
         stringSettings = learnerParameters.getUpdater();
@@ -407,7 +586,7 @@ public class MultiLayerNetFactory {
             m_weightInit = WeightInit.valueOf(stringSettings.getStringValue());
         }
 
-        SettingsModelDoubleBounded doubleSettings = learnerParameters.getGradientNormalizationThreshold();
+        SettingsModelDouble doubleSettings = learnerParameters.getGradientNormalizationThreshold();
         if (doubleSettings != null) {
             m_gradientNormalizationThreshold = doubleSettings.getDoubleValue();
         }
@@ -435,6 +614,81 @@ public class MultiLayerNetFactory {
         doubleSettings = learnerParameters.getGlobalDropOut();
         if (doubleSettings != null) {
             m_dropOut = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getAdadeltaRho();
+        if (doubleSettings != null) {
+            m_adadeltaRho = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getAdamMeanDecay();
+        if (doubleSettings != null) {
+            m_adamMeanDecay = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getAdamVarDecay();
+        if (doubleSettings != null) {
+            m_adamVarDecay = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getRmsDecay();
+        if (doubleSettings != null) {
+            m_rmsDecay = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getDistributionBinomialProbability();
+        if (doubleSettings != null) {
+            m_distributionBinomialProbability = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getDistributionMean();
+        if (doubleSettings != null) {
+            m_distributionMean = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getDistributionSTD();
+        if (doubleSettings != null) {
+            m_distributionSTD = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getDistributionUpperBound();
+        if (doubleSettings != null) {
+            m_distributionUpperBound = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getDistributionLowerBound();
+        if (doubleSettings != null) {
+            m_distributionLowerBound = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getLrPolicyDecayRate();
+        if (doubleSettings != null) {
+            m_lrPolicyDecayRate = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getLrPolicyPower();
+        if (doubleSettings != null) {
+            m_lrPolicyPower = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getLrPolicyScoreDecayRate();
+        if (doubleSettings != null) {
+            m_lrPolicyScoreDecayRate = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getLrPolicySteps();
+        if (doubleSettings != null) {
+            m_lrPolicySteps = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getBiasInit();
+        if (doubleSettings != null) {
+            m_biasInit = doubleSettings.getDoubleValue();
+        }
+
+        doubleSettings = learnerParameters.getBiasLearningRate();
+        if (doubleSettings != null) {
+            m_biasLearningRate = doubleSettings.getDoubleValue();
         }
     }
 }
