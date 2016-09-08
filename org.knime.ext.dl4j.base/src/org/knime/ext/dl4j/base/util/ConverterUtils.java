@@ -103,7 +103,7 @@ public class ConverterUtils {
      */
     public static void checkMissing(final DataCell cell) throws DataCellConversionException {
         if(cell.isMissing()) {
-            throw new DataCellConversionException("Input table must not contain Missing Values!");
+            throw new DataCellConversionException("Input table must not contain missing values!");
         }
     }
 }
