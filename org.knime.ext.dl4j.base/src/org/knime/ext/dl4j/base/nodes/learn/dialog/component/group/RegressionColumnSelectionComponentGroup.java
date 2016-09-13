@@ -48,10 +48,22 @@
  */
 package org.knime.ext.dl4j.base.nodes.learn.dialog.component.group;
 
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.knime.core.data.DataTableSpec;
+import org.knime.core.node.InvalidSettingsException;
+import org.knime.core.node.NodeSettingsRO;
+import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnFilter2;
+import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
+import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing a column selection for regression.
@@ -60,9 +72,13 @@ import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
  */
 public class RegressionColumnSelectionComponentGroup extends AbstractGridBagDialogComponentGroup {
 
-    SettingsModelColumnFilter2 m_targetColumnFilterSettings;
+    private SettingsModelColumnFilter2 m_targetColumnFilterSettings;
 
-    SettingsModelColumnFilter2 m_featureColumnFilterSettings;
+    private SettingsModelColumnFilter2 m_featureColumnFilterSettings;
+
+    private JLabel m_indicatorLabel;
+
+    private PortObjectSpec[] m_specs;
 
     /**
      * Constructor for class RegressionColumnSelectionComponentGroup using the specified
@@ -83,7 +99,63 @@ public class RegressionColumnSelectionComponentGroup extends AbstractGridBagDial
         addLabelRow("Target Column Selection", 15);
         addColumnFilterRowComponent(m_targetColumnFilterSettings, specIndex);
         addWhitespaceRow(15);
+
+        m_indicatorLabel = new JLabel("");
+        addComponent(m_indicatorLabel);
+
+        addWhitespaceRow(15);
         addLabelRow("Feature Column Selection", 15);
         addColumnFilterRowComponent(m_featureColumnFilterSettings, specIndex);
+
+        m_targetColumnFilterSettings.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(final ChangeEvent e) {
+                updateIndicatorLabel(m_specs, specIndex);
+            }
+        });
+
+        m_featureColumnFilterSettings.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(final ChangeEvent e) {
+                updateIndicatorLabel(m_specs, specIndex);
+            }
+        });
+    }
+
+    /**
+     * Updates the label that indicates whether the column selection of both column filters is mutually exclusive. If
+     * not a corresponding warning is displayed.
+     *
+     * @param specs the specs array
+     * @param specIndex the index of the spec in the array corresponding to the table containing the columns
+     */
+    private void updateIndicatorLabel(final PortObjectSpec[] specs, final int specIndex) {
+        if (specs == null) {
+            return;
+        }
+
+        DataTableSpec tableSpecs = (DataTableSpec)specs[specIndex];
+
+        String[] featureColumns = m_featureColumnFilterSettings.applyTo(tableSpecs).getIncludes();
+        String[] targetColumns = m_targetColumnFilterSettings.applyTo(tableSpecs).getIncludes();
+
+        try {
+            ConfigurationUtils.validateMutuallyExclusive(featureColumns, targetColumns);
+            m_indicatorLabel.setText("Column selection OK!");
+            m_indicatorLabel.setForeground(Color.BLACK);
+        } catch (InvalidSettingsException e) {
+            m_indicatorLabel.setText(e.getMessage());
+            m_indicatorLabel.setForeground(Color.RED);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void loadSettingsFrom(final NodeSettingsRO settings, final PortObjectSpec[] specs)
+        throws NotConfigurableException {
+        m_specs = specs;
+        super.loadSettingsFrom(settings, specs);
     }
 }

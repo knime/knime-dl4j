@@ -213,8 +213,7 @@ public class ConfigurationUtils {
         for (String s : cols1) {
             if (cols2.contains(s)) {
                 throw new InvalidSettingsException(
-                    "The list of feature and target columns must not contain duplicate columns. Duplicate Column: "
-                        + s);
+                    "The lists of feature and target columns must be mutually exclusive. Offending column: " + s);
             }
         }
     }
