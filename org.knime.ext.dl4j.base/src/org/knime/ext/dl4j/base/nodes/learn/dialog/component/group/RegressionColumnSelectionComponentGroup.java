@@ -92,7 +92,6 @@ public class RegressionColumnSelectionComponentGroup extends AbstractGridBagDial
         final int specIndex) {
         m_targetColumnFilterSettings =
             (SettingsModelColumnFilter2)dataSettings.createParameter(DataParameter.TARGET_COLUMN_SELECTION2);
-
         m_featureColumnFilterSettings =
             (SettingsModelColumnFilter2)dataSettings.createParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
 
@@ -134,13 +133,16 @@ public class RegressionColumnSelectionComponentGroup extends AbstractGridBagDial
             return;
         }
 
-        DataTableSpec tableSpecs = (DataTableSpec)specs[specIndex];
+        DataTableSpec tableSpec = (DataTableSpec)specs[specIndex];
 
-        String[] featureColumns = m_featureColumnFilterSettings.applyTo(tableSpecs).getIncludes();
-        String[] targetColumns = m_targetColumnFilterSettings.applyTo(tableSpecs).getIncludes();
+        String[] featureColumns = m_featureColumnFilterSettings.applyTo(tableSpec).getIncludes();
+        String[] targetColumns = m_targetColumnFilterSettings.applyTo(tableSpec).getIncludes();
 
         try {
             ConfigurationUtils.validateMutuallyExclusive(featureColumns, targetColumns);
+            ConfigurationUtils.validateColumnSelection(tableSpec, targetColumns);
+            ConfigurationUtils.validateColumnSelection(tableSpec, featureColumns);
+
             m_indicatorLabel.setText("Column selection OK!");
             m_indicatorLabel.setForeground(Color.BLACK);
         } catch (InvalidSettingsException e) {

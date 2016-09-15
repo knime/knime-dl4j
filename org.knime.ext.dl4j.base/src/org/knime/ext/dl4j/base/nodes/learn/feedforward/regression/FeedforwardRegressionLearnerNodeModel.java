@@ -49,6 +49,7 @@ import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.container.ColumnRearranger;
 import org.knime.core.node.BufferedDataTable;
@@ -60,6 +61,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
+import org.knime.core.node.util.filter.InputFilter;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.RegressionBufferedDataTableDataSetIterator;
@@ -100,6 +102,10 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     private DataParameterSettingsModels m_dataParameterSettings;
 
     private LayerParameterSettingsModels m_layerParameterSettings;
+
+    /* Flag to indicate if we need to set the the column selection to its default state (all columns excluded).
+     * This will be the case after the node was created and the node is not yet configured. */
+    private boolean m_autoConfigure = true;
 
     /**
      * Constructor for the node model.
@@ -188,6 +194,10 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
+        if (m_autoConfigure) {
+            setDefaultColumnSelection(tableSpec);
+        }
+
         String[] featureColumns = m_dataParameterSettings.getFeatureColumnSelection2().applyTo(tableSpec).getIncludes();
         String[] targetColumns = m_dataParameterSettings.getTargetColumnSelection2().applyTo(tableSpec).getIncludes();
 
@@ -222,6 +232,27 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
             specWithoutLabels.getLearnedColumns(), specWithoutLabels.getLabels(), specWithoutLabels.isTrained());
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
+    }
+
+    /**
+     * Sets the column selections to not include any columns.
+     *
+     * @param tableSpec the corresponding spec
+     */
+    private void setDefaultColumnSelection(final DataTableSpec tableSpec) {
+        m_dataParameterSettings.getFeatureColumnSelection2().loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
+            @Override
+            public boolean include(final DataColumnSpec name) {
+                return false;
+            }
+        }, true);
+
+        m_dataParameterSettings.getTargetColumnSelection2().loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
+            @Override
+            public boolean include(final DataColumnSpec name) {
+                return false;
+            }
+        }, true);
     }
 
     @Override
@@ -295,6 +326,16 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         settings.addAll(m_layerParameterSettings.getAllInitializedSettings());
 
         return settings;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
+        super.loadValidatedSettingsFrom(settings);
+        // after the first load of the settings we don't want to set it to its default value anymore
+        m_autoConfigure = false;
     }
 
     /**
