@@ -111,4 +111,12 @@ public class ClassificationBufferedDataTableDataSetIterator extends AbstractBuff
         return m_distinctLabels;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean asyncSupported() {
+        return false;
+    }
+
 }

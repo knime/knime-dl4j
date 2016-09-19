@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Windows specific CPU dependencies for Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.bin.windows.x86_64.cpu;singleton:=true
 Bundle-Version: 0.5.0.qualifier
-Bundle-ClassPath: libs/nd4j-native-0.5.0-windows-x86_64.jar,
- libs/nd4j-native-0.5.0.jar
+Bundle-ClassPath: libs/nd4j-native-0.6.0-windows-x86_64.jar,
+ libs/nd4j-native-0.6.0.jar
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
 Export-Package: org.nd4j.linalg.cpu.nativecpu,

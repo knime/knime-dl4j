@@ -89,4 +89,12 @@ public class PretrainingBufferedDataTableDataSetIterator extends AbstractBuffere
         throw new UnsupportedOperationException("no labels for regression");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean asyncSupported() {
+        return false;
+    }
+
 }

@@ -104,4 +104,12 @@ public class RegressionBufferedDataTableDataSetIterator extends AbstractBuffered
         throw new UnsupportedOperationException("no labels for regression");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean asyncSupported() {
+        return false;
+    }
+
 }
