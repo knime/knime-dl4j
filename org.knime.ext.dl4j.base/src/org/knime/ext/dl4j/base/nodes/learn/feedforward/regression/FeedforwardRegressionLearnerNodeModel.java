@@ -375,7 +375,6 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
             if (getLearningMonitor().checkStopLearning()) {
                 break;
             }
-            logger.info("Backprop epoch: " + (i + 1) + " of: " + epochs);
 
             updateView(i + 1, epochs, "Backprop");
             backpropOneEpoch(mln, data, exec);

@@ -340,7 +340,6 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
                 if (getLearningMonitor().checkStopLearning()) {
                     break;
                 }
-                logger.info("Finetune epoch: " + (i + 1) + " of: " + epochs);
 
                 updateView(i + 1, epochs, "Finetune");
                 finetuneOneEpoch(mln, data, exec);
@@ -356,7 +355,6 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
                 if (getLearningMonitor().checkStopLearning()) {
                     break;
                 }
-                logger.info("Backprop epoch: " + (i + 1) + " of: " + epochs);
 
                 updateView(i + 1, epochs, "Backprop");
                 backpropOneEpoch(mln, data, exec);

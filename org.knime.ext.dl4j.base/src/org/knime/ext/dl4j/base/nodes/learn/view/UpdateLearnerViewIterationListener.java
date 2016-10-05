@@ -90,7 +90,7 @@ public class UpdateLearnerViewIterationListener implements IterationListener {
         invoke();
         final double result = model.score();
         //pass the current score to the view
-        m_nodeModel.passObjToView(Double.toString(result));
+        m_nodeModel.passObjToView(new Double(result));
         //update score in node model
         m_nodeModel.setScore(result);
     }

@@ -93,6 +93,8 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     /** A learning monitor for this learner storing if learning should be stopped. */
     private final LearningMonitor m_learningMonitor = new LearningMonitor();
 
+    private final List<String[]> m_history = new ArrayList<String[]>();
+
     /**
      * Super constructor for class AbstractDLLearnerNodeModel passing through parameters to node model class.
      *
@@ -347,7 +349,9 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      * @param epoch the epoch number to print into log message
      */
     protected void logEpochScore(final MultiLayerNetwork m, final int epoch) {
-        logger.info("Loss after epoch " + epoch + " is " + m.score());
+        String[] historyInfo = new String[]{Integer.toString(epoch), Double.toString(m.score())};
+        m_history.add(historyInfo);
+        notifyViews(historyInfo);
     }
 
     /**
@@ -369,6 +373,7 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
         m_score = null;
         m_learningStatus = null;
         m_learningMonitor.reset();
+        m_history.clear();
         super.reset();
     }
 
@@ -402,5 +407,9 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
 
     public LearningMonitor getLearningMonitor() {
         return m_learningMonitor;
+    }
+
+    public List<String[]> getHistory() {
+        return m_history;
     }
 }

@@ -56,11 +56,15 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeView;
@@ -84,6 +88,8 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
 
     private static final String WHITESPACE = "  ";
 
+    private static final String TABS = "\t\t";
+
     // the logger instance
     private static final NodeLogger logger = NodeLogger.getLogger(AbstractSimpleLearnerNodeView.class);
 
@@ -92,6 +98,8 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
     private final JLabel m_learningInfo = new JLabel("No data available");
 
     private final JButton m_stopButton = new JButton("Stop Learning");
+
+    private final JTextArea m_historyArea = new JTextArea();
 
     private int m_numberOfUpdates = 0;
 
@@ -125,7 +133,6 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         p_middle.add(m_scoreDisplay);
 
         //create bottom button for stopping
-        final JPanel p_bottom = new JPanel(new GridLayout(0, 1));
         m_stopButton.addActionListener(new ActionListener() {
 
             @Override
@@ -136,7 +143,6 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         m_stopButton.setSize(new Dimension(200, 50));
         m_stopButton.setPreferredSize(new Dimension(200, 50));
         m_stopButton.setMinimumSize(new Dimension(200, 50));
-        p_bottom.add(m_stopButton);
 
         //pack into one GridBad and style
         final JPanel p_wrapper = new JPanel(new GridBagLayout());
@@ -145,8 +151,8 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
-        c.weighty = 1;
-        c.ipadx = 350;
+        c.weighty = 0;
+        c.ipadx = 250;
         c.insets = new Insets(20, 5, 0, 5);
         c.anchor = GridBagConstraints.WEST;
         p_wrapper.add(p_top, c);
@@ -155,29 +161,62 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         c.gridy = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
-        c.weighty = 1;
-        c.insets = new Insets(20, 5, 0, 5);
+        c.weighty = 0;
+        c.gridwidth = 2;
+        c.insets = new Insets(30, 5, 0, 5);
         p_wrapper.add(p_middle, c);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.EAST;
+        c.fill = GridBagConstraints.NONE;
+        c.insets = new Insets(23, 5, 0, 5);
+        p_wrapper.add(m_stopButton, c);
+
+        JScrollPane historyScroller = new JScrollPane(m_historyArea);
+        historyScroller.setBorder(BorderFactory.createTitledBorder("History:"));
+        m_historyArea.setEditable(false);
+        m_historyArea.setRows(15);
+
+        //enable automatic to bottom scrolling
+        DefaultCaret caret = (DefaultCaret)m_historyArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 2;
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(20, 5, 20, 5);
-        p_wrapper.add(p_bottom, c);
+        c.gridwidth = 2;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(20, 5, 5, 5);
+        p_wrapper.add(historyScroller, c);
 
         setComponent(p_wrapper);
 
+        resetView();
         //get last values from model if available
-        if (nodeModel.getScore() == null) {
-            m_scoreDisplay.setText("Not available");
-        } else {
+        if (nodeModel.getScore() != null) {
             m_scoreDisplay.setText(nodeModel.getScore() + "");
         }
-        if (nodeModel.getLearningStatus() == null) {
-            m_learningInfo.setText("No data available");
-        } else {
+        if (nodeModel.getLearningStatus() != null) {
             m_learningInfo.setText(nodeModel.getLearningStatus().getEpochDescription());
         }
+        List<String[]> history = nodeModel.getHistory();
+        if (!history.isEmpty()) {
+            for (String[] historyEntry : history) {
+                appendHistoryEntry(historyEntry);
+            }
+        }
+    }
+
+    private void appendHistoryEntry(final String[] entry) {
+        String line = entry[0] + TABS + entry[1];
+        appendLineToHistory(line);
+    }
+
+    private void appendLineToHistory(final String line) {
+        m_historyArea.append(line + "\n");
     }
 
     /**
@@ -188,8 +227,13 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
     protected void updateModel(final Object arg) {
         if (arg == null) {
             resetView();
-        } else if (arg instanceof String) {
-            String loss = (String)arg;
+            //String[] -> history, String[0] -> epoch, String[1] -> epoch score
+        } else if (arg instanceof String[]) {
+            String[] entry = (String[])arg;
+            appendHistoryEntry(entry);
+            //single double value -> score
+        } else if (arg instanceof Double) {
+            String loss = Double.toString((Double)arg);
             m_scoreDisplay.setText(addProgressDots(loss, m_numberOfUpdates));
             m_numberOfUpdates++;
         } else if (arg instanceof LearningStatus) {
@@ -207,6 +251,8 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
     private void resetView() {
         m_scoreDisplay.setText("Not available");
         m_learningInfo.setText("No data available");
+        m_historyArea.setText(null);
+        appendLineToHistory("Epoch" + TABS + "Loss");
         m_numberOfUpdates = 0;
         m_numberOfDots = 0;
         m_dotAppend = WHITESPACE;

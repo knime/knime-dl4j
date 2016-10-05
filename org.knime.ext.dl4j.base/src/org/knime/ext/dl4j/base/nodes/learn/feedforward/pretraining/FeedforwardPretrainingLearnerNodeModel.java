@@ -299,7 +299,6 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
             if (getLearningMonitor().checkStopLearning()) {
                 break;
             }
-            logger.info("Pretrain epoch: " + (i + 1) + " of: " + epochs);
 
             updateView(i + 1, epochs, "Pretrain");
             pretrainOneEpoch(mln, data, exec);
