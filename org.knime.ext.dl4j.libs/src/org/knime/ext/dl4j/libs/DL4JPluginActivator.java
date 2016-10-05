@@ -49,6 +49,9 @@ import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
 import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
 import org.eclipse.osgi.internal.loader.classpath.FragmentClasspath;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.knime.ext.dl4j.libs.cuda.CudaNotFoundException;
+import org.knime.ext.dl4j.libs.cuda.CudaVersionChecker;
+import org.knime.ext.dl4j.libs.cuda.UnsupportedCudaVersionException;
 import org.knime.ext.dl4j.libs.prefs.DL4JPreferencePage;
 import org.osgi.framework.BundleContext;
 
@@ -63,14 +66,36 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
 
     private static DL4JPluginActivator plugin;
 
-    private final String GPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.gpu.*";
+    private final String GPU_CUDA8_0_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.gpu\\.cuda8\\_0.*";
 
-    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.(linux|macosx|windows)\\.x86_64\\.cpu.*";
+    private final String GPU_CUDA7_5_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.gpu\\.cuda7\\_5.*";
 
-    private enum BackendType {
-            GPU, CPU
+    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.cpu.*";
+
+    /**
+     * Enum identifying the DL4J backend.
+     */
+    public enum BackendType {
+            GPU_CUDA8_0, GPU_CUDA7_5, CPU;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case CPU:
+                    return "CPU";
+                case GPU_CUDA7_5:
+                    return "GPU CUDA Toolkit 7.5";
+                case GPU_CUDA8_0:
+                    return "GPU CUDA Toolkit 8.0";
+                default:
+                    return super.toString();
+            }
+        }
     }
 
+    /**
+     * Constructor for class DL4JPluginActivator. Sets the getDefault to this class.
+     */
     public DL4JPluginActivator() {
         plugin = this;
     }
@@ -82,8 +107,19 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
 
         BackendType backendType = BackendType.CPU;
         if (useGPU) {
-            backendType = BackendType.GPU;
+            try {
+                backendType = CudaVersionChecker.getCudaVersion();
+            } catch (CudaNotFoundException e) {
+                LOGGER.error("CUDA seems not to be installed on the system!", e);
+                backendType = BackendType.CPU;
+            } catch (UnsupportedCudaVersionException e) {
+                LOGGER.error("No campatible CUDA version seems to be installed on the system! Supported versions are: "
+                    + BackendType.GPU_CUDA7_5.toString() + " and " + BackendType.GPU_CUDA8_0.toString(), e);
+                backendType = BackendType.CPU;
+            }
         }
+
+        LOGGER.info(backendType + " backend will be used.");
 
         final EquinoxClassLoader el = (EquinoxClassLoader)getClass().getClassLoader();
         final ClasspathManager manager = el.getClasspathManager();
@@ -120,8 +156,11 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
             case CPU:
                 regex = CPU_FRAG_REGEX;
                 break;
-            case GPU:
-                regex = GPU_FRAG_REGEX;
+            case GPU_CUDA8_0:
+                regex = GPU_CUDA8_0_FRAG_REGEX;
+                break;
+            case GPU_CUDA7_5:
+                regex = GPU_CUDA7_5_FRAG_REGEX;
                 break;
             default:
                 throw new IllegalStateException("No case for backend type: " + backend + " defined.");

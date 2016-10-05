@@ -59,10 +59,16 @@ import org.knime.ext.dl4j.libs.DL4JPluginActivator;
  */
 public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+    /**
+     * Key use GPU checkbox.
+     */
     public static final String P_BACKEND_TYPE = "backendType";
 
     private boolean m_useGPU;
 
+    /**
+     * Constructor for class DL4JPreferencePage.
+     */
     public DL4JPreferencePage() {
         super(GRID);
         setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
@@ -77,9 +83,9 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 
     @Override
     protected void createFieldEditors() {
-        addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you \n"
-                + "need to have a CUDA compatible Graphics Card and CUDA 7.5 \n"
-                + "installed on your system. A change in this option requires a restart \n"
+        addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you need to have \n"
+                + "a CUDA (7.5 or 8.0) compatible Graphics Card and the corresponding CUDA Toolkit \n"
+                + "version installed on your system. A change in this option requires a restart \n"
                 + "of KNIME Analytics Platform in order to take effect."));
         addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?",
             BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));

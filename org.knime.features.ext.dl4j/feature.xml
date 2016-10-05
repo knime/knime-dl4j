@@ -736,64 +736,34 @@ propagated with or for interoperation with KNIME.
          unpack="false"/>
 
    <plugin
-         id="org.knime.ext.dl4j.bin.linux.x86_64.cpu"
-         os="linux"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.knime.ext.dl4j.bin.linux.x86_64.gpu"
-         os="linux"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.knime.ext.dl4j.bin.macosx.x86_64.cpu"
-         os="macosx"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.knime.ext.dl4j.bin.macosx.x86_64.gpu"
-         os="macosx"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.knime.ext.dl4j.bin.windows.x86_64.cpu"
-         os="win32"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.knime.ext.dl4j.bin.windows.x86_64.gpu"
-         os="win32"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
          id="org.knime.ext.dl4j.libs"
          arch="x86_64"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.cpu"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda7_5"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda8_0"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>
