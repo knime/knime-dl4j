@@ -69,6 +69,7 @@ import javax.swing.text.DefaultCaret;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeView;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
+import org.knime.ext.dl4j.base.nodes.learn.HistoryEntry;
 import org.knime.ext.dl4j.base.nodes.learn.LearningMonitor;
 import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
 
@@ -176,6 +177,7 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         JScrollPane historyScroller = new JScrollPane(m_historyArea);
         historyScroller.setBorder(BorderFactory.createTitledBorder("History:"));
         m_historyArea.setEditable(false);
+        //set default height of text area
         m_historyArea.setRows(15);
 
         //enable automatic to bottom scrolling
@@ -202,35 +204,43 @@ public abstract class AbstractSimpleLearnerNodeView<T extends AbstractDLLearnerN
         if (nodeModel.getLearningStatus() != null) {
             m_learningInfo.setText(nodeModel.getLearningStatus().getEpochDescription());
         }
-        List<String[]> history = nodeModel.getHistory();
+        List<HistoryEntry> history = nodeModel.getHistory();
         if (!history.isEmpty()) {
-            for (String[] historyEntry : history) {
+            for (HistoryEntry historyEntry : history) {
                 appendHistoryEntry(historyEntry);
             }
         }
     }
 
-    private void appendHistoryEntry(final String[] entry) {
-        String line = entry[0] + TABS + entry[1];
+    /**
+     * Appends the String representation of the specified {@link HistoryEntry} to the text area.
+     *
+     * @param entry the entry to add
+     */
+    private void appendHistoryEntry(final HistoryEntry entry) {
+        String line = entry.toString(TABS);
         appendLineToHistory(line);
     }
 
+    /**
+     * Appends the specified String to the text area and breaks the line.
+     *
+     * @param line the line to add
+     */
     private void appendLineToHistory(final String line) {
         m_historyArea.append(line + "\n");
     }
 
     /**
-     * Updates the label fields of the view. Expects either a String containing the current score or a
-     * {@link LearningStatus} object. If the passed argument is null the view will be reset.
+     * Updates the label fields of the view. Expects either a String containing the current score, a
+     * {@link LearningStatus} object, or a history entry. If the passed argument is null the view will be reset.
      */
     @Override
     protected void updateModel(final Object arg) {
         if (arg == null) {
             resetView();
-            //String[] -> history, String[0] -> epoch, String[1] -> epoch score
-        } else if (arg instanceof String[]) {
-            String[] entry = (String[])arg;
-            appendHistoryEntry(entry);
+        } else if (arg instanceof HistoryEntry) {
+            appendHistoryEntry((HistoryEntry)arg);
             //single double value -> score
         } else if (arg instanceof Double) {
             String loss = Double.toString((Double)arg);
