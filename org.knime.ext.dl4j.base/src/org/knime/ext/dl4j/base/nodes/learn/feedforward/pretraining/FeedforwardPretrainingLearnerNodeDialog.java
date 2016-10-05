@@ -56,9 +56,9 @@ import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.SeedParameterC
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.TrainingMethodParametersComponentGroup;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.UpdaterParameterComponentGroup;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.WeightInitParameterComponentGroup;
-import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
-import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * <code>NodeDialog</code> for the "DL4JLearner" Node.
@@ -77,9 +77,9 @@ public class FeedforwardPretrainingLearnerNodeDialog extends DefaultLearnerNodeD
      * New pane for configuring the DL4JLearner node.
      */
     protected FeedforwardPretrainingLearnerNodeDialog() {
-        final LearnerParameterSettingsModels learnerSettings = new LearnerParameterSettingsModels();
-        final DataParameterSettingsModels dataSettings = new DataParameterSettingsModels();
-        final LayerParameterSettingsModels layerSettings = new LayerParameterSettingsModels();
+        final LearnerParameterSettingsModels2 learnerSettings = new LearnerParameterSettingsModels2();
+        final DataParameterSettingsModels2 dataSettings = new DataParameterSettingsModels2();
+        final LayerParameterSettingsModels2 layerSettings = new LayerParameterSettingsModels2();
 
         setDefaultTabTitle("Learning Parameter");
 

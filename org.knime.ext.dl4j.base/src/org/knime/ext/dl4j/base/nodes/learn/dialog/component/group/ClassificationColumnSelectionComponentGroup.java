@@ -54,6 +54,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing a column selection for classification.
@@ -74,7 +75,7 @@ public class ClassificationColumnSelectionComponentGroup extends AbstractGridBag
      * @param dataSettings
      * @param specIndex
      */
-    public ClassificationColumnSelectionComponentGroup(final DataParameterSettingsModels dataSettings,
+    public ClassificationColumnSelectionComponentGroup(final DataParameterSettingsModels2 dataSettings,
         final int specIndex) {
         m_labelColumnSettings = (SettingsModelString)dataSettings.createParameter(DataParameter.LABEL_COLUMN);
 

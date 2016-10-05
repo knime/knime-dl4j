@@ -47,7 +47,7 @@ import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
 import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 
 /**
  * <code>NodeDialog</code> for the "LRNLayer" Node.
@@ -64,7 +64,7 @@ public class LRNLayerNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the LRNLayer node.
      */
     protected LRNLayerNodeDialog() {
-        final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
+        final LayerParameterSettingsModels2 dnnSettingsModels = new LayerParameterSettingsModels2();
 
         addDialogComponent(new DialogComponentNumberEdit(
             (SettingsModelIntegerBounded)dnnSettingsModels.createParameter(LayerParameter.LRN_K), "k", 4));

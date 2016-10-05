@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing regularization parameter.
@@ -79,7 +80,7 @@ public class RegularizationParameterComponentGroup extends AbstractGridBagDialog
      *
      * @param learnerSettings
      */
-    public RegularizationParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public RegularizationParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useRegularizationSettings =
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_REGULARIZATION);
         m_l1Settings = (SettingsModelNumber)learnerSettings.createParameter(LearnerParameter.L1);

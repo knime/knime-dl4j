@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing bias parameter.
@@ -81,7 +82,7 @@ public class BiasParameterComponentGroup extends AbstractGridBagDialogComponentG
      *
      * @param learnerSettings
      */
-    public BiasParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public BiasParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useBiasInitSettings = (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_BIAS_INIT);
         m_useBiasLearningRateSettings =
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_BIAS_LEARNING_RATE);

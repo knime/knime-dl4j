@@ -56,6 +56,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
@@ -84,7 +85,7 @@ public class OutputLayerParameterComponentGroup extends AbstractGridBagDialogCom
      * @param addActivation
      * @param addNumOutputs
      */
-    public OutputLayerParameterComponentGroup(final LayerParameterSettingsModels layerSettings,
+    public OutputLayerParameterComponentGroup(final LayerParameterSettingsModels2 layerSettings,
         final boolean addActivation, final boolean addNumOutputs) {
 
         if (addNumOutputs) {

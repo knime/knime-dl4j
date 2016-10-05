@@ -62,7 +62,7 @@ import org.knime.ext.dl4j.base.nodes.layer.AbstractDLLayerNodeModel;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
@@ -80,7 +80,7 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.SUBSAMPLING_LAYER;
 
     /* SettingsModels */
-    private LayerParameterSettingsModels m_dnnParameterSettings;
+    private LayerParameterSettingsModels2 m_dnnParameterSettings;
 
     /**
      * Constructor for the node model.
@@ -97,11 +97,11 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
         //parameters
         final SubsamplingLayer.PoolingType poolingType =
-            SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getPoolingType().getStringValue());
-        final int[] kernelSize =
-            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+            SubsamplingLayer.PoolingType.valueOf(m_dnnParameterSettings.getString(LayerParameter.POOLING_TYPE));
+        final int[] kernelSize = ParameterUtils
+            .convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.KERNEL_SIZE).split(","));
         final int[] stride =
-            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.STRIDE).split(","));
 
         //build layer
         final Layer subsamplingLayer =
@@ -115,7 +115,7 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, logger);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
-        m_dnnParameterSettings = new LayerParameterSettingsModels();
+        m_dnnParameterSettings = new LayerParameterSettingsModels2();
         m_dnnParameterSettings.setParameter(LayerParameter.POOLING_TYPE);
         m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
         m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);

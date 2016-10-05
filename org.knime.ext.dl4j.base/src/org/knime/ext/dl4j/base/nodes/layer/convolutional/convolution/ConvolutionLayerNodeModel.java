@@ -63,7 +63,7 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
 /**
@@ -81,7 +81,7 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
     private static final DNNLayerType DNNLAYERTYPE = DNNLayerType.CONVOLUTION_LAYER;
 
     /* SettingsModels */
-    private LayerParameterSettingsModels m_dnnParameterSettings;
+    private LayerParameterSettingsModels2 m_dnnParameterSettings;
 
     /**
      * Constructor for the node model.
@@ -97,15 +97,15 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
         final List<Layer> newLayers = portObject.getLayers();
 
         //parameters
-        final int nOut = m_dnnParameterSettings.getNumberOfOutputs().getIntValue();
-        final int[] kernelSize =
-            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getKernelSize().getStringValue().split(","));
+        final int nOut = m_dnnParameterSettings.getInteger(LayerParameter.NUMBER_OF_OUTPUTS);
+        final int[] kernelSize = ParameterUtils
+            .convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.KERNEL_SIZE).split(","));
         final int[] stride =
-            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getStride().getStringValue().split(","));
-        final String activation =
-            DL4JActivationFunction.fromToString(m_dnnParameterSettings.getActivation().getStringValue()).getDL4JValue();
-        final double dropOut = m_dnnParameterSettings.getDropOut().getDoubleValue();
-        final double learningRate = m_dnnParameterSettings.getLearningRate().getDoubleValue();
+            ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.STRIDE).split(","));
+        final String activation = DL4JActivationFunction
+            .fromToString(m_dnnParameterSettings.getString(LayerParameter.ACTIVATION)).getDL4JValue();
+        final double dropOut = m_dnnParameterSettings.getDouble(LayerParameter.DROP_OUT);
+        final double learningRate = m_dnnParameterSettings.getDouble(LayerParameter.LEARNING_RATE);
 
         //build layer
         final Layer convolutionLayer = new ConvolutionLayer.Builder().nOut(nOut).activation(activation).stride(stride)
@@ -119,7 +119,7 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, m_dnnParameterSettings, logger);
+        return configure(inSpecs, DNNTYPES, DNNLAYERTYPE, logger);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
-        m_dnnParameterSettings = new LayerParameterSettingsModels();
+        m_dnnParameterSettings = new LayerParameterSettingsModels2();
         m_dnnParameterSettings.setParameter(LayerParameter.NUMBER_OF_OUTPUTS);
         m_dnnParameterSettings.setParameter(LayerParameter.KERNEL_SIZE);
         m_dnnParameterSettings.setParameter(LayerParameter.STRIDE);

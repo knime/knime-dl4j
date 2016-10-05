@@ -53,7 +53,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
@@ -74,7 +74,7 @@ public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the DenseLayer node.
      */
     protected AutoEncoderLayerNodeDialog() {
-        final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
+        final LayerParameterSettingsModels2 dnnSettingsModels = new LayerParameterSettingsModels2();
 
 
             addDialogComponent(new DialogComponentNumberEdit(
@@ -95,6 +95,6 @@ public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
             addDialogComponent(new DialogComponentNumberEdit(
                 (SettingsModelDoubleBounded)dnnSettingsModels.createParameter(LayerParameter.CORRUPTION_LEVEL),
                 "Corruption Level", 4));
- 
+
     }
 }

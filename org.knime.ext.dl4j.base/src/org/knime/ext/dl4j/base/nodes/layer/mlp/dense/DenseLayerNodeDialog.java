@@ -52,7 +52,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 
 /**
@@ -73,7 +73,7 @@ public class DenseLayerNodeDialog extends DefaultNodeSettingsPane {
      * New pane for configuring the DenseLayer node.
      */
     protected DenseLayerNodeDialog() {
-        final LayerParameterSettingsModels dnnSettingsModels = new LayerParameterSettingsModels();
+        final LayerParameterSettingsModels2 dnnSettingsModels = new LayerParameterSettingsModels2();
 
         try {
             addDialogComponent(new DialogComponentNumberEdit(

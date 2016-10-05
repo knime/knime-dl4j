@@ -62,6 +62,7 @@ import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialo
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
@@ -82,7 +83,7 @@ public class GradientNormalizationParameterComponentGroup extends AbstractGridBa
      *
      * @param learnerSettings
      */
-    public GradientNormalizationParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public GradientNormalizationParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useGradientNormSettings =
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_GRADIENT_NORMALIZATION);
         m_gradientNormStrategySettings =

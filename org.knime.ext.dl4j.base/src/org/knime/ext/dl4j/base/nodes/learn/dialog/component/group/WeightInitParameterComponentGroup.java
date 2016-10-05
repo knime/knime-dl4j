@@ -74,6 +74,7 @@ import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialo
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JDistribution;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
@@ -102,7 +103,7 @@ public class WeightInitParameterComponentGroup extends AbstractGridBagDialogComp
      *
      * @param learnerSettings
      */
-    public WeightInitParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public WeightInitParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useGlobalWeightInitSettings =
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_GLOBAL_WEIGHT_INIT);
         m_globalWeightInitSettings =

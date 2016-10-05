@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing seed parameter.
@@ -77,7 +78,7 @@ public class SeedParameterComponentGroup extends AbstractGridBagDialogComponentG
      *
      * @param learnerSettings
      */
-    public SeedParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public SeedParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useSeedSettings = (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_SEED);
         m_seedSettings = (SettingsModelNumber)learnerSettings.createParameter(LearnerParameter.SEED);
 

@@ -54,7 +54,9 @@ import org.nd4j.linalg.factory.Nd4j;
  * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to INDArray.
  *
  * @author David Kolb, KNIME.com GmbH
+ * @deprecated use DoubleValueToDoubleArrayConverterFactory instead
  */
+@Deprecated
 public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, INDArray> {
 
     /**

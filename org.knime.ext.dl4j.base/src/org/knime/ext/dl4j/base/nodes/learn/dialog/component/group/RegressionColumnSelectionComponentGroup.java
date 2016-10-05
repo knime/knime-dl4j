@@ -63,6 +63,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
 /**
@@ -88,7 +89,7 @@ public class RegressionColumnSelectionComponentGroup extends AbstractGridBagDial
      * @param dataSettings
      * @param specIndex
      */
-    public RegressionColumnSelectionComponentGroup(final DataParameterSettingsModels dataSettings,
+    public RegressionColumnSelectionComponentGroup(final DataParameterSettingsModels2 dataSettings,
         final int specIndex) {
         m_targetColumnFilterSettings =
             (SettingsModelColumnFilter2)dataSettings.createParameter(DataParameter.TARGET_COLUMN_SELECTION2);

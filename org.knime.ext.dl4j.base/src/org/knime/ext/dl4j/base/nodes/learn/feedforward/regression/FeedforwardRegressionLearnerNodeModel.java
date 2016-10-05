@@ -58,6 +58,7 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnFilter2;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
@@ -65,8 +66,8 @@ import org.knime.core.node.util.filter.InputFilter;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.RegressionBufferedDataTableDataSetIterator;
-import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory;
-import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory;
+import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory2;
+import org.knime.ext.dl4j.base.mln.MultiLayerNetFactory2;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
 import org.knime.ext.dl4j.base.nodes.learn.view.UpdateLearnerViewIterationListener;
@@ -75,9 +76,9 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
-import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
-import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
+import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
@@ -97,11 +98,11 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardRegressionLearnerNodeModel.class);
 
     /* SettingsModels */
-    private LearnerParameterSettingsModels m_learnerParameterSettings;
+    private LearnerParameterSettingsModels2 m_learnerParameterSettings;
 
-    private DataParameterSettingsModels m_dataParameterSettings;
+    private DataParameterSettingsModels2 m_dataParameterSettings;
 
-    private LayerParameterSettingsModels m_layerParameterSettings;
+    private LayerParameterSettingsModels2 m_layerParameterSettings;
 
     /* Flag to indicate if we need to set the the column selection to its default state (all columns excluded).
      * This will be the case after the node was created and the node is not yet configured. */
@@ -121,13 +122,15 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
 
         //get column selection and create selected table
         final List<String> featureColumns = new ArrayList<>();
-        String[] featureColumnsArray =
-            m_dataParameterSettings.getFeatureColumnSelection2().applyTo(table.getSpec()).getIncludes();
+        SettingsModelColumnFilter2 featureColumnsFilter =
+            (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
+        String[] featureColumnsArray = featureColumnsFilter.applyTo(table.getSpec()).getIncludes();
         featureColumns.addAll(Lists.newArrayList(featureColumnsArray));
 
         final List<String> targetColumns = new ArrayList<>();
-        String[] targetColumnsArray =
-            m_dataParameterSettings.getTargetColumnSelection2().applyTo(table.getSpec()).getIncludes();
+        SettingsModelColumnFilter2 targetColumnsFilter =
+            (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.TARGET_COLUMN_SELECTION2);
+        String[] targetColumnsArray = targetColumnsFilter.applyTo(table.getSpec()).getIncludes();
         targetColumns.addAll(Lists.newArrayList(targetColumnsArray));
 
         final List<String> selectedColumns = new ArrayList<>();
@@ -140,7 +143,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         final BufferedDataTable selectedTable = exec.createColumnRearrangeTable(table, crr, exec);
 
         //create input iterator
-        final int batchSize = m_dataParameterSettings.getBatchSize().getIntValue();
+        final int batchSize = m_dataParameterSettings.getInteger(DataParameter.BATCH_SIZE);
 
         TableUtils.checkForEmptyTable(selectedTable);
         DataSetIterator input = new RegressionBufferedDataTableDataSetIterator(selectedTable, batchSize,
@@ -149,7 +152,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         //build multi layer net
         final List<Layer> layers = portObject.getLayers();
         final MultiLayerNetwork oldMln = portObject.getMultilayerLayerNetwork();
-        MultiLayerNetFactory mlnFactory;
+        MultiLayerNetFactory2 mlnFactory;
 
         //check if list of layers already contains output layer, happens if
         //several learners are used in sequence
@@ -165,25 +168,25 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         //TODO review this
         synchronized (logger) {
             if (isConvolutional()) {
-                final String imageSizeString = m_dataParameterSettings.getImageSize().getStringValue();
+                final String imageSizeString = m_dataParameterSettings.getString(DataParameter.IMAGE_SIZE);
                 final int[] xyc = ParameterUtils.convertIntsAsStringToInts(imageSizeString);
                 //number of channels is set to one because only two dimensional images are currently supported
-                mlnFactory = new ConvMultiLayerNetFactory(xyc[0], xyc[1], xyc[2]);
+                mlnFactory = new ConvMultiLayerNetFactory2(xyc[0], xyc[1], xyc[2]);
             } else {
-                mlnFactory = new MultiLayerNetFactory(input.inputColumns());
+                mlnFactory = new MultiLayerNetFactory2(input.inputColumns());
             }
             newMln = mlnFactory.createMultiLayerNetwork(layers, m_learnerParameterSettings);
         }
 
         //attempt to transfer weights between nets
-        final boolean useUpdater = m_learnerParameterSettings.getUseUpdater().getBooleanValue();
+        final boolean useUpdater = m_learnerParameterSettings.getBoolean(LearnerParameter.USE_UPDATER);
         transferFullInitialization(oldMln, newMln, !useUpdater);
 
         //set listener that updates the view and the score of this model
         newMln.setListeners(new UpdateLearnerViewIterationListener(this));
 
         //train the network
-        final int epochs = m_dataParameterSettings.getEpochs().getIntValue();
+        final int epochs = m_dataParameterSettings.getInteger(DataParameter.EPOCHS);
         trainNetwork(newMln, epochs, input, exec);
 
         final DLModelPortObject newPortObject = new DLModelPortObject(layers, newMln, m_outputSpec);
@@ -198,8 +201,12 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
             setDefaultColumnSelection(tableSpec);
         }
 
-        String[] featureColumns = m_dataParameterSettings.getFeatureColumnSelection2().applyTo(tableSpec).getIncludes();
-        String[] targetColumns = m_dataParameterSettings.getTargetColumnSelection2().applyTo(tableSpec).getIncludes();
+        SettingsModelColumnFilter2 featureColumnsFilter =
+            (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
+        String[] featureColumns = featureColumnsFilter.applyTo(tableSpec).getIncludes();
+        SettingsModelColumnFilter2 targetColumnsFilter =
+            (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.TARGET_COLUMN_SELECTION2);
+        String[] targetColumns = targetColumnsFilter.applyTo(tableSpec).getIncludes();
 
         final DLModelPortObjectSpec specWithoutLabels =
             (DLModelPortObjectSpec)configure(inSpecs, Lists.newArrayList(featureColumns))[0];
@@ -240,19 +247,21 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
      * @param tableSpec the corresponding spec
      */
     private void setDefaultColumnSelection(final DataTableSpec tableSpec) {
-        m_dataParameterSettings.getFeatureColumnSelection2().loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
-            @Override
-            public boolean include(final DataColumnSpec name) {
-                return false;
-            }
-        }, true);
+        ((SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.FEATURE_COLUMN_SELECTION2))
+            .loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
+                @Override
+                public boolean include(final DataColumnSpec name) {
+                    return false;
+                }
+            }, true);
 
-        m_dataParameterSettings.getTargetColumnSelection2().loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
-            @Override
-            public boolean include(final DataColumnSpec name) {
-                return false;
-            }
-        }, true);
+        ((SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.TARGET_COLUMN_SELECTION2))
+            .loadDefaults(tableSpec, new InputFilter<DataColumnSpec>() {
+                @Override
+                public boolean include(final DataColumnSpec name) {
+                    return false;
+                }
+            }, true);
     }
 
     @Override
@@ -269,14 +278,14 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
-        m_dataParameterSettings = new DataParameterSettingsModels();
+        m_dataParameterSettings = new DataParameterSettingsModels2();
         m_dataParameterSettings.setParameter(DataParameter.BATCH_SIZE);
         m_dataParameterSettings.setParameter(DataParameter.EPOCHS);
         m_dataParameterSettings.setParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
         m_dataParameterSettings.setParameter(DataParameter.TARGET_COLUMN_SELECTION2);
         m_dataParameterSettings.setParameter(DataParameter.IMAGE_SIZE);
 
-        m_learnerParameterSettings = new LearnerParameterSettingsModels();
+        m_learnerParameterSettings = new LearnerParameterSettingsModels2();
         m_learnerParameterSettings.setParameter(LearnerParameter.ADADELTA_RHO);
         m_learnerParameterSettings.setParameter(LearnerParameter.ADAM_MEAN_DECAY);
         m_learnerParameterSettings.setParameter(LearnerParameter.ADAM_VAR_DECAY);
@@ -315,7 +324,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_SEED);
         m_learnerParameterSettings.setParameter(LearnerParameter.USE_UPDATER);
 
-        m_layerParameterSettings = new LayerParameterSettingsModels();
+        m_layerParameterSettings = new LayerParameterSettingsModels2();
         m_layerParameterSettings.setParameter(LayerParameter.LOSS_FUNCTION);
         m_layerParameterSettings.setParameter(LayerParameter.WEIGHT_INIT);
         m_layerParameterSettings.setParameter(LayerParameter.LEARNING_RATE);
@@ -387,14 +396,14 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
      * @return a new output layer using the specified parameters
      * @throws InvalidSettingsException if supervised training mode but labels are not available, meaning null or empty
      */
-    private OutputLayer createOutputLayer(final LayerParameterSettingsModels settings, final int nOut)
+    private OutputLayer createOutputLayer(final LayerParameterSettingsModels2 settings, final int nOut)
         throws InvalidSettingsException {
-        final WeightInit weight = WeightInit.valueOf(settings.getWeightInit().getStringValue());
+        final WeightInit weight = WeightInit.valueOf(settings.getString(LayerParameter.WEIGHT_INIT));
         // activation function is hardcoded to identity for regression
         final String activation = DL4JActivationFunction.identity.getDL4JValue();
         final LossFunction loss =
-            DL4JLossFunction.fromToString(settings.getLossFunction().getStringValue()).getDL4JValue();
-        final double learningRate = settings.getLearningRate().getDoubleValue();
+            DL4JLossFunction.fromToString(settings.getString(LayerParameter.LOSS_FUNCTION)).getDL4JValue();
+        final double learningRate = settings.getDouble(LayerParameter.LEARNING_RATE);
 
         return new OutputLayer.Builder(loss).nOut(nOut).activation(activation).weightInit(weight)
             .learningRate(learningRate).build();

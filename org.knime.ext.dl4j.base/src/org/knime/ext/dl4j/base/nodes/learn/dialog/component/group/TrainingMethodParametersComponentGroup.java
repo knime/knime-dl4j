@@ -59,6 +59,7 @@ import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialo
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
@@ -81,7 +82,7 @@ public class TrainingMethodParametersComponentGroup extends AbstractGridBagDialo
      * @param learnerSettings
      * @param addFinetune
      */
-    public TrainingMethodParametersComponentGroup(final LearnerParameterSettingsModels learnerSettings,
+    public TrainingMethodParametersComponentGroup(final LearnerParameterSettingsModels2 learnerSettings,
         final boolean addFinetune) {
         m_trainingIterationsSettings =
             (SettingsModelNumber)learnerSettings.createParameter(LearnerParameter.TRAINING_ITERATIONS);

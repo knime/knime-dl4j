@@ -308,7 +308,9 @@ public class ConfigurationUtils {
      *
      * @param layers the list of layers to set up
      * @param numberOfInputs the number of inputs for the first layer
+     * @deprecated use 'org.deeplearning4j.nn.conf.MultiLayerConfiguration.Builder.setInputType(InputType inputType)' instead
      */
+    @Deprecated
     public static void setupLayers(final List<Layer> layers, final int numberOfInputs) {
         FeedForwardLayer ffl = null;
         if (layers.isEmpty()) {

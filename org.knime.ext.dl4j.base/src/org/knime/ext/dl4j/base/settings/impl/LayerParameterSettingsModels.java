@@ -58,6 +58,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
  *
  * @author David Kolb, KNIME.com GmbH
  */
+@Deprecated
 public class LayerParameterSettingsModels implements IParameterSettingsModels<LayerParameter> {
 
     static final int DEFAULT_INT = 1;

@@ -40,49 +40,34 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling;
+package org.knime.ext.dl4j.base.settings.impl;
 
-import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
-import org.knime.core.node.NodeLogger;
-import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.core.node.defaultnodesettings.DialogComponentString;
-import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
-import org.knime.core.node.defaultnodesettings.SettingsModelString;
-import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
-import org.knime.ext.dl4j.base.util.EnumUtils;
+import org.knime.core.node.defaultnodesettings.SettingsModel;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
 
 /**
- * <code>NodeDialog</code> for the "SubsamplingLayer" Node.
- *
- *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
- * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
+ * Implementation of {@link IParameterSettingsModels} to store and create {@link SettingsModel}s for
+ * {@link PredictorPrameter}s.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class PoolingLayerNodeDialog extends DefaultNodeSettingsPane {
+public class PredictorParameterSettingsModels2 extends AbstractMapSetParameterSettingsModels<PredictorPrameter> {
 
-    // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(PoolingLayerNodeModel.class);
+    static final boolean DEFAULT_BOOLEAN = false;
 
-    /**
-     * New pane for configuring the SubsamplingLayer node.
-     */
-    protected PoolingLayerNodeDialog() {
-        final LayerParameterSettingsModels2 dnnSettingsModels = new LayerParameterSettingsModels2();
-
-        try {
-            addDialogComponent(new DialogComponentStringSelection(
-                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.POOLING_TYPE), "Pooling Type",
-                EnumUtils.getStringCollectionFromToString(SubsamplingLayer.PoolingType.values())));
-            addDialogComponent(new DialogComponentString(
-                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.KERNEL_SIZE), "Kernel Size"));
-            addDialogComponent(new DialogComponentString(
-                (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.STRIDE), "Stride"));
-        } catch (final IllegalStateException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+    @Override
+    public SettingsModel createParameter(final PredictorPrameter enumerate) throws IllegalArgumentException {
+        switch (enumerate) {
+            case APPEND_PREDICTION:
+                return new SettingsModelBoolean("append_prediction", DEFAULT_BOOLEAN);
+            case PREDICT_STEPS:
+                return new SettingsModelBoolean("predict_steps", DEFAULT_BOOLEAN);
+            case APPEND_SCORE:
+                return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
+            default:
+                throw new IllegalArgumentException("No case defined for Predictor Parameter: " + enumerate);
         }
     }
 }

@@ -51,7 +51,6 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 
 /**
@@ -81,7 +80,7 @@ public abstract class AbstractDLLayerNodeModel extends AbstractDLNodeModel {
      * @throws InvalidSettingsException
      */
     protected DLModelPortObjectSpec[] configure(final PortObjectSpec[] inSpecs, final List<DNNType> dnnTypes,
-        final DNNLayerType dnnLayerType, final LayerParameterSettingsModels parameterSettings, final NodeLogger logger)
+        final DNNLayerType dnnLayerType, final NodeLogger logger)
             throws InvalidSettingsException {
         final DLModelPortObjectSpec spec = (DLModelPortObjectSpec)inSpecs[0];
 

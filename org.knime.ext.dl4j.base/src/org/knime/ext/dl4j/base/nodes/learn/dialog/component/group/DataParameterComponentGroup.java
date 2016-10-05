@@ -53,6 +53,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing data parameter.
@@ -74,7 +75,7 @@ public class DataParameterComponentGroup extends AbstractGridBagDialogComponentG
      * @param dataSettings
      * @param addImageSize
      */
-    public DataParameterComponentGroup(final DataParameterSettingsModels dataSettings, final boolean addImageSize) {
+    public DataParameterComponentGroup(final DataParameterSettingsModels2 dataSettings, final boolean addImageSize) {
 
         m_batchSizeSettings = (SettingsModelNumber)dataSettings.createParameter(DataParameter.BATCH_SIZE);
         m_epochsSettings = (SettingsModelNumber)dataSettings.createParameter(DataParameter.EPOCHS);

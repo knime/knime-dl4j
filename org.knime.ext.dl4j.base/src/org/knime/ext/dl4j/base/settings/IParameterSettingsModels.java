@@ -66,7 +66,8 @@ public interface IParameterSettingsModels<E extends Enum<?>> {
     SettingsModel createParameter(E enumerate) throws IllegalArgumentException;
 
     /**
-     * Sets the member corresponding to the passed enum.
+     * Saves the {@link SettingsModel} corresponding to the specified enum in the underlying storage. The same
+     * {@link SettingsModel} needs to be retrievable using the same enum as identifier.
      *
      * @param enumerate the enum corresponding to the parameter to set
      * @throws IllegalArgumentException

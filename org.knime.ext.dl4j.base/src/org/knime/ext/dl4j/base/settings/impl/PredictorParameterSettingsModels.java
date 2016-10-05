@@ -56,6 +56,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
  *
  * @author David Kolb, KNIME.com GmbH
  */
+@Deprecated
 public class PredictorParameterSettingsModels implements IParameterSettingsModels<PredictorPrameter> {
 
     static final boolean DEFAULT_BOOLEAN = false;

@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.learn.dialog.component.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * Implementation of a AbstractGridBagDialogComponentGroup containing drop out parameter.
@@ -79,7 +80,7 @@ public class DropOutParameterComponentGroup extends AbstractGridBagDialogCompone
      *
      * @param learnerSettings
      */
-    public DropOutParameterComponentGroup(final LearnerParameterSettingsModels learnerSettings) {
+    public DropOutParameterComponentGroup(final LearnerParameterSettingsModels2 learnerSettings) {
         m_useGlobalDropOutRateSettings =
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_GLOBAL_DROP_OUT);
         m_globalDropOutRateSettings =

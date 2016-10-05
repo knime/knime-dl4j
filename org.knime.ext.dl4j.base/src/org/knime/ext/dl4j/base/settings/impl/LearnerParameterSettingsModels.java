@@ -60,6 +60,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
  *
  * @author David Kolb, KNIME.com GmbH
  */
+@Deprecated
 public class LearnerParameterSettingsModels implements IParameterSettingsModels<LearnerParameter> {
 
     private SettingsModelString m_distribution;

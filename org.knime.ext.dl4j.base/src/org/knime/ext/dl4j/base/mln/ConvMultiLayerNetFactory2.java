@@ -46,9 +46,10 @@ import java.util.List;
 
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.Layer;
-import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
  * Factory class for creating {@link MultiLayerNetwork}s specific for convolutional networks. Uses additional
@@ -56,8 +57,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
  *
  * @author David Kolb, KNIME.com GmbH
  */
-@Deprecated
-public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
+public class ConvMultiLayerNetFactory2 extends MultiLayerNetFactory2 {
 
     /** Image height in pixel. */
     private int m_height;
@@ -76,7 +76,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
      * @param width the width of expected images in pixel
      * @param channels the number of channels of expected images
      */
-    public ConvMultiLayerNetFactory(final int height, final int width, final int channels) {
+    public ConvMultiLayerNetFactory2(final int height, final int width, final int channels) {
         super(0);
         m_channels = channels;
         m_height = height;
@@ -84,9 +84,11 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
     }
 
     @Override
-    protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
-        final NeuralNetConfiguration.ListBuilder listBuilder = createListBuilderWithLearnerParameters(layers);
-        listBuilder.cnnInputSize(m_height, m_width, m_channels);
+    protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers,
+        final LearnerParameterSettingsModels2 learnerParameters) {
+        final NeuralNetConfiguration.ListBuilder listBuilder =
+            createListBuilderWithLearnerParameters(layers, learnerParameters);
+        listBuilder.setInputType(InputType.convolutionalFlat(m_height, m_width, m_channels));
 
         final MultiLayerConfiguration layerConf = listBuilder.build();
         final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
@@ -97,13 +99,13 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
     @Override
     protected MultiLayerNetwork createMlnWithoutLearnerParameters(final List<Layer> layers) {
         final NeuralNetConfiguration.ListBuilder listBuilder = new NeuralNetConfiguration.Builder().list();
+        listBuilder.setInputType(InputType.convolutionalFlat(m_height, m_width, m_channels));
+
         int currentLayerIndex = 0;
         for (final Layer layer : layers) {
             listBuilder.layer(currentLayerIndex, layer);
             currentLayerIndex++;
         }
-
-        new ConvolutionLayerSetup(listBuilder, m_height, m_width, m_channels);
 
         final MultiLayerConfiguration layerConf = listBuilder.build();
         final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
