@@ -411,6 +411,6 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
     }
 
     public List<HistoryEntry> getHistory() {
-        return m_history;
+        return new ArrayList<>(m_history);
     }
 }
