@@ -113,7 +113,7 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
                 LOGGER.error("CUDA seems not to be installed on the system!", e);
                 backendType = BackendType.CPU;
             } catch (UnsupportedCudaVersionException e) {
-                LOGGER.error("No campatible CUDA version seems to be installed on the system! Supported versions are: "
+                LOGGER.error("No compatible CUDA version seems to be installed on the system! Supported versions are: "
                     + BackendType.GPU_CUDA7_5.toString() + " and " + BackendType.GPU_CUDA8_0.toString(), e);
                 backendType = BackendType.CPU;
             }
@@ -131,6 +131,8 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         final FragmentClasspath[] frags = (FragmentClasspath[])f.get(manager);
         final FragmentClasspath fragmentOverwrite = findBackendFragment(frags, backendType);
         if (fragmentOverwrite != null) {
+            LOGGER.debug("The following backend fragment will be used: "
+                + fragmentOverwrite.getGeneration().getBundleFile().getBaseFile().getName());
             f.set(manager, new FragmentClasspath[]{fragmentOverwrite});
         } else {
             throw new Exception("Backend Fragment for: " + backendType + " could not be found.");
@@ -168,6 +170,7 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         for (final FragmentClasspath fcp : frags) {
             final String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
             if (fragmentFileName.matches(regex)) {
+                LOGGER.debug(fragmentFileName + " matches " + regex);
                 return fcp;
             } else {
                 LOGGER.debug(fragmentFileName + " does not match " + regex);
@@ -189,5 +192,4 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
     public static DL4JPluginActivator getDefault() {
         return plugin;
     }
-
 }

@@ -98,7 +98,7 @@ public class CudaVersionChecker {
             nvcc.waitFor(10, TimeUnit.SECONDS);
 
             List<String> nvccOut = getLines(nvcc.getInputStream());
-            LOGGER.debug(toString(nvccOut.toArray(new String[nvccOut.size()]), "\n"));
+            LOGGER.debug(toString(nvccOut.toArray(new String[nvccOut.size()]), " "));
 
             return parseNVCCOut(nvccOut);
         } catch (IOException | InterruptedException e) {
@@ -126,7 +126,7 @@ public class CudaVersionChecker {
                 return BackendType.GPU_CUDA8_0;
             }
         }
-        LOGGER.debug("No cuda regex matches '" + NVCC_COMMAND + "' output.");
+        LOGGER.debug("No cuda regex matches '" + NVCC_COMMAND[0] + " " + NVCC_COMMAND[1] + "' output.");
         throw new UnsupportedCudaVersionException("No compatible Cuda Version was found!");
     }
 
@@ -147,7 +147,7 @@ public class CudaVersionChecker {
         int i = 0;
         for (String string : strings) {
             s += string;
-            if (i == string.length()) {
+            if (i != strings.length - 1) {
                 s += delim;
             }
             i++;
