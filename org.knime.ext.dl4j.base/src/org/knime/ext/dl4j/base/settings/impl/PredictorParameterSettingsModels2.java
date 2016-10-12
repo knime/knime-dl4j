@@ -44,6 +44,7 @@ package org.knime.ext.dl4j.base.settings.impl;
 
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
 
@@ -66,6 +67,18 @@ public class PredictorParameterSettingsModels2 extends AbstractMapSetParameterSe
                 return new SettingsModelBoolean("predict_steps", DEFAULT_BOOLEAN);
             case APPEND_SCORE:
                 return new SettingsModelBoolean("append_score", DEFAULT_BOOLEAN);
+            case APPEND_PROBABILITY:
+                return new SettingsModelBoolean("append_probability", DEFAULT_BOOLEAN);
+            case CHANGE_PREDICTION_COLUMN_NAME:
+                return new SettingsModelBoolean("change_prediction_column_name", DEFAULT_BOOLEAN);
+            case NEW_PREDICTION_COLUMN_NAME:
+                return new SettingsModelString("new_prediction_column_name", "");
+            case PROBABILITY_COLUMN_SUFFIX:
+                return new SettingsModelString("probability_column_suffix", "");
+            case PREDICTION_COLUMN_SUFFIX:
+                return new SettingsModelString("prediction_column_suffix", "");
+            case LAYER_SELECTION:
+                return new SettingsModelString("layer_to_activate", "");
             default:
                 throw new IllegalArgumentException("No case defined for Predictor Parameter: " + enumerate);
         }

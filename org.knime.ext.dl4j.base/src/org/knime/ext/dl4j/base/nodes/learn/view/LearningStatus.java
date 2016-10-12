@@ -40,59 +40,73 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.predict.feedforward;
-
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
-import org.knime.core.node.NodeView;
+package org.knime.ext.dl4j.base.nodes.learn.view;
 
 /**
- * <code>NodeFactory</code> for the "DL4JPredictor" Node.
+ * Storage class for learning status information.
  *
- * @author KNIME
+ * @author David Kolb, KNIME.com GmbH
  */
-@Deprecated
-public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class LearningStatus {
+    private final int m_currentEpoch;
+
+    private final int m_maxEpochs;
+
+    private final String m_trainingMethod;
+
+    private final Double m_score;
 
     /**
-     * {@inheritDoc}
+     * Constructor for class LearningStatus specifying the status which should be stored.
+     *
+     * @param currentEpoch the current epoch number
+     * @param maxEpochs the maximum number of epochs
+     * @param score the current score
+     * @param trainingMethod string describing training method
      */
-    @Override
-    public FeedforwardPredictorNodeModel createNodeModel() {
-        return new FeedforwardPredictorNodeModel();
+    public LearningStatus(final int currentEpoch, final int maxEpochs, final Double score,
+        final String trainingMethod) {
+        m_currentEpoch = currentEpoch;
+        m_maxEpochs = maxEpochs;
+        m_score = score;
+        m_trainingMethod = trainingMethod;
+    }
+
+    public int getCurrentEpoch() {
+        return m_currentEpoch;
+    }
+
+    public int getMaxEpochs() {
+        return m_maxEpochs;
+    }
+
+    public String getTrainingsMethod() {
+        return m_trainingMethod;
+    }
+
+    public Double getScore() {
+        return m_score;
     }
 
     /**
-     * {@inheritDoc}
+     * Creates string description of this learning status containing training method, current epoch, maximum number of
+     * epochs and current score.
+     *
+     * @return description of this learning status
      */
-    @Override
-    public int getNrNodeViews() {
-        return 0;
+    public String getStatusDescription() {
+        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of " + m_maxEpochs + " epochs with score: "
+            + m_score;
     }
 
     /**
-     * {@inheritDoc}
+     * Creates string description of the current epoch status containing what training method is used and how many
+     * epochs there are to go.
+     *
+     * @return description of this epoch status
      */
-    @Override
-    public NodeView<FeedforwardPredictorNodeModel> createNodeView(final int viewIndex,
-        final FeedforwardPredictorNodeModel nodeModel) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasDialog() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeDialogPane createNodeDialogPane() {
-        return new FeedforwardPredictorNodeDialog();
+    public String getEpochDescription() {
+        return m_trainingMethod + " on epoch: " + m_currentEpoch + " of " + m_maxEpochs + " epochs";
     }
 
 }

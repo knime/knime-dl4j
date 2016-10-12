@@ -57,6 +57,7 @@ import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels;
  *
  * @author David Kolb, KNIME.com GmbH
  */
+@Deprecated
 public class FeedforwardPredictorNodeDialog extends DefaultNodeSettingsPane {
 
     /**

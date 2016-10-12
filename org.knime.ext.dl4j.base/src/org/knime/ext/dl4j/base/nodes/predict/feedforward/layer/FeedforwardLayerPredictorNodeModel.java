@@ -40,29 +40,25 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.predict.feedforward;
+package org.knime.ext.dl4j.base.nodes.predict.feedforward.layer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.knime.base.data.filter.column.FilterColumnTable;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataType;
-import org.knime.core.data.MissingCell;
-import org.knime.core.data.collection.CollectionCellFactory;
-import org.knime.core.data.collection.ListCell;
 import org.knime.core.data.container.CloseableRowIterator;
+import org.knime.core.data.container.ColumnRearranger;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.data.def.DoubleCell;
-import org.knime.core.data.def.StringCell;
+import org.knime.core.data.vector.doublevector.DenseDoubleVectorCell;
 import org.knime.core.node.BufferedDataContainer;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
@@ -72,8 +68,7 @@ import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.ClassificationBufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.nodes.predict.AbstractDLPredictorNodeModel;
 import org.knime.ext.dl4j.base.settings.enumerate.PredictorPrameter;
-import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
-import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels;
+import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.NDArrayUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
@@ -82,122 +77,108 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 /**
- * Predictor for feedforward networks of Deeplearning4J integration.
+ * Layer predictor for feedforward networks of Deeplearning4J integration.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-@Deprecated
-public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel {
-
-    // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardPredictorNodeModel.class);
+public class FeedforwardLayerPredictorNodeModel extends AbstractDLPredictorNodeModel {
 
     /* SettingsModels */
-    private PredictorParameterSettingsModels m_predictorParameter;
+    private PredictorParameterSettingsModels2 m_predictorParameter;
 
     private DataTableSpec m_outputSpec;
 
     /**
      * Constructor for the node model.
      */
-    protected FeedforwardPredictorNodeModel() {
+    protected FeedforwardLayerPredictorNodeModel() {
         super(new PortType[]{DLModelPortObject.TYPE, BufferedDataTable.TYPE}, new PortType[]{BufferedDataTable.TYPE});
     }
 
     @Override
     protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
-        final DLModelPortObject port = (DLModelPortObject)inObjects[0];
-        final DLModelPortObjectSpec portSpec = (DLModelPortObjectSpec)port.getSpec();
+        final DLModelPortObject model = (DLModelPortObject)inObjects[0];
+        final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)model.getSpec();
         final BufferedDataTable table = (BufferedDataTable)inObjects[1];
+        final DataTableSpec tableSpec = table.getDataTableSpec();
 
         //select feature columns from table used for prediction
-        final String[] predictCols = DLModelPortObjectUtils.getFirsts(portSpec.getLearnedColumns(), String.class);
-        final BufferedDataTable filteredTable =
-            exec.createBufferedDataTable(new FilterColumnTable(table, predictCols), exec);
+        final String[] predictCols = DLModelPortObjectUtils.getFirsts(modelSpec.getLearnedColumns(), String.class);
+        ColumnRearranger crr = new ColumnRearranger(tableSpec);
+        crr.keepOnly(predictCols);
+        final BufferedDataTable filteredTable = exec.createColumnRearrangeTable(table, crr, exec);
+
+        try {
+            TableUtils.checkForEmptyTable(filteredTable);
+        } catch (IllegalStateException e) {
+            return createEmptyTable(exec, m_outputSpec);
+        }
 
         //create iterator and prediction
-        TableUtils.checkForEmptyTable(filteredTable);
         final DataSetIterator input = new ClassificationBufferedDataTableDataSetIterator(filteredTable, 1);
-        final MultiLayerNetwork mln = port.getMultilayerLayerNetwork();
-
-        //set flag if last layer activation is softmax
-        final boolean outputActivationIsSoftmax = isOutActivation(port.getLayers(), DL4JActivationFunction.softmax);
-
-        final boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
-        final boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
-        final List<String> labels = portSpec.getLabels();
+        final MultiLayerNetwork mln = model.getMultilayerLayerNetwork();
 
         //write output to table
         final BufferedDataContainer container = exec.createDataContainer(m_outputSpec);
-        final CloseableRowIterator tabelIter = table.iterator();
+        final CloseableRowIterator tableIter = table.iterator();
 
         int i = 0;
-        while (tabelIter.hasNext()) {
+        while (tableIter.hasNext()) {
             exec.setProgress((double)(i + 1) / (double)(table.size()));
             exec.checkCanceled();
 
-            final DataRow row = tabelIter.next();
+            final DataRow row = tableIter.next();
             final List<DataCell> cells = TableUtils.toListOfCells(row);
 
             final DataSet next = input.next();
-            final INDArray prediction = predict(mln, next.getFeatureMatrix());
+            final int layerToActivate = getLayerNumFromDialogSelection();
+            final INDArray activation = activate(mln, layerToActivate, next.getFeatureMatrix());
 
-            final ListCell outputVector =
-                CollectionCellFactory.createListCell(NDArrayUtils.toListOfDoubleCells(prediction));
+            final DenseDoubleVectorCell outputVector = NDArrayUtils.toDoubleVector(activation);
             cells.add(outputVector);
-            if (appendScore) {
-                final double score = mln.score(new DataSet(next.getFeatureMatrix(), prediction), false);
-                cells.add(new DoubleCell(score));
-            }
-            if (appendPrediction && outputActivationIsSoftmax && containsLabels()) {
-                final String winningLabel = NDArrayUtils.softmaxActivationToLabel(labels, prediction);
-                cells.add(new StringCell(winningLabel));
-            } else if (appendPrediction && containsLabels()) {
-                cells.add(new MissingCell("Output Layer activation is not softmax"));
-            } else if (appendPrediction && !containsLabels()) {
-                cells.add(new MissingCell("Model contains no labels"));
-            }
 
             container.addRowToTable(new DefaultRow(row.getKey(), cells));
             i++;
         }
-        if (appendPrediction && !outputActivationIsSoftmax) {
-            logger.warn("Output Layer activation is not softmax. Label prediction column will be empty.");
-        }
-        if (appendPrediction && outputActivationIsSoftmax && !containsLabels()) {
-            logger
-                .warn("Model contains no labels. May be trained unsupervised. Label prediction column will be empty.");
-        }
 
+        tableIter.close();
         container.close();
-        final BufferedDataTable outputTable = container.getTable();
 
-        return new PortObject[]{outputTable};
+        return new PortObject[]{container.getTable()};
+    }
+
+    /**
+     * Determines the index of the layer from the String selected in the dialog. Is expected to be in the format
+     * 'layerNum':'layerName'
+     *
+     * @return the index of the layer selected in the dialog
+     */
+    private int getLayerNumFromDialogSelection() {
+        String layerSelection = m_predictorParameter.getString(PredictorPrameter.LAYER_SELECTION);
+        return Integer.parseInt(layerSelection.split(":")[0]);
     }
 
     @Override
     protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         super.configure(inSpecs);
-        m_outputSpec = (DataTableSpec)inSpecs[1];
-        m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "output_activations",
-            DataType.getType(ListCell.class, DoubleCell.TYPE));
+        DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
-        final boolean appendScore = m_predictorParameter.getAppendScore().getBooleanValue();
-        if (appendScore) {
-            m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "error", DataType.getType(DoubleCell.class));
+        String layerToActivate = m_predictorParameter.getString(PredictorPrameter.LAYER_SELECTION);
+        if (layerToActivate.isEmpty()) {
+            throw new InvalidSettingsException("Plese select layer to activate!");
         }
-        final boolean appendPrediction = m_predictorParameter.getAppendPrediction().getBooleanValue();
-        if (appendPrediction) {
-            m_outputSpec = TableUtils.appendColumnSpec(m_outputSpec, "prediction", DataType.getType(StringCell.class));
-        }
+
+        tableSpec = TableUtils.appendColumnSpec(tableSpec, "Activations Layer " + layerToActivate,
+            DataType.getType(DenseDoubleVectorCell.class, DoubleCell.TYPE));
+
+        m_outputSpec = tableSpec;
         return new DataTableSpec[]{m_outputSpec};
     }
 
     @Override
     protected List<SettingsModel> initSettingsModels() {
-        m_predictorParameter = new PredictorParameterSettingsModels();
-        m_predictorParameter.setParameter(PredictorPrameter.APPEND_PREDICTION);
-        m_predictorParameter.setParameter(PredictorPrameter.APPEND_SCORE);
+        m_predictorParameter = new PredictorParameterSettingsModels2();
+        m_predictorParameter.setParameter(PredictorPrameter.LAYER_SELECTION);
 
         final List<SettingsModel> settings = new ArrayList<>();
         settings.addAll(m_predictorParameter.getAllInitializedSettings());

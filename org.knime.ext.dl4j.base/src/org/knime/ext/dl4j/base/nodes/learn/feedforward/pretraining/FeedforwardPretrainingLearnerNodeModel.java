@@ -95,6 +95,11 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
     // the logger instance
     private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardPretrainingLearnerNodeModel.class);
 
+    /**
+     * String identifying this type of learner.
+     */
+    public static final String LEARNER_TYPE = "feedforward_layer";
+
     /* SettingsModels */
     private LearnerParameterSettingsModels2 m_learnerParameterSettings;
 
@@ -174,7 +179,7 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
         final DataTableSpec tableSpec = (DataTableSpec)inSpecs[1];
 
         SettingsModelColumnFilter2 featureColumnsFilter =
-                (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
+            (SettingsModelColumnFilter2)m_dataParameterSettings.getParameter(DataParameter.FEATURE_COLUMN_SELECTION2);
         String[] includes = featureColumnsFilter.applyTo(tableSpec).getIncludes();
 
         final DLModelPortObjectSpec specWithoutLabels =
@@ -198,7 +203,8 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
 
         //create new spec and set labels
         m_outputSpec = new DLModelPortObjectSpec(specWithoutLabels.getNeuralNetworkTypes(), newLayerTypes,
-            specWithoutLabels.getLearnedColumns(), specWithoutLabels.getLabels(), specWithoutLabels.isTrained());
+            specWithoutLabels.getLearnedColumns(), specWithoutLabels.getLabels(), new ArrayList<String>(), LEARNER_TYPE,
+            specWithoutLabels.isTrained());
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
     }

@@ -43,6 +43,7 @@
 package org.knime.ext.dl4j.base.nodes.learn.feedforward.classification;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
@@ -96,6 +97,11 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
 
     // the logger instance
     private static final NodeLogger logger = NodeLogger.getLogger(FeedforwardClassificationLearnerNodeModel.class);
+
+    /**
+     * String identifying this type of learner.
+     */
+    public static final String LEARNER_TYPE = "feedforward_classification";
 
     /* SettingsModels */
     private LearnerParameterSettingsModels2 m_learnerParameterSettings;
@@ -231,7 +237,8 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
 
         //create new spec and set labels
         m_outputSpec = new DLModelPortObjectSpec(specWithoutLabels.getNeuralNetworkTypes(), newLayerTypes,
-            specWithoutLabels.getLearnedColumns(), m_labels, specWithoutLabels.isTrained());
+            specWithoutLabels.getLearnedColumns(), m_labels, Arrays.asList(labelColumnName), LEARNER_TYPE,
+            specWithoutLabels.isTrained());
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
     }

@@ -19,10 +19,16 @@
 <node category-path="/labs/deeplearning/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.convolution.ConvolutionLayerNodeFactory"/>
-<node category-path="/labs/deeplearning/deprecated" factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
+<node
+      category-path="/labs/deeplearning/deprecated"
+      deprecated="true"
+      factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
 <node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
 <node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
-<node category-path="/labs/deeplearning/predict" factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.FeedforwardPredictorNodeFactory"/>
+<node
+      category-path="/labs/deeplearning/predict"
+      deprecated="true"
+      factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.FeedforwardPredictorNodeFactory"/>
 <node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.lrn.LRNLayerNodeFactory"/>
 <node
       category-path="/labs/deeplearning/layer/encoder"
@@ -42,6 +48,21 @@
       category-path="/labs/deeplearning/learn/unsupervised"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining.FeedforwardPretrainingLearnerNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/predict"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.classification.FeedforwardClassificationPredictorNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/predict"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.regression.FeedforwardRegressionPredictorNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/predict"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.layer.FeedforwardLayerPredictorNodeFactory">
 </node>
 </extension>
    <extension point="org.knime.core.PortType">

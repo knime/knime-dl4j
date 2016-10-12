@@ -40,59 +40,25 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.predict.feedforward;
+package org.knime.ext.dl4j.base.nodes.predict.feedforward.layer;
 
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
-import org.knime.core.node.NodeView;
+import org.knime.ext.dl4j.base.nodes.dialog.DefaultDLNodeDialogPane;
+import org.knime.ext.dl4j.base.nodes.predict.dialog.LayerSelectionComponentGroup;
+import org.knime.ext.dl4j.base.settings.impl.PredictorParameterSettingsModels2;
 
 /**
- * <code>NodeFactory</code> for the "DL4JPredictor" Node.
- *
- * @author KNIME
+ * @author David Kolb, KNIME.com GmbH
  */
-@Deprecated
-public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class FeedforwardLayerPredictorNodeDialog extends DefaultDLNodeDialogPane {
 
     /**
-     * {@inheritDoc}
+     *
      */
-    @Override
-    public FeedforwardPredictorNodeModel createNodeModel() {
-        return new FeedforwardPredictorNodeModel();
-    }
+    public FeedforwardLayerPredictorNodeDialog() {
+        final PredictorParameterSettingsModels2 predictorSettings = new PredictorParameterSettingsModels2();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getNrNodeViews() {
-        return 0;
+        setDefaultTabTitle("Predictor Settings");
+        LayerSelectionComponentGroup columnNameComp = new LayerSelectionComponentGroup(predictorSettings, 0);
+        addDialogComponentGroupWithBorder(columnNameComp, "Layer to activate");
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeView<FeedforwardPredictorNodeModel> createNodeView(final int viewIndex,
-        final FeedforwardPredictorNodeModel nodeModel) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasDialog() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeDialogPane createNodeDialogPane() {
-        return new FeedforwardPredictorNodeDialog();
-    }
-
 }

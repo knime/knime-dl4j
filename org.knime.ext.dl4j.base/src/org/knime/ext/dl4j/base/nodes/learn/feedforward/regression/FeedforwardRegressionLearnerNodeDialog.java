@@ -43,19 +43,19 @@
 package org.knime.ext.dl4j.base.nodes.learn.feedforward.regression;
 
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.DefaultLearnerNodeDialogPane;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.BiasParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.DataParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.DropOutParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.GradientNormalizationParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.LearningRateParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.OutputLayerParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.RegressionColumnSelectionComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.RegularizationParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.SeedParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.TrainingMethodParametersComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.UpdaterParameterComponentGroup;
-import org.knime.ext.dl4j.base.nodes.learn.dialog.component.group.WeightInitParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.dialog.DefaultDLNodeDialogPane;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.BiasParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.DataParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.DropOutParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.GradientNormalizationParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.LearningRateParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.OutputLayerParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.RegressionColumnSelectionComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.RegularizationParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.SeedParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.TrainingMethodParametersComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.UpdaterParameterComponentGroup;
+import org.knime.ext.dl4j.base.nodes.learn.dialog.WeightInitParameterComponentGroup;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
@@ -69,7 +69,7 @@ import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class FeedforwardRegressionLearnerNodeDialog extends DefaultLearnerNodeDialogPane {
+public class FeedforwardRegressionLearnerNodeDialog extends DefaultDLNodeDialogPane {
 
     /**
      * New pane for configuring the DL4JLearner node.

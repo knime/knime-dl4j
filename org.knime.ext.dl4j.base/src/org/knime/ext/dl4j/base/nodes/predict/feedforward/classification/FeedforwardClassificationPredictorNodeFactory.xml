@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./predict.png" type="Predictor"
+	xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+	<name>DL4J Feedforward Predictor (Classification)</name>
+
+	<shortDescription>
+		Predictor for Feedforward Deep Learning Models.
+	</shortDescription>
+
+	<fullDescription>
+		<intro>This node creates a classification prediction using the supplied
+			network and test data. The node is intended to be
+			used with the DL4J Feedforward Learner (Classification) node. The
+			output is a column containing the predicted class value for each
+			example in the input table. If specified, additional columns
+			containing the the probability for each class value will be appended.
+		</intro>
+
+		<option name="Change prediction column name?">
+			Whether to change the name of the prediction
+			column. If so enter the new
+			name into the text box.
+		</option>
+		<option name="Append columns with class probabilities?">
+			Whether to append columns containing probabilities
+			for each individual class
+			value.
+		</option>
+		<option name="Probability Column Suffix">
+			Suffix for the probability columns. Their names
+			are like: P(trainingColumn=value).
+		</option>
+	</fullDescription>
+
+	<ports>
+		<inPort index="0" name="Deep Learning Model">Classification Deep Learning Model.</inPort>
+		<inPort index="1" name="Data Table">Data table containing testing data.
+		</inPort>
+
+		<outPort index="0" name="Data Table">Input data with prediction columns.
+		</outPort>
+	</ports>
+</knimeNode>

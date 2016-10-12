@@ -71,9 +71,13 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     private static final String CFGKEY_ISTRAINED = "IsTrained";
 
-    private static final String CFGKEY_COLUMNTYPES = "FeatureColumsTypes";
+    private static final String CFGKEY_FEATURECOLUMNTYPES = "FeatureColumsTypes";
 
-    private static final String CFGKEY_COLUMNNAMES = "FeatureColumsNames";
+    private static final String CFGKEY_TARGETCOLUMNNAMES = "TargetColumNames";
+
+    private static final String CFGKEY_FEATURECOLUMNNAMES = "FeatureColumsNames";
+
+    private static final String CFGKEY_LEARNERTYPE = "LearnerType";
 
     private static final String CFGKEY_LABELS = "Labels";
 
@@ -81,11 +85,15 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     private List<DNNLayerType> m_layerTypes;
 
+    private List<String> m_targetColumnNames;
+
     private boolean m_isTrained;
 
     private List<Pair<String, String>> m_featureColumns;
 
     private List<String> m_labels;
+
+    private String m_learnerType;
 
     /**
      * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}.
@@ -99,18 +107,36 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      *
      * @param types the list of possible network types for this deep learning model
      * @param layerTypeList the list of layer types contained in this deep learning model
-     * @param featureColumns the list columns used for training
+     * @param featureColumns the list of columns used for training
      * @param labels the list of possible labels
+     * @param targetColumnNames the list of target column names
      * @param isTrained whether the model is trained or not
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
-        final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
+        final List<Pair<String, String>> featureColumns, final List<String> labels,
+        final List<String> targetColumnNames, final String learnerType, final boolean isTrained) {
         this.m_netTypes = types;
         this.m_layerTypes = layerTypeList;
         this.m_isTrained = isTrained;
         this.m_featureColumns = featureColumns;
         this.m_labels = labels;
+        this.m_targetColumnNames = targetColumnNames;
+        this.m_learnerType = learnerType;
+    }
 
+    /**
+     * Constructor for class DLModelPortObjectSpec. Equal to calling
+     * <code>DLModelPortObjectSpec(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained);</code>
+     *
+     * @param types the list of possible network types for this deep learning model
+     * @param layerTypeList the list of layer types contained in this deep learning model
+     * @param featureColumns the list of columns used for training
+     * @param labels the list of possible labels
+     * @param isTrained whether the model is trained or not
+     */
+    public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
+        final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
+        this(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained);
     }
 
     /**
@@ -133,11 +159,17 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
         model.addBoolean(CFGKEY_ISTRAINED, m_isTrained);
 
-        model.addStringArray(CFGKEY_COLUMNTYPES, DLModelPortObjectUtils.getSeconds(m_featureColumns, String.class));
-        model.addStringArray(CFGKEY_COLUMNNAMES, DLModelPortObjectUtils.getFirsts(m_featureColumns, String.class));
+        model.addStringArray(CFGKEY_FEATURECOLUMNTYPES,
+            DLModelPortObjectUtils.getSeconds(m_featureColumns, String.class));
+        model.addStringArray(CFGKEY_FEATURECOLUMNNAMES,
+            DLModelPortObjectUtils.getFirsts(m_featureColumns, String.class));
 
         model.addStringArray(CFGKEY_LABELS, m_labels.toArray(new String[m_labels.size()]));
 
+        model.addStringArray(CFGKEY_TARGETCOLUMNNAMES,
+            m_targetColumnNames.toArray(new String[m_targetColumnNames.size()]));
+
+        model.addString(CFGKEY_LEARNERTYPE, m_learnerType);
     }
 
     @Override
@@ -150,8 +182,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
         m_labels = labels;
 
         //load learned columns types and names
-        final String[] columnNames = model.getStringArray(CFGKEY_COLUMNNAMES);
-        final String[] columnTypes = model.getStringArray(CFGKEY_COLUMNTYPES);
+        final String[] columnNames = model.getStringArray(CFGKEY_FEATURECOLUMNNAMES);
+        final String[] columnTypes = model.getStringArray(CFGKEY_FEATURECOLUMNTYPES);
         final List<Pair<String, String>> namesAndTypes = new ArrayList<>();
         for (int i = 0; i < columnNames.length; i++) {
             namesAndTypes.add(new Pair<String, String>(columnNames[i], columnTypes[i]));
@@ -174,6 +206,18 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
         //load isTrained flag
         m_isTrained = model.getBoolean(CFGKEY_ISTRAINED);
+
+        final List<String> targetColumnNames = new ArrayList<>();
+        for (final String colName : model.getStringArray(CFGKEY_TARGETCOLUMNNAMES, new String[]{})) {
+            targetColumnNames.add(colName);
+        }
+        m_targetColumnNames = targetColumnNames;
+
+        m_learnerType = model.getString(CFGKEY_LEARNERTYPE, "");
+    }
+
+    public List<String> getTargetColumnNames() {
+        return m_targetColumnNames;
     }
 
     public List<DNNType> getNeuralNetworkTypes() {
@@ -194,5 +238,9 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     public List<String> getLabels() {
         return m_labels;
+    }
+
+    public String getLearnerType() {
+        return m_learnerType;
     }
 }

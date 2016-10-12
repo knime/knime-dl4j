@@ -69,9 +69,6 @@ import javax.swing.text.DefaultCaret;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeView;
 import org.knime.ext.dl4j.base.nodes.learn.AbstractDLLearnerNodeModel;
-import org.knime.ext.dl4j.base.nodes.learn.HistoryEntry;
-import org.knime.ext.dl4j.base.nodes.learn.LearningMonitor;
-import org.knime.ext.dl4j.base.nodes.learn.LearningStatus;
 
 /**
  * Simple node view for learner nodes which extend {@link AbstractDLLearnerNodeModel}. The view displays some

@@ -49,16 +49,25 @@ package org.knime.ext.dl4j.base.nodes.layer;
  */
 public enum DNNLayerType {
         /** restricted boltzmann machine layer */
-    RBM_LAYER, /** fully connected layer */
-    DENSE_LAYER, /** convolution layer */
-    CONVOLUTION_LAYER, /** subsampling or pooling layer */
-    SUBSAMPLING_LAYER, /**
-                        * output layer, typically used with softmax activation to produce class probabilities
-                        */
-    OUTPUT_LAYER, /** local response normalization layer */
-    LOCAL_RESPONSE_NORMALIZATION, /** graves long short term memory layer */
-    GRAVES_LSTM, /** recurrent output layer */
-    RNN_OUTPUT_LAYER, /** gated recurrent unit */
-    GRU, /** denoising autoencoder */
-    AUTOENCODER
+        RBM_LAYER,
+        /** fully connected layer */
+        DENSE_LAYER,
+        /** convolution layer */
+        CONVOLUTION_LAYER,
+        /** subsampling or pooling layer */
+        SUBSAMPLING_LAYER,
+        /**
+         * output layer, typically used with softmax activation to produce class probabilities
+         */
+        OUTPUT_LAYER,
+        /** local response normalization layer */
+        LOCAL_RESPONSE_NORMALIZATION,
+        /** graves long short term memory layer */
+        GRAVES_LSTM,
+        /** recurrent output layer */
+        RNN_OUTPUT_LAYER,
+        /** gated recurrent unit */
+        GRU,
+        /** denoising autoencoder */
+        AUTOENCODER;
 }

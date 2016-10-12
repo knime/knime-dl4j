@@ -42,21 +42,29 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.predict;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.deeplearning4j.nn.conf.layers.FeedForwardLayer;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.node.BufferedDataContainer;
+import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
+import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 /**
  * Abstract superclass for predictor node models of Deeplearning4J integration.
@@ -65,26 +73,27 @@ import org.knime.ext.dl4j.base.util.ConfigurationUtils;
  */
 public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 
+    // the logger instance
+    private static final NodeLogger logger = NodeLogger.getLogger(AbstractDLPredictorNodeModel.class);
+
     private boolean m_inputTableContainsImg;
 
     private boolean m_containsLabels;
 
+    private boolean m_containsTargetNames;
+
+    /**
+     * Super constructor for class AbstractDLPredictorNodeModel passing through parameters to node model class.
+     *
+     * @param inPortTypes
+     * @param outPortTypes
+     */
     protected AbstractDLPredictorNodeModel(final PortType[] inPortTypes, final PortType[] outPortTypes) {
         super(inPortTypes, outPortTypes);
     }
 
-    /**
-     * Make basic checks before a predictor can be executed. Check if the feature columns that were used for learning
-     * are present in the table and if they have the same type. Sets predictor flags.
-     *
-     * @param inSpecs the specs of the model to use for prediction (index 0) and the specs of the table to get data for
-     *            prediction (index 1)
-     * @param logger a logger to log errors
-     * @return
-     * @throws InvalidSettingsException
-     */
-    protected DataTableSpec[] configure(final PortObjectSpec[] inSpecs, final NodeLogger logger)
-        throws InvalidSettingsException {
+    @Override
+    protected PortObjectSpec[] configure(final PortObjectSpec[] inSpecs) throws InvalidSettingsException {
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)inSpecs[0];
         final DataTableSpec predictTableSpec = (DataTableSpec)inSpecs[1];
 
@@ -100,20 +109,38 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
             m_containsLabels = true;
         }
 
+        if (modelSpec.getTargetColumnNames() == null || modelSpec.getTargetColumnNames().isEmpty()) {
+            m_containsTargetNames = false;
+        } else {
+            m_containsTargetNames = true;
+        }
+
         checkInputTableForFeatureColumns(predictTableSpec, modelSpec.getLearnedColumns());
 
         //check for spec sanity
         logWarnings(logger, ConfigurationUtils.validateSpec(modelSpec, modelSpec.getNeuralNetworkTypes()));
-
-        return new DataTableSpec[]{predictTableSpec};
+        return inSpecs;
     }
 
+    /**
+     * @return the contains image flag
+     */
     protected boolean inputTableContainsImg() {
         return m_inputTableContainsImg;
     }
 
+    /**
+     * @return the contains labels flag
+     */
     protected boolean containsLabels() {
         return m_containsLabels;
+    }
+
+    /**
+     * @return the contains target names flag
+     */
+    protected boolean containsTargetNames() {
+        return m_containsTargetNames;
     }
 
     /**
@@ -140,14 +167,15 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
     }
 
     /**
-     * Checks if the last layer of the supplied list of layers has softmax activation function.
+     * Checks if the last layer of the specified list of layers has the specified activation function.
      *
      * @param layers the list of layers to check
-     * @return true if activation of the last layer is softmax, false if not
+     * @param activation the activation function to check for
+     * @return true if activation of the last layer equals the specified activation, false if not
      */
-    protected boolean isOutActivationSoftmax(final List<Layer> layers) {
+    protected boolean isOutActivation(final List<Layer> layers, final DL4JActivationFunction activation) {
         final Layer outputLayer = layers.get(layers.size() - 1);
-        if (outputLayer.getActivationFunction().equals("softmax")) {
+        if (outputLayer.getActivationFunction().equals(activation.getDL4JValue())) {
             return true;
         }
         return false;
@@ -158,17 +186,86 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      * which must be a {@link OutputLayer}.
      *
      * @param mln the network to use
-     * @return number of outputs of a network
-     * @throws InvalidSettingsException if the last layer is not an output layer
+     * @return number of outputs of the network
+     * @throws RuntimeException if the last layer is not an output layer
      */
-    protected int getNumberOfOutputs(final MultiLayerNetwork mln) throws InvalidSettingsException {
+    protected int getNumberOfOutputs(final MultiLayerNetwork mln) {
         final int numberOfLayers = mln.getLayerWiseConfigurations().getConfs().size();
 
         final Layer l = mln.getLayerWiseConfigurations().getConf(numberOfLayers - 1).getLayer();
         if (l instanceof OutputLayer) {
             return ((OutputLayer)l).getNOut();
         } else {
-            throw new InvalidSettingsException("Last layer is not a Output Layer");
+            throw new RuntimeException("Last layer is not a Output Layer");
         }
+    }
+
+    /**
+     * Determines the number of outputs of the layer with specified index contained in the specified network.
+     *
+     * @param mln the network to use
+     * @param layerIndex the index of the layer to get the number of outputs from
+     * @return the number of output neurons of the specified layer
+     */
+    protected int getNumberOfOutputs(final MultiLayerNetwork mln, final int layerIndex) {
+        final int numberOfLayers = mln.getLayerWiseConfigurations().getConfs().size();
+        if (layerIndex > numberOfLayers - 1) {
+            throw new ArrayIndexOutOfBoundsException("No layer with index " + layerIndex + " available!");
+        }
+        Layer l = mln.getLayerWiseConfigurations().getConf(layerIndex).getLayer();
+        if (l instanceof FeedForwardLayer) {
+            return ((FeedForwardLayer)l).getNOut();
+        } else {
+            throw new RuntimeException("Can't get number of outputs from non FeedforwardLayer.");
+        }
+    }
+
+    /**
+     * Creates output for an input {@link INDArray}. The input array must contain each example to predict in a row.
+     * Returns a {@link INDArray} with 'number of outputs' columns and 'number of examples' rows, whereby the number of
+     * examples is the number of rows of the input array.
+     *
+     * @param mln the network to use for prediction
+     * @param input the input used to create output
+     * @return array containing the output of the network for each row of the input
+     */
+    protected INDArray predict(final MultiLayerNetwork mln, final INDArray input) {
+        final INDArray output = Nd4j.create(input.rows(), getNumberOfOutputs(mln));
+        for (int i = 0; i < input.rows(); i++) {
+            output.putRow(i, mln.output(input.getRow(i), false));
+        }
+        return output;
+    }
+
+    /**
+     * Activates the specified layer in the specified network with the specified input. The inpu array should contain
+     * one example per row.
+     *
+     * @param mln the network to use
+     * @param layer the layer to activate
+     * @param input the inputs to use
+     * @return the activations of the layer for the input
+     */
+    protected INDArray activate(final MultiLayerNetwork mln, final int layer, final INDArray input) {
+        final List<INDArray> output = new ArrayList<INDArray>();
+        for (int i = 0; i < input.rows(); i++) {
+            List<INDArray> activations = mln.feedForward(input.getRow(i), false);
+            output.add(activations.get(layer + 1));
+        }
+        return Nd4j.hstack(output);
+    }
+
+    /**
+     * Creates an empty table using the specified ExecutionContext and TableSpec.
+     *
+     * @param exec the context to use for table creation
+     * @param spec the spec of the empty table
+     * @return PortObject array containing one empty table with specified spec
+     */
+    protected PortObject[] createEmptyTable(final ExecutionContext exec, final DataTableSpec spec) {
+        logger.warn("Can't predict with empty inpup table!");
+        final BufferedDataContainer emptyContainer = exec.createDataContainer(spec);
+        emptyContainer.close();
+        return new PortObject[]{emptyContainer.getTable()};
     }
 }

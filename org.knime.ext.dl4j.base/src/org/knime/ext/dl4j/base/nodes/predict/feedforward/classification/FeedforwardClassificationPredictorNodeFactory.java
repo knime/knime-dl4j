@@ -40,26 +40,25 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.predict.feedforward;
+package org.knime.ext.dl4j.base.nodes.predict.feedforward.classification;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 /**
- * <code>NodeFactory</code> for the "DL4JPredictor" Node.
+ * <code>NodeFactory</code> for the FeedforwardClassificationPredictor Node.
  *
  * @author KNIME
  */
-@Deprecated
-public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class FeedforwardClassificationPredictorNodeFactory extends NodeFactory<FeedforwardClassificationPredictorNodeModel> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public FeedforwardPredictorNodeModel createNodeModel() {
-        return new FeedforwardPredictorNodeModel();
+    public FeedforwardClassificationPredictorNodeModel createNodeModel() {
+        return new FeedforwardClassificationPredictorNodeModel();
     }
 
     /**
@@ -74,8 +73,8 @@ public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPred
      * {@inheritDoc}
      */
     @Override
-    public NodeView<FeedforwardPredictorNodeModel> createNodeView(final int viewIndex,
-        final FeedforwardPredictorNodeModel nodeModel) {
+    public NodeView<FeedforwardClassificationPredictorNodeModel> createNodeView(final int viewIndex,
+        final FeedforwardClassificationPredictorNodeModel nodeModel) {
         return null;
     }
 
@@ -92,7 +91,7 @@ public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPred
      */
     @Override
     public NodeDialogPane createNodeDialogPane() {
-        return new FeedforwardPredictorNodeDialog();
+        return new FeedforwardClassificationPredictorNodeDialog();
     }
 
 }

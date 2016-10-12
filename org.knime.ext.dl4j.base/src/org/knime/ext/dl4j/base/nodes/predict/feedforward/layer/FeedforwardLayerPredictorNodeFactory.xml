@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./predict.png" type="Predictor"
+	xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+	<name>DL4J Feedforward Predictor (Layer)</name>
+
+	<shortDescription>
+		Predictor for Feedforward Deep Learning Models.
+	</shortDescription>
+
+	<fullDescription>
+		<intro>This node outputs the activations of the selected layer and the
+			supplied network for each example contained in the input table. The
+			layer to activate can be chosen in the node	dialog. The resulting activation
+			array will be flattened.
+		</intro>
+
+		<option name="Layer to activate">
+			The layer of the input network which should be activated.
+		</option>
+
+	</fullDescription>
+
+	<ports>
+		<inPort index="0" name="Deep Learning Model">Trained Deep Learning Model.</inPort>
+		<inPort index="1" name="Data Table">Data table containing testing data.
+		</inPort>
+
+		<outPort index="0" name="Data Table">Input data with layer activations.
+		</outPort>
+	</ports>
+</knimeNode>

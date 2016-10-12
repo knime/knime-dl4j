@@ -78,7 +78,7 @@ import org.nd4j.linalg.factory.Nd4j;
  */
 public class DLModelPortObjectUtils {
 
-    private static final NodeLogger logger = NodeLogger.getLogger(DLModelPortObjectUtils.class);
+    private static final NodeLogger LOGGER = NodeLogger.getLogger(DLModelPortObjectUtils.class);
 
     private DLModelPortObjectUtils() {
         // Utility class
@@ -125,6 +125,8 @@ public class DLModelPortObjectUtils {
         boolean isTrained = false;
         final List<Pair<String, String>> learnedColumnTypes = new ArrayList<>();
         final List<String> labels = new ArrayList<>();
+        final List<String> targetColumnNames = new ArrayList<String>();
+        String learnerType = "";
 
         ZipEntry entry;
 
@@ -153,12 +155,19 @@ public class DLModelPortObjectUtils {
             } else if (entry.getName().matches("label[0123456789]+")) { //read label
                 final String read = readStringFromZipStream(inStream);
                 labels.add(read);
-
+            } else if (entry.getName().matches("target_column[0123456789]+")) { //read target column name
+                final String read = readStringFromZipStream(inStream);
+                targetColumnNames.add(read);
+            } else if (entry.getName().matches("learner_type")) { //read learner type
+                final String read = readStringFromZipStream(inStream);
+                learnerType = read;
             } else {
                 // ignore unrecognised ZipEntries
+                LOGGER.debug("Skipping unrecognised ZipEntry: " + entry.getName());
             }
         }
-        return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, isTrained);
+        return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
+            learnerType, isTrained);
     }
 
     /**
@@ -235,12 +244,16 @@ public class DLModelPortObjectUtils {
         final boolean isTrained = spec.isTrained();
         final List<Pair<String, String>> learnedColumnTypes = spec.getLearnedColumns();
         final List<String> labels = spec.getLabels();
+        final List<String> targetColumnNames = spec.getTargetColumnNames();
+        final String learnerType = spec.getLearnerType();
 
         writeLayerTypes(layerTypes, out);
         writeDNNTypes(networkTypes, out);
         writeIsTrained(isTrained, out);
         writeLearnedColumns(learnedColumnTypes, out);
         writeLabels(labels, out);
+        writeTargetColumnNames(targetColumnNames, out);
+        writeLearnerType(learnerType, out);
     }
 
     private static void savePortObjectAndSpec(final DLModelPortObject portObject, final DLModelPortObjectSpec spec,
@@ -291,7 +304,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain params so we just write nothing
-                logger.debug("Cought Exception writing multi layer network parameter.", e);
+                LOGGER.debug("Cought Exception writing multi layer network parameter.", e);
             }
 
             //write updater
@@ -307,7 +320,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain updater because no backprop was done
-                logger.debug("Cought Exception writing multi layer network updater.", e);
+                LOGGER.debug("Cought Exception writing multi layer network updater.", e);
             }
         }
     }
@@ -348,6 +361,23 @@ public class DLModelPortObjectUtils {
             final String stringToWrite = columnNames[i] + "," + inputTypesStrings[i];
             out.write(stringToWrite.getBytes(Charset.forName("UTF-8")));
         }
+    }
+
+    private static void writeTargetColumnNames(final List<String> targetColumnNames, final ZipOutputStream out)
+        throws IOException {
+        ZipEntry entry;
+        int i = 0;
+        for (String name : targetColumnNames) {
+            entry = new ZipEntry("target_column" + i);
+            out.putNextEntry(entry);
+            out.write(name.getBytes(Charset.forName("UTF-8")));
+        }
+    }
+
+    private static void writeLearnerType(final String learnerType, final ZipOutputStream out) throws IOException {
+        ZipEntry entry = new ZipEntry("learner_type");
+        out.putNextEntry(entry);
+        out.write(learnerType.getBytes(Charset.forName("UTF-8")));
     }
 
     private static void writeLabels(final List<String> labels, final ZipOutputStream out) throws IOException {

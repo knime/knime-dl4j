@@ -49,8 +49,21 @@ package org.knime.ext.dl4j.base.settings.enumerate;
  */
 public enum PredictorPrameter {
         /** Whether to append the full output vector to the output table or not. */
-    APPEND_PREDICTION, /** Whether to append the score for each test example to the outpu.t */
-    APPEND_SCORE, /** Whether to create output for every step of a sequence or the sequence as a whole. */
-    PREDICT_STEPS
-
+        APPEND_PREDICTION,
+        /** Whether to append the score for each test example to the output. */
+        APPEND_SCORE,
+        /** Whether to create output for every step of a sequence or the sequence as a whole. */
+        PREDICT_STEPS,
+        /** Whether to change the name of the prediction column. */
+        CHANGE_PREDICTION_COLUMN_NAME,
+        /** The new name of the prediction column. */
+        NEW_PREDICTION_COLUMN_NAME,
+        /** Whether to append class probabilities. */
+        APPEND_PROBABILITY,
+        /** The suffix of the class probability columns. */
+        PROBABILITY_COLUMN_SUFFIX,
+        /** The suffix of the prediction columns for regression. */
+        PREDICTION_COLUMN_SUFFIX,
+        /** The layer to get outputs from for layer predictor. */
+        LAYER_SELECTION;
 }

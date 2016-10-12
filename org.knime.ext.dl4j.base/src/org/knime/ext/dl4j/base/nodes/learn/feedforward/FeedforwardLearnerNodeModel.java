@@ -43,6 +43,7 @@
 package org.knime.ext.dl4j.base.nodes.learn.feedforward;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
@@ -215,7 +216,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
             } catch (final NullPointerException e) {
                 throw new InvalidSettingsException(
                     "Label column not available or not yet selected for SUPERVISED training. "
-                        + "Domain of Label column may not be available.", e);
+                        + "Domain of Label column may not be available.",
+                    e);
             } catch (final DataCellConversionException e) {
                 throw new InvalidSettingsException(e);
             }
@@ -233,7 +235,8 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
 
         //create new spec and set labels
         m_outputSpec = new DLModelPortObjectSpec(specWithoutLabels.getNeuralNetworkTypes(), newLayerTypes,
-            specWithoutLabels.getLearnedColumns(), m_labels, specWithoutLabels.isTrained());
+            specWithoutLabels.getLearnedColumns(), m_labels, Arrays.asList(labelColumnName), "",
+            specWithoutLabels.isTrained());
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
     }

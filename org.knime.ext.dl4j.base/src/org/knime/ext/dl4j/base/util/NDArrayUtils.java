@@ -50,6 +50,8 @@ import org.knime.core.data.DataCell;
 import org.knime.core.data.DoubleValue;
 import org.knime.core.data.collection.CollectionDataValue;
 import org.knime.core.data.def.DoubleCell;
+import org.knime.core.data.vector.doublevector.DenseDoubleVectorCell;
+import org.knime.core.data.vector.doublevector.DoubleVectorCellFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -68,7 +70,7 @@ public class NDArrayUtils {
      * Converts a INDArray to a List of Double Cells.
      *
      * @param array the INDArray to convert
-     * @return List of DoubleCells containing the values from the specified INDArray
+     * @return List of DoubleCells containing the values from the specified array
      */
     public static List<DoubleCell> toListOfDoubleCells(final INDArray array) {
         final List<DoubleCell> cells = new ArrayList<>();
@@ -76,6 +78,20 @@ public class NDArrayUtils {
             cells.add(new DoubleCell(array.getDouble(i)));
         }
         return cells;
+    }
+
+    /**
+     * Converts a INDArray to a DenseDoubleVectorCell.
+     *
+     * @param array the INDArray to convert
+     * @return a DoubleVector containing the values from the specified array
+     */
+    public static DenseDoubleVectorCell toDoubleVector(final INDArray array) {
+        double[] doubleArray = new double[array.length()];
+        for (int i = 0; i < array.length(); i++) {
+            doubleArray[i] = array.getDouble(i);
+        }
+        return DoubleVectorCellFactory.createCell(doubleArray);
     }
 
     /**

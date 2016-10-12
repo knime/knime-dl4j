@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./predict.png" type="Predictor"
+	xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+	<name>DL4J Feedforward Predictor (Regression)</name>
+
+	<shortDescription>
+		Predictor for Feedforward Deep Learning Models.
+	</shortDescription>
+
+	<fullDescription>
+		<intro>This node creates a regression prediction using the supplied
+			network and test data. The node is intended to be
+			used with the DL4J Feedforward Learner (Regression) node. The output is
+			 a column for each target feature containing the predicted value.
+		</intro>
+
+		<option name="Change prediction column/s name?">
+			Allows to change the name of the prediction column/s. Here you can enter a
+			pattern specifying the new name of the prediction column. The pattern needs to contain
+			'$1' which will be replaced by the corresponding column name. E.g. if there are two
+			target columns with the names 't1' and 't2' the pattern 'Prediction ($1)' will evaluate
+			to the column names 'Prediction (t1)' and 'Prediction (t2)'.
+		</option>
+
+	</fullDescription>
+
+	<ports>
+		<inPort index="0" name="Deep Learning Model">Regression Deep Learning Model.</inPort>
+		<inPort index="1" name="Data Table">Data table containing testing data.
+		</inPort>
+
+		<outPort index="0" name="Data Table">Input data with prediction columns.
+		</outPort>
+	</ports>
+</knimeNode>

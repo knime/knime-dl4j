@@ -40,59 +40,36 @@
  * may freely choose the license terms applicable to such Node, including
  * when such Node is propagated with or for interoperation with KNIME.
  *******************************************************************************/
-package org.knime.ext.dl4j.base.nodes.predict.feedforward;
-
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
-import org.knime.core.node.NodeView;
+package org.knime.ext.dl4j.base.nodes.learn.view;
 
 /**
- * <code>NodeFactory</code> for the "DL4JPredictor" Node.
+ * Class to store flag for early stopping.
  *
- * @author KNIME
+ * @author David Kolb, KNIME.com GmbH
  */
-@Deprecated
-public class FeedforwardPredictorNodeFactory extends NodeFactory<FeedforwardPredictorNodeModel> {
+public class LearningMonitor {
+    private boolean m_earlyStopping = false;
 
     /**
-     * {@inheritDoc}
+     * Set early stopping flag.
      */
-    @Override
-    public FeedforwardPredictorNodeModel createNodeModel() {
-        return new FeedforwardPredictorNodeModel();
+    public void stopLearning() {
+        m_earlyStopping = true;
     }
 
     /**
-     * {@inheritDoc}
+     * Returns value of early stopping flag.
+     *
+     * @return the value of the flag
      */
-    @Override
-    public int getNrNodeViews() {
-        return 0;
+    public boolean checkStopLearning() {
+        return m_earlyStopping;
     }
 
     /**
-     * {@inheritDoc}
+     * Set early stopping flag to false.
      */
-    @Override
-    public NodeView<FeedforwardPredictorNodeModel> createNodeView(final int viewIndex,
-        final FeedforwardPredictorNodeModel nodeModel) {
-        return null;
+    public void reset() {
+        m_earlyStopping = false;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasDialog() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NodeDialogPane createNodeDialogPane() {
-        return new FeedforwardPredictorNodeDialog();
-    }
-
 }
