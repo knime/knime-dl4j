@@ -81,7 +81,7 @@ public class ClassificationColumnSelectionComponentGroup extends AbstractGridBag
 
         addWhitespaceRow(15);
 
-        addColumnNameSelectionRowComponent(m_labelColumnSettings, "Lable Column", specIndex, NominalValue.class);
+        addColumnNameSelectionRowComponent(m_labelColumnSettings, "Target Column", specIndex, NominalValue.class);
 
         addWhitespaceRow(15);
         addLabelRow("Feature Column Selection", 15);
