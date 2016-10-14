@@ -83,7 +83,7 @@ public class AppendProbabilityColumnComponentGroup extends AbstractGridBagDialog
         m_probabilityColumnSuffix =
             (SettingsModelString)predictorSettings.createParameter(PredictorPrameter.PROBABILITY_COLUMN_SUFFIX);
 
-        addCheckboxRow(m_appendProbability, "Append columns with class probabilities?");
+        addCheckboxRow(m_appendProbability, "Append columns with class probabilities?", true);
         addStringEditRowComponent(m_probabilityColumnSuffix, "Suffix for probability columns");
 
         m_appendProbability.addChangeListener(new ChangeListener() {

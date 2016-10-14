@@ -118,7 +118,7 @@ public class TrainingMethodParametersComponentGroup extends AbstractGridBagDialo
 
             SettingsModelBoolean finetuneSettings =
                 (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_FINETUNE);
-            addCheckboxRow(finetuneSettings, "Do Finetuning?");
+            addCheckboxRow(finetuneSettings, "Do Finetuning?", false);
         }
     }
 }

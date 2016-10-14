@@ -313,7 +313,7 @@ public abstract class AbstractGridBagDialogComponentGroup implements IDialogComp
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.gridx = 0;
         gbc.gridy = m_currentRow;
-        gbc.weightx = 0;
+        gbc.weightx = 1;
         gbc.weighty = 0;
         gbc.fill = fill;
         gbc.anchor = GridBagConstraints.WEST;
@@ -531,7 +531,11 @@ public abstract class AbstractGridBagDialogComponentGroup implements IDialogComp
         JLabel labelComp = getFirstComponent(stringComponent, JLabel.class);
         JTextField textFieldComp = getFirstComponent(stringComponent, JTextField.class);
 
-        addDoubleColumnRow(labelComp, textFieldComp);
+        if (label.isEmpty()) {
+            addSingleColumnRow(textFieldComp, GridBagConstraints.HORIZONTAL);
+        } else {
+            addDoubleColumnRow(labelComp, textFieldComp);
+        }
     }
 
     /**
@@ -569,18 +573,25 @@ public abstract class AbstractGridBagDialogComponentGroup implements IDialogComp
     }
 
     /**
-     * Adds a row containing a checkbox.
+     * Adds a row containing a checkbox. You can specify if the the checkbox and its label should be aligned left or if
+     * it should align to columns if there are other rows containing more than one column.
      *
      * @param settings the settings of the checkbox
      * @param label the label of the checkbox
+     * @param alignLeft align left if true, align to columns if false
      */
-    protected void addCheckboxRow(final SettingsModelBoolean settings, final String label) {
-        DialogComponentBoolean booleanComponent = new DialogComponentBoolean(settings, "");
+    protected void addCheckboxRow(final SettingsModelBoolean settings, final String label, final boolean alignLeft) {
+        DialogComponentBoolean booleanComponent;
+
+        if (alignLeft) {
+            booleanComponent = new DialogComponentBoolean(settings, label);
+            addSingleColumnRow(booleanComponent.getComponentPanel(), GridBagConstraints.NONE);
+        } else {
+            booleanComponent = new DialogComponentBoolean(settings, "");
+            JLabel labelComp = new JLabel(label);
+            addDoubleColumnRow(booleanComponent.getComponentPanel(), labelComp);
+        }
         m_components.add(booleanComponent);
-
-        JLabel labelComp = new JLabel(label);
-
-        addDoubleColumnRow(booleanComponent.getComponentPanel(), labelComp);
     }
 
     /**

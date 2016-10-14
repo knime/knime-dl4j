@@ -89,7 +89,7 @@ public class DropOutParameterComponentGroup extends AbstractGridBagDialogCompone
             (SettingsModelBoolean)learnerSettings.createParameter(LearnerParameter.USE_DROP_CONNECT);
 
         addToggleNumberEditRowComponent(m_useGlobalDropOutRateSettings, "", m_globalDropOutRateSettings);
-        addCheckboxRow(m_useDropConnectSettings, "Use Drop-Connect?");
+        addCheckboxRow(m_useDropConnectSettings, "Use Drop-Connect?", false);
 
         m_useGlobalDropOutRateSettings.addChangeListener(new ChangeListener() {
             @Override

@@ -83,7 +83,7 @@ public class ClassificationPredictionColumnNameComponentGroup extends AbstractGr
         m_newPredictionColumnName =
             (SettingsModelString)predictorSettings.createParameter(PredictorPrameter.NEW_PREDICTION_COLUMN_NAME);
 
-        addCheckboxRow(m_changePredictionColumnName, "Change prediction column name?");
+        addCheckboxRow(m_changePredictionColumnName, "Change prediction column name?", true);
         addStringEditRowComponent(m_newPredictionColumnName, "");
 
         m_changePredictionColumnName.addChangeListener(new ChangeListener() {

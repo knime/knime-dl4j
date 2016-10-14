@@ -83,7 +83,7 @@ public class RegressionPredictionColumnNameComponentGroup extends AbstractGridBa
         m_newPredictionColumnName =
             (SettingsModelString)predictorSettings.createParameter(PredictorPrameter.NEW_PREDICTION_COLUMN_NAME);
 
-        addCheckboxRow(m_changePredictionColumnName, "Change prediction column/s name?");
+        addCheckboxRow(m_changePredictionColumnName, "Change prediction column/s name/s?", true);
         addStringEditRowComponent(m_newPredictionColumnName, "");
 
         m_changePredictionColumnName.addChangeListener(new ChangeListener() {
