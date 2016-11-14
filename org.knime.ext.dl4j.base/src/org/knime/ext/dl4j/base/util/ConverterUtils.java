@@ -78,16 +78,16 @@ public class ConverterUtils {
 
         checkMissing(cellToConvert);
 
-        final Optional<DataCellToJavaConverterFactory<DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
+        final Optional<DataCellToJavaConverterFactory<? extends DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
             .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
 
         if (!converterFactory.isPresent()) {
             throw new DataCellConversionException(
                 "No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
         }
-        final DataCellToJavaConverter<DataValue, T> converter = converterFactory.get().create();
+        final DataCellToJavaConverter<? extends DataValue, T> converter = converterFactory.get().create();
         try {
-            return converter.convert(cellToConvert);
+            return converter.convertUnsafe(cellToConvert);
         } catch (final Exception e) {
             throw new DataCellConversionException(
                 "Conversion of DataCell of type: " + cellToConvert.getType().getName()

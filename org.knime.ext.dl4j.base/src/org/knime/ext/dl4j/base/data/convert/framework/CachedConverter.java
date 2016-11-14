@@ -108,8 +108,8 @@ public class CachedConverter {
                  */
                 @Override
                 public DataCellToJavaConverterFactory call() throws UnsupportedDataTypeException {
-                    Optional<DataCellToJavaConverterFactory<DataValue, T>> fac = DataCellToJavaConverterRegistry
-                        .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
+                    Optional<DataCellToJavaConverterFactory<? extends DataValue, T>> fac = DataCellToJavaConverterRegistry
+                        .getInstance().getConverterFactories(cellToConvert.getType(), classOfResultType).stream().findFirst();
                     if (!fac.isPresent()) {
                         throw new UnsupportedDataTypeException(
                             "No converter for DataCell of type: " + cellToConvert.getType().getName() + " to Class: "

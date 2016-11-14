@@ -304,7 +304,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain params so we just write nothing
-                LOGGER.debug("Cought Exception writing multi layer network parameter.", e);
+                LOGGER.debug("Caught Exception writing multi layer network parameter.", e);
             }
 
             //write updater
@@ -320,7 +320,7 @@ public class DLModelPortObjectUtils {
                 throw e;
             } catch (final Exception e) {
                 //net does not contain updater because no backprop was done
-                LOGGER.debug("Cought Exception writing multi layer network updater.", e);
+                LOGGER.debug("Caught Exception writing multi layer network updater.", e);
             }
         }
     }

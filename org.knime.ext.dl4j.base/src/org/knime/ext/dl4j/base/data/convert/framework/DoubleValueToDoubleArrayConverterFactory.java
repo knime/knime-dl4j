@@ -75,4 +75,9 @@ public class DoubleValueToDoubleArrayConverterFactory implements DataCellToJavaC
         return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + Double[].class.toString() + ","
             + "" + ")";
     }
+
+    @Override
+    public String getName() {
+        return DataCellToJavaConverterFactory.super.getName() + " (Single element array)";
+    }
 }
