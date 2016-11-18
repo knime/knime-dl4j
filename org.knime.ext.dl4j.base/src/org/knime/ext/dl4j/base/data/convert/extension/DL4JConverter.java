@@ -1,5 +1,6 @@
 /*
  * ------------------------------------------------------------------------
+ *
  *  Copyright by KNIME GmbH, Konstanz, Germany
  *  Website: http://www.knime.org; Email: contact@knime.org
  *
@@ -40,47 +41,60 @@
  *  propagated with or for interoperation with KNIME.  The owner of a Node
  *  may freely choose the license terms applicable to such Node, including
  *  when such Node is propagated with or for interoperation with KNIME.
- * -------------------------------------------------------------------
+ * ---------------------------------------------------------------------
+ *
+ * History
+ *   10.11.2016 (David Kolb): created
  */
-package org.knime.ext.dl4j.base.data.convert.framework;
+package org.knime.ext.dl4j.base.data.convert.extension;
 
-import org.knime.core.data.DoubleValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverter;
-import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
+import org.knime.core.data.DataValue;
 
 /**
- * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to INDArray.
+ * Interface for DL4JConverters that convert from a KNIME type to a Java type. Do <em>not</em> use this iInterface to
+ * create converters. Extend from {@link BaseDL4JConverter} instead.
  *
  * @author David Kolb, KNIME.com GmbH
- * @deprecated use DoubleValueToDoubleArrayConverterFactory instead
+ * @param <S> the KNIME type
+ * @param <D> the Java type
+ * @noimplement Do not implement this interface , extend from {@link BaseDL4JConverter} instead.
  */
-@Deprecated
-public class DoubleValueToINDArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, INDArray> {
+public interface DL4JConverter<S extends DataValue, D> {
+    /**
+     * Convert <code>source</code> into an instance of type <D>.
+     *
+     * @param source data value to convert
+     * @return the converted object.
+     * @throws Exception When something went wrong during conversion
+     */
+    D convert(S source) throws Exception;
 
     /**
-     * Create a new converter from {@link DoubleValue} to {@link INDArray}. The convert method will return an INDArray
-     * containing {@link DoubleValue#getDoubleValue()}.
+     * Returns the destination Java type this class converts to.
+     *
+     * @return a Java type
      */
-    @Override
-    public DataCellToJavaConverter<DoubleValue, INDArray> create() {
-        return (v) -> Nd4j.create(new double[]{v.getDoubleValue()});
-    }
+    Class<D> getDestination();
 
-    @Override
-    public Class<DoubleValue> getSourceType() {
-        return DoubleValue.class;
-    }
+    /**
+     * Returns the source KNIME data types that this converts accepts.
+     *
+     * @return a KNIME data type
+     */
+    Class<S> getSource();
 
-    @Override
-    public Class<INDArray> getDestinationType() {
-        return INDArray.class;
-    }
+    /**
+     * Returns a unique identifier for this converter.
+     *
+     * @return a unique identifier
+     */
+    String getIdentifier();
 
-    @Override
-    public String getIdentifier() {
-        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + INDArray.class.toString() + ","
-            + "" + ")";
-    }
+    /**
+     * Returns the priority of this converter. Larger values increase the priority of this converter in case several
+     * converters are available for the requested conversion.
+     *
+     * @return a priority
+     */
+    int getPriority();
 }

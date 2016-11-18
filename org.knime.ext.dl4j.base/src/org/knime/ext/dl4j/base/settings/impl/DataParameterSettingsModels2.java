@@ -42,17 +42,13 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.settings.impl;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.knime.core.data.DoubleValue;
-import org.knime.core.data.collection.CollectionDataValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
+import org.knime.core.data.DataValue;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnFilter2;
 import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.ext.dl4j.base.data.convert.extension.DL4JConverterRegistry;
 import org.knime.ext.dl4j.base.settings.IParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 
@@ -63,8 +59,6 @@ import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
  * @author David Kolb, KNIME.com GmbH
  */
 public class DataParameterSettingsModels2 extends AbstractMapSetParameterSettingsModels<DataParameter> {
-
-    private Class<? extends DoubleValue>[] m_allowedTypes;
 
     @Override
     public SettingsModel createParameter(final DataParameter enumerate) throws IllegalArgumentException {
@@ -96,23 +90,11 @@ public class DataParameterSettingsModels2 extends AbstractMapSetParameterSetting
     }
 
     /**
-     * Retrieve all convertible classes from the converter registry.
+     * Retrieve all convertible classes from the DL4JConverterRegistry.
      *
-     * @return
+     * @return array of all allowed types that can be converted to double[]
      */
-    private Class<? extends DoubleValue>[] getAllowedTypes() {
-        if (m_allowedTypes == null) {
-            //get all types from where we can convert to INDArray
-            final Set<Class<?>> possibleTypes =
-                DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(Double[].class)
-                    // Get the destination type of factories which can handle mySourceType
-                    .stream().map((factory) -> factory.getSourceType())
-                    // Put all the destination types into a set
-                    .collect(Collectors.toSet());
-            //we can also convert collections
-            possibleTypes.add(CollectionDataValue.class);
-            m_allowedTypes = (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
-        }
-        return m_allowedTypes;
+    private Class<? extends DataValue>[] getAllowedTypes() {
+        return DL4JConverterRegistry.getInstance().getDataValueClassesForDestinationType(double[].class);
     }
 }

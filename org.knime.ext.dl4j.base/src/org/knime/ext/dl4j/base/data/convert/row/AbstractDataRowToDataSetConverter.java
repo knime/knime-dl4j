@@ -48,9 +48,8 @@
  */
 package org.knime.ext.dl4j.base.data.convert.row;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.knime.core.data.DataCell;
-import org.knime.ext.dl4j.base.data.convert.framework.CachedConverter;
+import org.knime.ext.dl4j.base.data.convert.extension.CachedConverter;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
@@ -166,16 +165,15 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
         if (!array.isRowVector()) {
             throw new IllegalArgumentException("Expected specified array to be a row vector.");
         }
-        final Double[] convertedCell = m_cachedConverter.convertDataCellToJava(cell, Double[].class);
+        final double[] convertedCell = m_cachedConverter.convertDataCellToJava(cell, double[].class);
         //if we have a scalar we do not need to convert to primitive and can put directly
         if (isScalar(convertedCell)) {
             array.put(0, putIndex, convertedCell[0]);
             return putIndex + 1;
-            //else convert to primitive and put whole array
+            //else put whole array
         } else {
-            final double[] primitive = ArrayUtils.toPrimitive(convertedCell);
             //write to interval exclusive last index so point to next free position of interval end
-            int intervalEnd = putIndex + primitive.length;
+            int intervalEnd = putIndex + convertedCell.length;
 
             //we can't write outside of our array
             if (intervalEnd > array.length()) {
@@ -184,7 +182,7 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
                         + "may not be of same size.");
             }
 
-            array.put(new INDArrayIndex[]{NDArrayIndex.interval(putIndex, intervalEnd, false)}, Nd4j.create(primitive));
+            array.put(new INDArrayIndex[]{NDArrayIndex.interval(putIndex, intervalEnd, false)}, Nd4j.create(convertedCell));
             return intervalEnd;
         }
     }
@@ -195,7 +193,7 @@ public abstract class AbstractDataRowToDataSetConverter implements IDataRowToDat
      * @param array the array to check
      * @return true if the length of the array is one, else false
      */
-    private boolean isScalar(final Double[] array) {
+    private boolean isScalar(final double[] array) {
         if (array.length == 1) {
             return true;
         }

@@ -5,12 +5,13 @@ Bundle-SymbolicName: org.knime.ext.dl4j.base;singleton:=true
 Bundle-Version: 3.3.0.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Export-Package: org.knime.ext.dl4j.base,
+ org.knime.ext.dl4j.base.data.convert.extension,
  org.knime.ext.dl4j.base.data.iter,
  org.knime.ext.dl4j.base.exception,
  org.knime.ext.dl4j.base.mln,
+ org.knime.ext.dl4j.base.nodes.dialog,
  org.knime.ext.dl4j.base.nodes.layer,
  org.knime.ext.dl4j.base.nodes.learn.dialog,
- org.knime.ext.dl4j.base.nodes.dialog,
  org.knime.ext.dl4j.base.nodes.learn.feedforward.classification,
  org.knime.ext.dl4j.base.settings,
  org.knime.ext.dl4j.base.settings.enumerate,

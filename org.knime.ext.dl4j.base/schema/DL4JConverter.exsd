@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.knime.ext.dl4j.base" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.knime.ext.dl4j.base" id="DL4JConverter" name="DL4JConverter"/>
+      </appInfo>
+      <documentation>
+         Extension point to register DL4JConverters which are used for internal type conversion of the KNIME Deeplearning4J Integration. Not intended to be used outside of plugins not related to the KNIME Deeplearning4J Integration.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="DL4JConverter"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="DL4JConverter">
+      <complexType>
+         <attribute name="converterClass" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.knime.ext.dl4j.base.data.convert.framework.BaseDL4JConverter:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;extension point=&quot;org.knime.ext.dl4j.base.DL4JConverter&quot;&gt;
+    &lt;DL4JConverter
+        converterClass=&quot;org.knime.ext.textprocessing.dl4j.data.convert.DocumentValueToStringConverter&quot;&gt;
+    &lt;/DL4JConverter&gt;
+&lt;/extension&gt;
+
+      </documentation>
+   </annotation>
+
+
+
+
+</schema>

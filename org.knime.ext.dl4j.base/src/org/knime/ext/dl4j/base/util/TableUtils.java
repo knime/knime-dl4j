@@ -62,7 +62,6 @@ import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 import org.knime.ext.dl4j.base.exception.UnsupportedDataTypeException;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * Utility class containing helper methods for {@link BufferedDataTable} related types.
@@ -156,17 +155,7 @@ public class TableUtils {
      */
     public static int calculateFeatureVectorLength(final DataCell cell) throws DataCellConversionException {
         int recordLength = 0;
-
-        if (cell.getType().isCollectionType()) {
-            final INDArray[] arrs = ConverterUtils.convertDataCellToJava(cell, INDArray[].class);
-            for (final INDArray arr : arrs) {
-                recordLength += arr.length();
-            }
-        } else {
-            recordLength += ConverterUtils.convertDataCellToJava(cell, INDArray.class).length();
-        }
-
-        return recordLength;
+        return recordLength += ConverterUtils.convertDataCellToJava(cell, double[].class).length;
     }
 
     /**

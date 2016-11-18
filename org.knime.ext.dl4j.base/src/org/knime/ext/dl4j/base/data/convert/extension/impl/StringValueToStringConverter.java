@@ -1,5 +1,6 @@
 /*
  * ------------------------------------------------------------------------
+ *
  *  Copyright by KNIME GmbH, Konstanz, Germany
  *  Website: http://www.knime.org; Email: contact@knime.org
  *
@@ -40,44 +41,34 @@
  *  propagated with or for interoperation with KNIME.  The owner of a Node
  *  may freely choose the license terms applicable to such Node, including
  *  when such Node is propagated with or for interoperation with KNIME.
- * -------------------------------------------------------------------
+ * ---------------------------------------------------------------------
+ *
+ * History
+ *   16.11.2016 (David Kolb): created
  */
-package org.knime.ext.dl4j.base.data.convert.framework;
+package org.knime.ext.dl4j.base.data.convert.extension.impl;
 
-import org.knime.core.data.DoubleValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverter;
-import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
+import org.knime.core.data.StringValue;
+import org.knime.ext.dl4j.base.data.convert.extension.BaseDL4JConverter;
 
 /**
- * Implementation of {@link DataCellToJavaConverterFactory} creating a converter from DoubleValue to Double array.
+ * * DL4JConverter that converts a StringValue to a String.
  *
  * @author David Kolb, KNIME.com GmbH
  */
-public class DoubleValueToDoubleArrayConverterFactory implements DataCellToJavaConverterFactory<DoubleValue, Double[]> {
-
-    @Override
-    public DataCellToJavaConverter<DoubleValue, Double[]> create() {
-        return (v) -> new Double[]{v.getDoubleValue()};
+public class StringValueToStringConverter extends BaseDL4JConverter<StringValue, String> {
+    /**
+     * Constructor for class StringValueToStringConverter.
+     */
+    public StringValueToStringConverter() {
+        super(StringValue.class, String.class, BaseDL4JConverter.DEFAULT_PRIORITY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Class<DoubleValue> getSourceType() {
-        return DoubleValue.class;
-    }
-
-    @Override
-    public Class<Double[]> getDestinationType() {
-        return Double[].class;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return getClass().getName() + "(" + DoubleValue.class.getSimpleName() + "," + Double[].class.toString() + ","
-            + "" + ")";
-    }
-
-    @Override
-    public String getName() {
-        return DataCellToJavaConverterFactory.super.getName() + " (Single element array)";
+    public String convert(final StringValue source) throws Exception {
+        return source.getStringValue();
     }
 }

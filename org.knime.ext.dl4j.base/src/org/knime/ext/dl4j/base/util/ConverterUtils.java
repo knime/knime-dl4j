@@ -46,9 +46,8 @@ import java.util.Optional;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverter;
-import org.knime.core.data.convert.java.DataCellToJavaConverterFactory;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
+import org.knime.ext.dl4j.base.data.convert.extension.DL4JConverter;
+import org.knime.ext.dl4j.base.data.convert.extension.DL4JConverterRegistry;
 import org.knime.ext.dl4j.base.exception.DataCellConversionException;
 
 /**
@@ -57,15 +56,14 @@ import org.knime.ext.dl4j.base.exception.DataCellConversionException;
  * @author David Kolb, KNIME.com GmbH
  */
 public class ConverterUtils {
-
     private ConverterUtils() {
         // Utility class
     }
 
     /**
-     * Converts the specified {@link DataCell} to the specified class. For conversion the KNIME converter framework is
-     * used and in this case the converter created by the converter factory returned by
-     * <code>getPreferredConverterFactory</code> using the specified class.
+     * Converts the specified {@link DataCell} to the specified class. For conversion the DL4JConverter extension point
+     * is used. In this case the converter with the highest priority which can convert from the type of the specified
+     * DataCell to the specified result class.
      *
      * @param cellToConvert the cell which should be converted
      * @param classOfResultType the class of the type which should be converted to
@@ -78,20 +76,16 @@ public class ConverterUtils {
 
         checkMissing(cellToConvert);
 
-        final Optional<DataCellToJavaConverterFactory<? extends DataValue, T>> converterFactory = DataCellToJavaConverterRegistry
-            .getInstance().getPreferredConverterFactory(cellToConvert.getType(), classOfResultType);
+        final Optional<DL4JConverter<DataValue, T>> optional =
+            DL4JConverterRegistry.getInstance().getConverter(cellToConvert.getType(), classOfResultType);
 
-        if (!converterFactory.isPresent()) {
-            throw new DataCellConversionException(
-                "No converter for DataCell of type: " + cellToConvert.getType().getName() + " available.");
-        }
-        final DataCellToJavaConverter<? extends DataValue, T> converter = converterFactory.get().create();
+        DL4JConverter<DataValue, T> converter = optional.orElseThrow(() -> new DataCellConversionException(
+            "No converter for data cell of type " + cellToConvert.getType().getName() + " available."));
         try {
-            return converter.convertUnsafe(cellToConvert);
+            return converter.convert(cellToConvert);
         } catch (final Exception e) {
-            throw new DataCellConversionException(
-                "Conversion of DataCell of type: " + cellToConvert.getType().getName()
-                    + " failed. Converter implementation " + "may contain errors. Error message: " + e.getMessage(), e);
+            throw new DataCellConversionException("Conversion of data cell of type " + cellToConvert.getType().getName()
+                + " failed, converter implementation may be broken: " + e.getMessage(), e);
         }
     }
 
@@ -102,7 +96,7 @@ public class ConverterUtils {
      * @throws DataCellConversionException if the cell is missing
      */
     public static void checkMissing(final DataCell cell) throws DataCellConversionException {
-        if(cell.isMissing()) {
+        if (cell.isMissing()) {
             throw new DataCellConversionException("Input table must not contain missing values!");
         }
     }
