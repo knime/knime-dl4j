@@ -743,7 +743,8 @@ propagated with or for interoperation with KNIME.
          version="0.0.0"/>
 
    <plugin
-         id="org.knime.ext.dl4j.bin.x86_64.cpu"
+         id="org.knime.ext.dl4j.bin.x86_64.cpu.linux"
+         os="linux"
          arch="x86_64"
          download-size="0"
          install-size="0"
@@ -751,7 +752,8 @@ propagated with or for interoperation with KNIME.
          fragment="true"/>
 
    <plugin
-         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda7_5"
+         id="org.knime.ext.dl4j.bin.x86_64.cpu.macosx"
+         os="macosx"
          arch="x86_64"
          download-size="0"
          install-size="0"
@@ -759,7 +761,62 @@ propagated with or for interoperation with KNIME.
          fragment="true"/>
 
    <plugin
-         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda8_0"
+         id="org.knime.ext.dl4j.bin.x86_64.cpu.windows"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda7_5.linux"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda7_5.macosx"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda7_5.windows"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda8_0.linux"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda8_0.macosx"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
+   <plugin
+         id="org.knime.ext.dl4j.bin.x86_64.gpu.cuda8_0.windows"
+         os="win32"
          arch="x86_64"
          download-size="0"
          install-size="0"
