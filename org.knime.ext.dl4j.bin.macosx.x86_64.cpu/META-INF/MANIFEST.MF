@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Macosx specific CPU dependencies for Deeplearning4J Integration
+Bundle-SymbolicName: org.knime.ext.dl4j.bin.macosx.x86_64.cpu;singleton:=true
+Bundle-Version: 0.6.0.qualifier
+Bundle-ClassPath: libs/nd4j-native-0.6.0.jar,
+ libs/nd4j-native-0.6.0-macosx-x86_64.jar
+Bundle-Vendor: KNIME GmbH, Konstanz, Germany
+Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
+Export-Package: org.nd4j.linalg.cpu.nativecpu,
+ org.nd4j.linalg.cpu.nativecpu.blas,
+ org.nd4j.linalg.cpu.nativecpu.cache,
+ org.nd4j.linalg.cpu.nativecpu.complex,
+ org.nd4j.linalg.cpu.nativecpu.ops
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Eclipse-PlatformFilter: (&(osgi.arch=x86_64)(osgi.os=macosx))

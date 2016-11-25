@@ -66,11 +66,11 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
 
     private static DL4JPluginActivator plugin;
 
-    private final String GPU_CUDA8_0_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.gpu\\.cuda8\\_0.*";
+    private final String GPU_CUDA8_0_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda8\\_0";
 
-    private final String GPU_CUDA7_5_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.gpu\\.cuda7\\_5.*";
+    private final String GPU_CUDA7_5_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda7\\_5";
 
-    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.x86_64\\.cpu.*";
+    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.cpu";
 
     /**
      * Enum identifying the DL4J backend.
