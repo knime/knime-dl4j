@@ -66,30 +66,39 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
 
     private static DL4JPluginActivator plugin;
 
-    private final String GPU_CUDA8_0_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda8\\_0";
-
-    private final String GPU_CUDA7_5_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda7\\_5";
-
-    private final String CPU_FRAG_REGEX = "org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.cpu";
-
     /**
      * Enum identifying the DL4J backend.
      */
     public enum BackendType {
-            GPU_CUDA8_0, GPU_CUDA7_5, CPU;
+        /** CUDA 8.0. */
+        GPU_CUDA8_0("org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda8\\_0.*", "GPU CUDA Toolkit 8.0"),
+        /** CUDA 7.5. */
+        GPU_CUDA7_5("org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.gpu\\.cuda7\\_5.*", "GPU CUDA Toolkit 7.5"),
+        /** CPU. */
+        CPU("org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.cpu.*", "CPU");
+
+
+        private final String m_fragmentRegex;
+
+        private final String m_description;
+
+        private BackendType(final String fragmentRegex, final String description) {
+            m_fragmentRegex = fragmentRegex;
+            m_description = description;
+        }
 
         @Override
         public String toString() {
-            switch (this) {
-                case CPU:
-                    return "CPU";
-                case GPU_CUDA7_5:
-                    return "GPU CUDA Toolkit 7.5";
-                case GPU_CUDA8_0:
-                    return "GPU CUDA Toolkit 8.0";
-                default:
-                    return super.toString();
-            }
+            return m_description;
+        }
+
+        /**
+         * Returns a regualar expression for the corresponding fragment.
+         *
+         * @return a regular expression
+         */
+        public String getFragmentRegex() {
+            return m_fragmentRegex;
         }
     }
 
@@ -153,27 +162,13 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
      */
     @SuppressWarnings("restriction")
     private FragmentClasspath findBackendFragment(final FragmentClasspath[] frags, final BackendType backend) {
-        String regex;
-        switch (backend) {
-            case CPU:
-                regex = CPU_FRAG_REGEX;
-                break;
-            case GPU_CUDA8_0:
-                regex = GPU_CUDA8_0_FRAG_REGEX;
-                break;
-            case GPU_CUDA7_5:
-                regex = GPU_CUDA7_5_FRAG_REGEX;
-                break;
-            default:
-                throw new IllegalStateException("No case for backend type: " + backend + " defined.");
-        }
         for (final FragmentClasspath fcp : frags) {
             final String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
-            if (fragmentFileName.matches(regex)) {
-                LOGGER.debug(fragmentFileName + " matches " + regex);
+            if (fragmentFileName.matches(backend.getFragmentRegex())) {
+                LOGGER.debug(fragmentFileName + " matches " + backend.getFragmentRegex());
                 return fcp;
             } else {
-                LOGGER.debug(fragmentFileName + " does not match " + regex);
+                LOGGER.debug(fragmentFileName + " does not match " + backend.getFragmentRegex());
             }
         }
         return null;
