@@ -56,7 +56,14 @@
 </node>
 </extension>
    <extension point="org.knime.core.PortType">
-      <portType hidden="false" name="org.knime.dl.nodes.DNNModelPortObject" objectClass="org.knime.ext.dl4j.base.DLModelPortObject" objectSerializer="org.knime.ext.dl4j.base.DLModelPortObject$Serializer" specClass="org.knime.ext.dl4j.base.DLModelPortObjectSpec" specSerializer="org.knime.ext.dl4j.base.DLModelPortObjectSpec$Serializer">
+      <portType
+            color="#808000"
+            hidden="false"
+            name="org.knime.dl.nodes.DNNModelPortObject"
+            objectClass="org.knime.ext.dl4j.base.DLModelPortObject"
+            objectSerializer="org.knime.ext.dl4j.base.DLModelPortObject$Serializer"
+            specClass="org.knime.ext.dl4j.base.DLModelPortObjectSpec"
+            specSerializer="org.knime.ext.dl4j.base.DLModelPortObjectSpec$Serializer">
       </portType>
    </extension>
    <extension point="org.knime.workbench.repository.categories">
