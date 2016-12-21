@@ -42,17 +42,12 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.learn.feedforward;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.knime.core.data.DoubleValue;
+import org.knime.core.data.DataValue;
 import org.knime.core.data.NominalValue;
-import org.knime.core.data.collection.CollectionDataValue;
-import org.knime.core.data.convert.java.DataCellToJavaConverterRegistry;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
 import org.knime.core.node.defaultnodesettings.DialogComponentButtonGroup;
@@ -66,6 +61,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelDoubleBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelFilterString;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.ext.dl4j.base.data.convert.extension.DL4JConverterRegistry;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
@@ -79,7 +75,6 @@ import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.EnumUtils;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * <code>NodeDialog</code> for the "DL4JLearner" Node.
@@ -286,21 +281,18 @@ public class FeedforwardLearnerNodeDialog extends DefaultNodeSettingsPane {
             (SettingsModelString)layerSettingsModels.createParameter(LayerParameter.ACTIVATION), "Activation Function",
             EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
 
-        //get all types from where we can convert to INDArray
-        final Set<Class<?>> possibleTypes =
-            DataCellToJavaConverterRegistry.getInstance().getFactoriesForDestinationType(INDArray.class)
-                // Get the destination type of factories which can handle mySourceType
-                .stream().map((factory) -> factory.getSourceType())
-                // Put all the destination types into a set
-                .collect(Collectors.toSet());
-        //we can also convert collections
-        possibleTypes.add(CollectionDataValue.class);
-        final Class<? extends DoubleValue>[] possibleTypesArray =
-            (Class<? extends DoubleValue>[])possibleTypes.toArray(new Class<?>[possibleTypes.size()]);
-
         createNewTab("Column Selection");
         addDialogComponent(
             new DialogComponentColumnNameSelection(labelColumnSettings, "Label Column", 1, false, NominalValue.class));
-        addDialogComponent(new DialogComponentColumnFilter(columnSelectionSettings, 1, true, possibleTypesArray));
+        addDialogComponent(new DialogComponentColumnFilter(columnSelectionSettings, 1, true, getAllowedTypes()));
+    }
+
+    /**
+     * Retrieve all convertible classes from the DL4JConverterRegistry.
+     *
+     * @return array of all allowed types that can be converted to double[]
+     */
+    private Class<? extends DataValue>[] getAllowedTypes() {
+        return DL4JConverterRegistry.getInstance().getDataValueClassesForDestinationType(double[].class);
     }
 }
