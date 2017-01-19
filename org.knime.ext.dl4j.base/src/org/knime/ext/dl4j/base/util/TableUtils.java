@@ -279,8 +279,8 @@ public class TableUtils {
      *
      * @param table the table to check
      */
-    public static void checkForEmptyTable(final DataTable table){
-        if(!table.iterator().hasNext()){
+    public static void checkForEmptyTable(final DataTable table) {
+        if (!table.iterator().hasNext()) {
             throw new IllegalStateException("Input table must not be empty!");
         }
     }
