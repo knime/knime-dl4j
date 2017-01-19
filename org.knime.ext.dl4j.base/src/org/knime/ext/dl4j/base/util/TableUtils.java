@@ -284,4 +284,20 @@ public class TableUtils {
             throw new IllegalStateException("Input table must not be empty!");
         }
     }
+
+    /**
+     * Checks if the specified row has missing cells at the specified indices.
+     *
+     * @param row the row to check
+     * @param indices the indices to check
+     * @return true if all cells at the specified indices are not missing, false if otherwise
+     */
+    public static boolean hasMissing(final DataRow row, final int... indices) {
+        for (int i : indices) {
+            if (row.getCell(i).isMissing()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
