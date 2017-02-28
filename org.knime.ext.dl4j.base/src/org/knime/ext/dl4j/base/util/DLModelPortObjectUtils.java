@@ -171,16 +171,24 @@ public class DLModelPortObjectUtils {
             learnerType, isTrained);
     }
 
+    /**
+     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}. Supports both deserialization
+     * of old and new format.
+     *
+     * @param inStream the stream to load from
+     * @return the loaded {@link DLModelPortObject}
+     * @throws IOException
+     */
     @SuppressWarnings("resource")
     public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException {
         final List<Layer> layers = new ArrayList<>();
 
-        //old model content
+        //old model format
         INDArray mln_params = null;
         MultiLayerConfiguration mln_config = null;
         org.deeplearning4j.nn.api.Updater updater = null;
 
-        //new model content
+        //new model format
         boolean mlnLoaded = false;
         boolean cgLoaded = false;
         MultiLayerNetwork mlnFromModelSerializer = null;
@@ -189,25 +197,37 @@ public class DLModelPortObjectUtils {
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("layer[0123456789]+")) { //read layers
+            // read layers
+            if (entry.getName().matches("layer[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
+
+                // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("mln_model")) {
                 mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(inStream, true);
                 mlnLoaded = true;
+
+             // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("cg_model")) {
                 cgFromModelSerializer = ModelSerializer.restoreComputationGraph(inStream, true);
                 cgLoaded = true;
-            } else if (entry.getName().matches("mln_config")) { //read MultilayerNetwork
+
+                // read MultilayerNetworkConfig, old format
+            } else if (entry.getName().matches("mln_config")) {
+
                 final String read = readStringFromZipStream(inStream);
                 mln_config = MultiLayerConfiguration.fromJson(read.toString());
-            } else if (entry.getName().matches("mln_params")) { //read params
+
+                // read params, old format
+            } else if (entry.getName().matches("mln_params")) {
                 try {
                     mln_params = Nd4j.read(inStream);
                 } catch (Exception e) {
                     throw new IOException("Could not load network parameters. Please re-execute the Node.", e);
                 }
-            } else if (entry.getName().matches("mln_updater")) { //read updater
+
+                // read updater, old format
+            } else if (entry.getName().matches("mln_updater")) {
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
                 final ObjectInputStream ois = new ObjectInputStream(inStream);
                 try {
@@ -218,17 +238,26 @@ public class DLModelPortObjectUtils {
             }
         }
 
-        if(mlnLoaded) {
-            assert(!cgLoaded);
+        if (mlnLoaded) {
+            assert (!cgLoaded);
             return new DLModelPortObject(layers, mlnFromModelSerializer, null);
         } else if (cgLoaded) {
-            assert(!mlnLoaded);
+            assert (!mlnLoaded);
             return new DLModelPortObject(layers, cgFromModelSerializer, null);
         } else {
             return new DLModelPortObject(layers, buildMln(mln_config, updater, mln_params), null);
         }
     }
 
+    /**
+     * Creates a {@link MultiLayerNetwork} from deserialized objects in the old format. This is now done
+     * implicitly by the dl4j {@link ModelSerializer}.
+     *
+     * @param config
+     * @param updater
+     * @param params
+     * @return
+     */
     @Deprecated
     private static MultiLayerNetwork buildMln(final MultiLayerConfiguration config,
         final org.deeplearning4j.nn.api.Updater updater, final INDArray params) {
@@ -307,7 +336,7 @@ public class DLModelPortObjectUtils {
             return;
         }
         ZipEntry entry;
-        //write the different model implementation with own identifiers in order to distinguish between them when reading
+        //write the different model implementations with own identifiers in order to distinguish between them when reading
         if (model instanceof MultiLayerNetwork) {
             entry = new ZipEntry("mln_model");
         } else if (model instanceof ComputationGraph) {
