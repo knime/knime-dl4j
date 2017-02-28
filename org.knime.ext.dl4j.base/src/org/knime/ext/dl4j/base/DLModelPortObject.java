@@ -47,7 +47,9 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.layers.Layer;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionMonitor;
@@ -66,6 +68,11 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  */
 public class DLModelPortObject extends AbstractPortObject {
 
+    /**
+     * Serializer for class DLModelPortObject.
+     *
+     * @author David Kolb, KNIME.com GmbH
+     */
     public static final class Serializer extends AbstractPortObjectSerializer<DLModelPortObject> {
     }
 
@@ -78,28 +85,25 @@ public class DLModelPortObject extends AbstractPortObject {
 
     private List<Layer> m_layers;
 
-    private MultiLayerNetwork m_multiLayerNet;
+    private Model m_model;
 
     private DLModelPortObjectSpec m_spec;
 
-    /**
-     * Empty no-arg constructor as needed by {@link AbstractPortObject}
-     */
+    /** Framework constructor. */
     public DLModelPortObject() {
-
     }
 
     /**
      * Constructor for class DLModelPortObject.
      *
      * @param layers the list of layers contained in this model
-     * @param mln the {@link MultiLayerNetwork} object which should be stored
-     * @param spec the corresponding specs to this object
+     * @param model the {@link Model} which should be stored
+     * @param spec the specs corresponding to this object
      */
-    public DLModelPortObject(final List<Layer> layers, final MultiLayerNetwork mln, final DLModelPortObjectSpec spec) {
+    public DLModelPortObject(final List<Layer> layers, final Model model, final DLModelPortObjectSpec spec) {
         this.m_layers = layers;
         this.m_spec = spec;
-        this.m_multiLayerNet = mln;
+        this.m_model = model;
     }
 
     @Override
@@ -117,7 +121,7 @@ public class DLModelPortObject extends AbstractPortObject {
 
         this.m_spec = (DLModelPortObjectSpec)spec;
         this.m_layers = port.getLayers();
-        this.m_multiLayerNet = port.getMultilayerLayerNetwork();
+        this.m_model = port.getModel();
     }
 
     @Override
@@ -130,12 +134,52 @@ public class DLModelPortObject extends AbstractPortObject {
         return m_spec;
     }
 
+    /**
+     * List of layers this model is composed of.
+     *
+     * @return list of layers
+     */
     public List<Layer> getLayers() {
         return m_layers;
     }
 
+    /**
+     * The dl4j model. This could be either MultiLayerNetwork or ComputationGraph.
+     *
+     * @return the dl4j model
+     */
+    public Model getModel() {
+        return m_model;
+    }
+
+    /**
+     * Assumes that this model contains a {@link MultiLayerNetwork}. Will throws an IllegalStateException if the contained model is
+     * not of type {@link MultiLayerNetwork} or null.
+     *
+     * @return the {@link MultiLayerNetwork}
+     */
     public MultiLayerNetwork getMultilayerLayerNetwork() {
-        return m_multiLayerNet;
+        if (m_model != null && m_model instanceof MultiLayerNetwork) {
+            return (MultiLayerNetwork)m_model;
+        } else {
+            throw new IllegalStateException(
+                "Model contained in this port object is not of type MultiLayerNetwork or null!");
+        }
+    }
+
+    /**
+     * Assumes that this model contains a {@link ComputationGraph}. Will throws an IllegalStateException if the contained model is
+     * not of type {@link ComputationGraph} or null.
+     *
+     * @return the {@link ComputationGraph}
+     */
+    public ComputationGraph getComputationGraph() {
+        if (m_model != null && m_model instanceof ComputationGraph) {
+            return (ComputationGraph)m_model;
+        } else {
+            throw new IllegalStateException(
+                "Model contained in this port object is not of type ComputationGraph or null!");
+        }
     }
 
     @Override
