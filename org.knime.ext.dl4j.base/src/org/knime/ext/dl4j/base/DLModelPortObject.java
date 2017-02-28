@@ -153,33 +153,27 @@ public class DLModelPortObject extends AbstractPortObject {
     }
 
     /**
-     * Assumes that this model contains a {@link MultiLayerNetwork}. Will throws an IllegalStateException if the contained model is
-     * not of type {@link MultiLayerNetwork} or null.
+     * Assumes that this model contains a {@link MultiLayerNetwork}. Else this method will return null.
      *
-     * @return the {@link MultiLayerNetwork}
+     * @return the {@link MultiLayerNetwork} or null
      */
     public MultiLayerNetwork getMultilayerLayerNetwork() {
-        if (m_model != null && m_model instanceof MultiLayerNetwork) {
+        if (m_model instanceof MultiLayerNetwork) {
             return (MultiLayerNetwork)m_model;
-        } else {
-            throw new IllegalStateException(
-                "Model contained in this port object is not of type MultiLayerNetwork or null!");
         }
+        return null;
     }
 
     /**
-     * Assumes that this model contains a {@link ComputationGraph}. Will throws an IllegalStateException if the contained model is
-     * not of type {@link ComputationGraph} or null.
+     * Assumes that this model contains a {@link ComputationGraph}. Else this method will return null.
      *
-     * @return the {@link ComputationGraph}
+     * @return the {@link ComputationGraph} or null
      */
     public ComputationGraph getComputationGraph() {
-        if (m_model != null && m_model instanceof ComputationGraph) {
+        if (m_model instanceof ComputationGraph) {
             return (ComputationGraph)m_model;
-        } else {
-            throw new IllegalStateException(
-                "Model contained in this port object is not of type ComputationGraph or null!");
         }
+        return null;
     }
 
     @Override
