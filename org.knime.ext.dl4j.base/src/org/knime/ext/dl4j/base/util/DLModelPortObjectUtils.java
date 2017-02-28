@@ -44,10 +44,8 @@
  */
 package org.knime.ext.dl4j.base.util;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -320,48 +318,6 @@ public class DLModelPortObjectUtils {
         }
         out.putNextEntry(entry);
         ModelSerializer.writeModel(model, out, true);
-    }
-
-    @Deprecated
-    private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out)
-        throws IOException {
-        ZipEntry entry;
-        if (mln != null) {
-            //write MultilayerNetwork, consists of configuration and network parameters
-            entry = new ZipEntry("mln_config");
-            out.putNextEntry(entry);
-            out.write(mln.getLayerWiseConfigurations().toJson().getBytes(Charset.forName("UTF-8")));
-
-            try {
-                //params() throws exception if not yet set
-                final INDArray params = mln.params();
-                entry = new ZipEntry("mln_params");
-                out.putNextEntry(entry);
-                //use this write call, Nd4j.write(OutputStream,INDArray) is outdated
-                Nd4j.write(params, new DataOutputStream(out));
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                //net does not contain params so we just write nothing
-                LOGGER.debug("Caught Exception writing multi layer network parameter.", e);
-            }
-
-            //write updater
-            try {
-                //if no backprop is done getUpdater() will throw an exception
-                if (mln.getUpdater() != null) {
-                    entry = new ZipEntry("mln_updater");
-                    out.putNextEntry(entry);
-                    final ObjectOutputStream oos = new ObjectOutputStream(out);
-                    oos.writeObject(mln.getUpdater());
-                }
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                //net does not contain updater because no backprop was done
-                LOGGER.debug("Caught Exception writing multi layer network updater.", e);
-            }
-        }
     }
 
     private static void writeLayerTypes(final List<DNNLayerType> layerTypes, final ZipOutputStream out)
