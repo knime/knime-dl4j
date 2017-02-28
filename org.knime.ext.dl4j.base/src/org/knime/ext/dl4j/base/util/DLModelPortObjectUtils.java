@@ -57,10 +57,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.Layer;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObject;
@@ -162,27 +165,28 @@ public class DLModelPortObjectUtils {
                 final String read = readStringFromZipStream(inStream);
                 learnerType = read;
             } else {
-                // ignore unrecognised ZipEntries
-                LOGGER.debug("Skipping unrecognised ZipEntry: " + entry.getName());
+                // ignore unrecognized ZipEntries
+                LOGGER.debug("Skipping unrecognized ZipEntry: " + entry.getName());
             }
         }
         return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
             learnerType, isTrained);
     }
 
-    /**
-     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}.
-     *
-     * @param inStream inStream the stream to load from
-     * @return the loaded {@link DLModelPortObject}
-     * @throws IOException
-     */
     @SuppressWarnings("resource")
     public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException {
         final List<Layer> layers = new ArrayList<>();
+
+        //old model content
         INDArray mln_params = null;
         MultiLayerConfiguration mln_config = null;
         org.deeplearning4j.nn.api.Updater updater = null;
+
+        //new model content
+        boolean mlnLoaded = false;
+        boolean cgLoaded = false;
+        MultiLayerNetwork mlnFromModelSerializer = null;
+        ComputationGraph cgFromModelSerializer = null;
 
         ZipEntry entry;
 
@@ -190,6 +194,12 @@ public class DLModelPortObjectUtils {
             if (entry.getName().matches("layer[0123456789]+")) { //read layers
                 final String read = readStringFromZipStream(inStream);
                 layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
+            } else if (entry.getName().matches("mln_model")) {
+                mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(inStream, true);
+                mlnLoaded = true;
+            } else if (entry.getName().matches("cg_model")) {
+                cgFromModelSerializer = ModelSerializer.restoreComputationGraph(inStream, true);
+                cgLoaded = true;
             } else if (entry.getName().matches("mln_config")) { //read MultilayerNetwork
                 final String read = readStringFromZipStream(inStream);
                 mln_config = MultiLayerConfiguration.fromJson(read.toString());
@@ -210,32 +220,42 @@ public class DLModelPortObjectUtils {
             }
         }
 
-        MultiLayerNetwork mln;
+        if(mlnLoaded) {
+            assert(!cgLoaded);
+            return new DLModelPortObject(layers, mlnFromModelSerializer, null);
+        } else if (cgLoaded) {
+            assert(!mlnLoaded);
+            return new DLModelPortObject(layers, cgFromModelSerializer, null);
+        } else {
+            return new DLModelPortObject(layers, buildMln(mln_config, updater, mln_params), null);
+        }
+    }
 
-        if (mln_config != null) {
-            mln = new MultiLayerNetwork(mln_config);
+    @Deprecated
+    private static MultiLayerNetwork buildMln(final MultiLayerConfiguration config,
+        final org.deeplearning4j.nn.api.Updater updater, final INDArray params) {
+        MultiLayerNetwork mln = null;
+
+        if (config != null) {
+            mln = new MultiLayerNetwork(config);
             mln.init();
             if (updater != null) {
                 mln.setUpdater(updater);
             }
-
-            if (mln_params != null) {
-                mln.setParams(mln_params);
+            if (params != null) {
+                mln.setParams(params);
             }
-        } else {
-            mln = null;
         }
-
-        return new DLModelPortObject(layers, mln, null);
+        return mln;
     }
 
     private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
         throws IOException {
         final List<Layer> layers = portObject.getLayers();
-        final MultiLayerNetwork mln = portObject.getMultilayerLayerNetwork();
+        final Model model = portObject.getModel();
 
         writeLayers(layers, out);
-        writeMultiLayerNetwork(mln, out);
+        writeModel(model, out);
     }
 
     private static void saveSpecOnly(final DLModelPortObjectSpec spec, final ZipOutputStream out) throws IOException {
@@ -284,6 +304,25 @@ public class DLModelPortObjectUtils {
         }
     }
 
+    private static void writeModel(final Model model, final ZipOutputStream out) throws IOException {
+        if (model == null) {
+            return;
+        }
+        ZipEntry entry;
+        //write the different model implementation with own identifiers in order to distinguish between them when reading
+        if (model instanceof MultiLayerNetwork) {
+            entry = new ZipEntry("mln_model");
+        } else if (model instanceof ComputationGraph) {
+            entry = new ZipEntry("cg_model");
+        } else {
+            throw new IllegalArgumentException(
+                "Writing of model of type: " + model.getClass().getSimpleName() + " not supported!");
+        }
+        out.putNextEntry(entry);
+        ModelSerializer.writeModel(model, out, true);
+    }
+
+    @Deprecated
     private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out)
         throws IOException {
         ZipEntry entry;
