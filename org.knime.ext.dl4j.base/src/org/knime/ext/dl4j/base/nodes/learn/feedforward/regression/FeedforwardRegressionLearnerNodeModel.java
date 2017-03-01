@@ -65,6 +65,7 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.core.node.util.filter.InputFilter;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.RegressionBufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.mln.ConvMultiLayerNetFactory2;
@@ -243,7 +244,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
         //create new spec and set labels
         m_outputSpec = new DLModelPortObjectSpec(specWithoutLabels.getNeuralNetworkTypes(), newLayerTypes,
             specWithoutLabels.getLearnedColumns(), specWithoutLabels.getLabels(), Arrays.asList(targetColumns),
-            LEARNER_TYPE, specWithoutLabels.isTrained());
+            LEARNER_TYPE, specWithoutLabels.isTrained(), ModelType.MLN);
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
     }

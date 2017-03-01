@@ -50,6 +50,7 @@ import org.knime.core.node.ModelContentRO;
 import org.knime.core.node.ModelContentWO;
 import org.knime.core.node.port.AbstractSimplePortObjectSpec;
 import org.knime.core.util.Pair;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
@@ -81,6 +82,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     private static final String CFGKEY_LABELS = "Labels";
 
+    private static final String CFGKEY_MODELTYPE = "ModelType";
+
     private List<DNNType> m_netTypes;
 
     private List<DNNLayerType> m_layerTypes;
@@ -94,6 +97,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
     private List<String> m_labels;
 
     private String m_learnerType;
+
+    private String m_modelType;
 
     /**
      * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}.
@@ -112,17 +117,25 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      * @param targetColumnNames the list of target column names
      * @param learnerType the type of the used learner specifying the use case
      * @param isTrained whether the model is trained or not
+     * @param modelType the type of the model contained in the corresponding port object
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final List<Pair<String, String>> featureColumns, final List<String> labels,
-        final List<String> targetColumnNames, final String learnerType, final boolean isTrained) {
-        this.m_netTypes = types;
-        this.m_layerTypes = layerTypeList;
-        this.m_isTrained = isTrained;
-        this.m_featureColumns = featureColumns;
-        this.m_labels = labels;
-        this.m_targetColumnNames = targetColumnNames;
-        this.m_learnerType = learnerType;
+        final List<String> targetColumnNames, final String learnerType, final boolean isTrained,
+        final ModelType modelType) {
+        m_netTypes = types;
+        m_layerTypes = layerTypeList;
+        m_isTrained = isTrained;
+        m_featureColumns = featureColumns;
+        m_labels = labels;
+        m_targetColumnNames = targetColumnNames;
+        m_learnerType = learnerType;
+
+        if(modelType != null){
+            m_modelType = modelType.name();
+        } else {
+            m_modelType = "";
+        }
     }
 
     /**
@@ -137,7 +150,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
-        this(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained);
+        this(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained, null);
     }
 
     /**
@@ -171,6 +184,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
             m_targetColumnNames.toArray(new String[m_targetColumnNames.size()]));
 
         model.addString(CFGKEY_LEARNERTYPE, m_learnerType);
+
+        model.addString(CFGKEY_MODELTYPE, m_modelType);
     }
 
     @Override
@@ -215,6 +230,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
         m_targetColumnNames = targetColumnNames;
 
         m_learnerType = model.getString(CFGKEY_LEARNERTYPE, "");
+        m_modelType = model.getString(CFGKEY_MODELTYPE, "");
     }
 
     public List<String> getTargetColumnNames() {
@@ -243,5 +259,12 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     public String getLearnerType() {
         return m_learnerType;
+    }
+
+    public ModelType getModelType(){
+        if(!m_modelType.isEmpty()){
+            return ModelType.valueOf(m_modelType);
+        }
+        return null;
     }
 }
