@@ -180,4 +180,16 @@ public class DLModelPortObject extends AbstractPortObject {
     public JComponent[] getViews() {
         return new JComponent[]{};
     }
+
+    /**
+     * Currently supported implementations of {@link Model} by this port object.
+     *
+     * @author David Kolb, KNIME.com GmbH
+     */
+    public enum ModelType {
+        /** MultiLayerNetwork */
+        MLN,
+        /** ComputationGraph */
+        CG;
+    }
 }
