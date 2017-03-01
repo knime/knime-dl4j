@@ -65,6 +65,7 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
@@ -128,47 +129,67 @@ public class DLModelPortObjectUtils {
         final List<String> labels = new ArrayList<>();
         final List<String> targetColumnNames = new ArrayList<String>();
         String learnerType = "";
+        ModelType modelType = null;
 
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("isTrained")) { //read flag
+            //read flag
+            if (entry.getName().matches("isTrained")) {
                 final Integer read = inStream.read();
                 if (read == 1) {
                     isTrained = true;
                 } else {
                     isTrained = false;
                 }
-            } else if (entry.getName().matches("layer_type[0123456789]+")) { //read layer type
+
+                //read layer type
+            } else if (entry.getName().matches("layer_type[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 layerTypes.add(DNNLayerType.valueOf(read));
 
-            } else if (entry.getName().matches("dnn_type[0123456789]+")) { //read dnn type
+                //read dnn type
+            } else if (entry.getName().matches("dnn_type[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 networkTypes.add(DNNType.valueOf(read));
-            } else if (entry.getName().matches("input_column[0123456789]+")) { //read input type
+
+                //read input type
+            } else if (entry.getName().matches("input_column[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 final String columnName = read.split(",")[0];
-                final String columnType = (read.split(",")[1]);
-
+                final String columnType = read.split(",")[1];
                 learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
 
-            } else if (entry.getName().matches("label[0123456789]+")) { //read label
+                //read label
+            } else if (entry.getName().matches("label[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 labels.add(read);
-            } else if (entry.getName().matches("target_column[0123456789]+")) { //read target column name
+
+                //read target column name
+            } else if (entry.getName().matches("target_column[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 targetColumnNames.add(read);
-            } else if (entry.getName().matches("learner_type")) { //read learner type
+
+                //read learner type
+            } else if (entry.getName().matches("learner_type")) {
                 final String read = readStringFromZipStream(inStream);
                 learnerType = read;
+
+            } else if (entry.getName().matches("model_type")) {
+                final String read = readStringFromZipStream(inStream);
+                if(!read.isEmpty()){
+                    modelType = ModelType.valueOf(read);
+                } else {
+                    modelType = null;
+                }
+
             } else {
                 // ignore unrecognized ZipEntries
                 LOGGER.debug("Skipping unrecognized ZipEntry: " + entry.getName());
             }
         }
         return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
-            learnerType, isTrained);
+            learnerType, isTrained, modelType);
     }
 
     /**
@@ -207,7 +228,7 @@ public class DLModelPortObjectUtils {
                 mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(inStream, true);
                 mlnLoaded = true;
 
-             // directly read MultiLayerNetwork, new format
+                // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("cg_model")) {
                 cgFromModelSerializer = ModelSerializer.restoreComputationGraph(inStream, true);
                 cgLoaded = true;
@@ -293,6 +314,7 @@ public class DLModelPortObjectUtils {
         final List<String> labels = spec.getLabels();
         final List<String> targetColumnNames = spec.getTargetColumnNames();
         final String learnerType = spec.getLearnerType();
+        final ModelType modelType = spec.getModelType();
 
         writeLayerTypes(layerTypes, out);
         writeDNNTypes(networkTypes, out);
@@ -301,6 +323,7 @@ public class DLModelPortObjectUtils {
         writeLabels(labels, out);
         writeTargetColumnNames(targetColumnNames, out);
         writeLearnerType(learnerType, out);
+        writeModelType(modelType, out);
     }
 
     private static void savePortObjectAndSpec(final DLModelPortObject portObject, final DLModelPortObjectSpec spec,
@@ -402,6 +425,16 @@ public class DLModelPortObjectUtils {
         ZipEntry entry = new ZipEntry("learner_type");
         out.putNextEntry(entry);
         out.write(learnerType.getBytes(Charset.forName("UTF-8")));
+    }
+
+    private static void writeModelType(final ModelType modelType, final ZipOutputStream out) throws IOException {
+        String toWrite = "";
+        if (modelType != null) {
+            toWrite = modelType.name();
+        }
+        ZipEntry entry = new ZipEntry("model_type");
+        out.putNextEntry(entry);
+        out.write(toWrite.getBytes(Charset.forName("UTF-8")));
     }
 
     private static void writeLabels(final List<String> labels, final ZipOutputStream out) throws IOException {
