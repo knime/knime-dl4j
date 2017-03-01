@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.ModelContentRO;
 import org.knime.core.node.ModelContentWO;
@@ -63,6 +64,11 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  */
 public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
+    /**
+     * Serializer for class DLModelPortObjectSpec.
+     *
+     * @author David Kolb, KNIME.com GmbH
+     */
     public static final class Serializer extends AbstractSimplePortObjectSpecSerializer<DLModelPortObjectSpec> {
     }
 
@@ -104,7 +110,6 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}.
      */
     public DLModelPortObjectSpec() {
-
     }
 
     /**
@@ -131,7 +136,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
         m_targetColumnNames = targetColumnNames;
         m_learnerType = learnerType;
 
-        if(modelType != null){
+        if (modelType != null) {
             m_modelType = modelType.name();
         } else {
             m_modelType = "";
@@ -233,36 +238,62 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
         m_modelType = model.getString(CFGKEY_MODELTYPE, "");
     }
 
+    /**
+     * @return list of names of target columns
+     */
     public List<String> getTargetColumnNames() {
         return m_targetColumnNames;
     }
 
+    /**
+     * @return list of possible {@link DNNType}s of the model contained in the corresponding port object.
+     */
     public List<DNNType> getNeuralNetworkTypes() {
         return m_netTypes;
     }
 
+    /**
+     * @return list of {@link DNNLayerType}s contained in the {@link MultiLayerNetwork} if model type is MLN.
+     */
     public List<DNNLayerType> getLayerTypes() {
         return m_layerTypes;
     }
 
+    /**
+     * @return flag indicating if the model is trained or not
+     */
     public boolean isTrained() {
         return m_isTrained;
     }
 
+    /**
+     * @return list of pairs of columns the model was trained on. First String corresponds to column name, second to
+     *         column type.
+     */
     public List<Pair<String, String>> getLearnedColumns() {
         return m_featureColumns;
     }
 
+    /**
+     * @return list of labels used for training of the model was trained supervised.
+     */
     public List<String> getLabels() {
         return m_labels;
     }
 
+    /**
+     * @return the type of learner used to train this model. This specifies the use case. For possible values see static
+     *         access identifier member in learner model implementation.
+     */
     public String getLearnerType() {
         return m_learnerType;
     }
 
-    public ModelType getModelType(){
-        if(!m_modelType.isEmpty()){
+    /**
+     * @return the type of model contained in the corresponding port object. See {@link ModelType}.
+     */
+    public ModelType getModelType() {
+        if (!m_modelType.isEmpty()) {
             return ModelType.valueOf(m_modelType);
         }
         return null;
