@@ -172,8 +172,8 @@ public class DLModelPortObjectUtils {
     }
 
     /**
-     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}. Supports both deserialization
-     * of old and new format.
+     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}. Supports both deserialization of old
+     * and new format.
      *
      * @param inStream the stream to load from
      * @return the loaded {@link DLModelPortObject}
@@ -250,8 +250,8 @@ public class DLModelPortObjectUtils {
     }
 
     /**
-     * Creates a {@link MultiLayerNetwork} from deserialized objects in the old format. This is now done
-     * implicitly by the dl4j {@link ModelSerializer}.
+     * Creates a {@link MultiLayerNetwork} from deserialized objects in the old format. This is now done implicitly by
+     * the dl4j {@link ModelSerializer}.
      *
      * @param config
      * @param updater

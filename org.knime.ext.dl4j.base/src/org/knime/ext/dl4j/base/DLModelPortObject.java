@@ -153,7 +153,7 @@ public class DLModelPortObject extends AbstractPortObject {
     }
 
     /**
-     * Assumes that this model contains a {@link MultiLayerNetwork}. Else this method will return null.
+     * Assumes that this model contains a {@link MultiLayerNetwork}. Otherwise this method will return null.
      *
      * @return the {@link MultiLayerNetwork} or null
      */
@@ -165,7 +165,7 @@ public class DLModelPortObject extends AbstractPortObject {
     }
 
     /**
-     * Assumes that this model contains a {@link ComputationGraph}. Else this method will return null.
+     * Assumes that this model contains a {@link ComputationGraph}. Otherwise this method will return null.
      *
      * @return the {@link ComputationGraph} or null
      */

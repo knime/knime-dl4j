@@ -110,6 +110,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      * @param featureColumns the list of columns used for training
      * @param labels the list of possible labels
      * @param targetColumnNames the list of target column names
+     * @param learnerType the type of the used learner specifying the use case
      * @param isTrained whether the model is trained or not
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
