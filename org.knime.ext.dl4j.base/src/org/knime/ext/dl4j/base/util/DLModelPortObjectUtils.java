@@ -44,10 +44,8 @@
  */
 package org.knime.ext.dl4j.base.util;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -57,13 +55,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.Layer;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
@@ -127,79 +129,126 @@ public class DLModelPortObjectUtils {
         final List<String> labels = new ArrayList<>();
         final List<String> targetColumnNames = new ArrayList<String>();
         String learnerType = "";
+        ModelType modelType = null;
 
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("isTrained")) { //read flag
+            //read flag
+            if (entry.getName().matches("isTrained")) {
                 final Integer read = inStream.read();
                 if (read == 1) {
                     isTrained = true;
                 } else {
                     isTrained = false;
                 }
-            } else if (entry.getName().matches("layer_type[0123456789]+")) { //read layer type
+
+                //read layer type
+            } else if (entry.getName().matches("layer_type[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 layerTypes.add(DNNLayerType.valueOf(read));
 
-            } else if (entry.getName().matches("dnn_type[0123456789]+")) { //read dnn type
+                //read dnn type
+            } else if (entry.getName().matches("dnn_type[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 networkTypes.add(DNNType.valueOf(read));
-            } else if (entry.getName().matches("input_column[0123456789]+")) { //read input type
+
+                //read input type
+            } else if (entry.getName().matches("input_column[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 final String columnName = read.split(",")[0];
-                final String columnType = (read.split(",")[1]);
-
+                final String columnType = read.split(",")[1];
                 learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
 
-            } else if (entry.getName().matches("label[0123456789]+")) { //read label
+                //read label
+            } else if (entry.getName().matches("label[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 labels.add(read);
-            } else if (entry.getName().matches("target_column[0123456789]+")) { //read target column name
+
+                //read target column name
+            } else if (entry.getName().matches("target_column[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 targetColumnNames.add(read);
-            } else if (entry.getName().matches("learner_type")) { //read learner type
+
+                //read learner type
+            } else if (entry.getName().matches("learner_type")) {
                 final String read = readStringFromZipStream(inStream);
                 learnerType = read;
+
+            } else if (entry.getName().matches("model_type")) {
+                final String read = readStringFromZipStream(inStream);
+                if(!read.isEmpty()){
+                    modelType = ModelType.valueOf(read);
+                } else {
+                    modelType = null;
+                }
+
             } else {
-                // ignore unrecognised ZipEntries
-                LOGGER.debug("Skipping unrecognised ZipEntry: " + entry.getName());
+                // ignore unrecognized ZipEntries
+                LOGGER.debug("Skipping unrecognized ZipEntry: " + entry.getName());
             }
         }
         return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
-            learnerType, isTrained);
+            learnerType, isTrained, modelType);
     }
 
     /**
-     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}.
+     * Loads a {@link DLModelPortObject} from the specified {@link ZipInputStream}. Supports both deserialization of old
+     * and new format.
      *
-     * @param inStream inStream the stream to load from
+     * @param inStream the stream to load from
      * @return the loaded {@link DLModelPortObject}
      * @throws IOException
      */
     @SuppressWarnings("resource")
     public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException {
         final List<Layer> layers = new ArrayList<>();
+
+        //old model format
         INDArray mln_params = null;
         MultiLayerConfiguration mln_config = null;
         org.deeplearning4j.nn.api.Updater updater = null;
 
+        //new model format
+        boolean mlnLoaded = false;
+        boolean cgLoaded = false;
+        MultiLayerNetwork mlnFromModelSerializer = null;
+        ComputationGraph cgFromModelSerializer = null;
+
         ZipEntry entry;
 
         while ((entry = inStream.getNextEntry()) != null) {
-            if (entry.getName().matches("layer[0123456789]+")) { //read layers
+            // read layers
+            if (entry.getName().matches("layer[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
                 layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
-            } else if (entry.getName().matches("mln_config")) { //read MultilayerNetwork
+
+                // directly read MultiLayerNetwork, new format
+            } else if (entry.getName().matches("mln_model")) {
+                mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(inStream, true);
+                mlnLoaded = true;
+
+                // directly read MultiLayerNetwork, new format
+            } else if (entry.getName().matches("cg_model")) {
+                cgFromModelSerializer = ModelSerializer.restoreComputationGraph(inStream, true);
+                cgLoaded = true;
+
+                // read MultilayerNetworkConfig, old format
+            } else if (entry.getName().matches("mln_config")) {
+
                 final String read = readStringFromZipStream(inStream);
                 mln_config = MultiLayerConfiguration.fromJson(read.toString());
-            } else if (entry.getName().matches("mln_params")) { //read params
+
+                // read params, old format
+            } else if (entry.getName().matches("mln_params")) {
                 try {
                     mln_params = Nd4j.read(inStream);
                 } catch (Exception e) {
                     throw new IOException("Could not load network parameters. Please re-execute the Node.", e);
                 }
-            } else if (entry.getName().matches("mln_updater")) { //read updater
+
+                // read updater, old format
+            } else if (entry.getName().matches("mln_updater")) {
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
                 final ObjectInputStream ois = new ObjectInputStream(inStream);
                 try {
@@ -210,32 +259,51 @@ public class DLModelPortObjectUtils {
             }
         }
 
-        MultiLayerNetwork mln;
+        if (mlnLoaded) {
+            assert (!cgLoaded);
+            return new DLModelPortObject(layers, mlnFromModelSerializer, null);
+        } else if (cgLoaded) {
+            assert (!mlnLoaded);
+            return new DLModelPortObject(layers, cgFromModelSerializer, null);
+        } else {
+            return new DLModelPortObject(layers, buildMln(mln_config, updater, mln_params), null);
+        }
+    }
 
-        if (mln_config != null) {
-            mln = new MultiLayerNetwork(mln_config);
+    /**
+     * Creates a {@link MultiLayerNetwork} from deserialized objects in the old format. This is now done implicitly by
+     * the dl4j {@link ModelSerializer}.
+     *
+     * @param config
+     * @param updater
+     * @param params
+     * @return
+     */
+    @Deprecated
+    private static MultiLayerNetwork buildMln(final MultiLayerConfiguration config,
+        final org.deeplearning4j.nn.api.Updater updater, final INDArray params) {
+        MultiLayerNetwork mln = null;
+
+        if (config != null) {
+            mln = new MultiLayerNetwork(config);
             mln.init();
             if (updater != null) {
                 mln.setUpdater(updater);
             }
-
-            if (mln_params != null) {
-                mln.setParams(mln_params);
+            if (params != null) {
+                mln.setParams(params);
             }
-        } else {
-            mln = null;
         }
-
-        return new DLModelPortObject(layers, mln, null);
+        return mln;
     }
 
     private static void savePortObjectOnly(final DLModelPortObject portObject, final ZipOutputStream out)
         throws IOException {
         final List<Layer> layers = portObject.getLayers();
-        final MultiLayerNetwork mln = portObject.getMultilayerLayerNetwork();
+        final Model model = portObject.getModel();
 
         writeLayers(layers, out);
-        writeMultiLayerNetwork(mln, out);
+        writeModel(model, out);
     }
 
     private static void saveSpecOnly(final DLModelPortObjectSpec spec, final ZipOutputStream out) throws IOException {
@@ -246,6 +314,7 @@ public class DLModelPortObjectUtils {
         final List<String> labels = spec.getLabels();
         final List<String> targetColumnNames = spec.getTargetColumnNames();
         final String learnerType = spec.getLearnerType();
+        final ModelType modelType = spec.getModelType();
 
         writeLayerTypes(layerTypes, out);
         writeDNNTypes(networkTypes, out);
@@ -254,6 +323,7 @@ public class DLModelPortObjectUtils {
         writeLabels(labels, out);
         writeTargetColumnNames(targetColumnNames, out);
         writeLearnerType(learnerType, out);
+        writeModelType(modelType, out);
     }
 
     private static void savePortObjectAndSpec(final DLModelPortObject portObject, final DLModelPortObjectSpec spec,
@@ -284,45 +354,22 @@ public class DLModelPortObjectUtils {
         }
     }
 
-    private static void writeMultiLayerNetwork(final MultiLayerNetwork mln, final ZipOutputStream out)
-        throws IOException {
-        ZipEntry entry;
-        if (mln != null) {
-            //write MultilayerNetwork, consists of configuration and network parameters
-            entry = new ZipEntry("mln_config");
-            out.putNextEntry(entry);
-            out.write(mln.getLayerWiseConfigurations().toJson().getBytes(Charset.forName("UTF-8")));
-
-            try {
-                //params() throws exception if not yet set
-                final INDArray params = mln.params();
-                entry = new ZipEntry("mln_params");
-                out.putNextEntry(entry);
-                //use this write call, Nd4j.write(OutputStream,INDArray) is outdated
-                Nd4j.write(params, new DataOutputStream(out));
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                //net does not contain params so we just write nothing
-                LOGGER.debug("Caught Exception writing multi layer network parameter.", e);
-            }
-
-            //write updater
-            try {
-                //if no backprop is done getUpdater() will throw an exception
-                if (mln.getUpdater() != null) {
-                    entry = new ZipEntry("mln_updater");
-                    out.putNextEntry(entry);
-                    final ObjectOutputStream oos = new ObjectOutputStream(out);
-                    oos.writeObject(mln.getUpdater());
-                }
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                //net does not contain updater because no backprop was done
-                LOGGER.debug("Caught Exception writing multi layer network updater.", e);
-            }
+    private static void writeModel(final Model model, final ZipOutputStream out) throws IOException {
+        if (model == null) {
+            return;
         }
+        ZipEntry entry;
+        //write the different model implementations with own identifiers in order to distinguish between them when reading
+        if (model instanceof MultiLayerNetwork) {
+            entry = new ZipEntry("mln_model");
+        } else if (model instanceof ComputationGraph) {
+            entry = new ZipEntry("cg_model");
+        } else {
+            throw new IllegalArgumentException(
+                "Writing of model of type: " + model.getClass().getSimpleName() + " not supported!");
+        }
+        out.putNextEntry(entry);
+        ModelSerializer.writeModel(model, out, true);
     }
 
     private static void writeLayerTypes(final List<DNNLayerType> layerTypes, final ZipOutputStream out)
@@ -378,6 +425,16 @@ public class DLModelPortObjectUtils {
         ZipEntry entry = new ZipEntry("learner_type");
         out.putNextEntry(entry);
         out.write(learnerType.getBytes(Charset.forName("UTF-8")));
+    }
+
+    private static void writeModelType(final ModelType modelType, final ZipOutputStream out) throws IOException {
+        String toWrite = "";
+        if (modelType != null) {
+            toWrite = modelType.name();
+        }
+        ZipEntry entry = new ZipEntry("model_type");
+        out.putNextEntry(entry);
+        out.write(toWrite.getBytes(Charset.forName("UTF-8")));
     }
 
     private static void writeLabels(final List<String> labels, final ZipOutputStream out) throws IOException {

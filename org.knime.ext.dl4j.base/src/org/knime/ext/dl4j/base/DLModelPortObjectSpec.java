@@ -45,11 +45,13 @@ package org.knime.ext.dl4j.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.ModelContentRO;
 import org.knime.core.node.ModelContentWO;
 import org.knime.core.node.port.AbstractSimplePortObjectSpec;
 import org.knime.core.util.Pair;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
@@ -62,6 +64,11 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  */
 public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
+    /**
+     * Serializer for class DLModelPortObjectSpec.
+     *
+     * @author David Kolb, KNIME.com GmbH
+     */
     public static final class Serializer extends AbstractSimplePortObjectSpecSerializer<DLModelPortObjectSpec> {
     }
 
@@ -81,6 +88,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     private static final String CFGKEY_LABELS = "Labels";
 
+    private static final String CFGKEY_MODELTYPE = "ModelType";
+
     private List<DNNType> m_netTypes;
 
     private List<DNNLayerType> m_layerTypes;
@@ -95,11 +104,12 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
     private String m_learnerType;
 
+    private String m_modelType;
+
     /**
      * Empty no-arg constructor as needed by {@link AbstractSimplePortObjectSpec}.
      */
     public DLModelPortObjectSpec() {
-
     }
 
     /**
@@ -110,18 +120,27 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      * @param featureColumns the list of columns used for training
      * @param labels the list of possible labels
      * @param targetColumnNames the list of target column names
+     * @param learnerType the type of the used learner specifying the use case
      * @param isTrained whether the model is trained or not
+     * @param modelType the type of the model contained in the corresponding port object
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final List<Pair<String, String>> featureColumns, final List<String> labels,
-        final List<String> targetColumnNames, final String learnerType, final boolean isTrained) {
-        this.m_netTypes = types;
-        this.m_layerTypes = layerTypeList;
-        this.m_isTrained = isTrained;
-        this.m_featureColumns = featureColumns;
-        this.m_labels = labels;
-        this.m_targetColumnNames = targetColumnNames;
-        this.m_learnerType = learnerType;
+        final List<String> targetColumnNames, final String learnerType, final boolean isTrained,
+        final ModelType modelType) {
+        m_netTypes = types;
+        m_layerTypes = layerTypeList;
+        m_isTrained = isTrained;
+        m_featureColumns = featureColumns;
+        m_labels = labels;
+        m_targetColumnNames = targetColumnNames;
+        m_learnerType = learnerType;
+
+        if (modelType != null) {
+            m_modelType = modelType.name();
+        } else {
+            m_modelType = "";
+        }
     }
 
     /**
@@ -136,7 +155,7 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
      */
     public DLModelPortObjectSpec(final List<DNNType> types, final List<DNNLayerType> layerTypeList,
         final List<Pair<String, String>> featureColumns, final List<String> labels, final boolean isTrained) {
-        this(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained);
+        this(types, layerTypeList, featureColumns, labels, new ArrayList<>(), "", isTrained, null);
     }
 
     /**
@@ -170,6 +189,8 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
             m_targetColumnNames.toArray(new String[m_targetColumnNames.size()]));
 
         model.addString(CFGKEY_LEARNERTYPE, m_learnerType);
+
+        model.addString(CFGKEY_MODELTYPE, m_modelType);
     }
 
     @Override
@@ -214,33 +235,67 @@ public class DLModelPortObjectSpec extends AbstractSimplePortObjectSpec {
         m_targetColumnNames = targetColumnNames;
 
         m_learnerType = model.getString(CFGKEY_LEARNERTYPE, "");
+        m_modelType = model.getString(CFGKEY_MODELTYPE, "");
     }
 
+    /**
+     * @return list of names of target columns
+     */
     public List<String> getTargetColumnNames() {
         return m_targetColumnNames;
     }
 
+    /**
+     * @return list of possible {@link DNNType}s of the model contained in the corresponding port object.
+     */
     public List<DNNType> getNeuralNetworkTypes() {
         return m_netTypes;
     }
 
+    /**
+     * @return list of {@link DNNLayerType}s contained in the {@link MultiLayerNetwork} if model type is MLN.
+     */
     public List<DNNLayerType> getLayerTypes() {
         return m_layerTypes;
     }
 
+    /**
+     * @return flag indicating if the model is trained or not
+     */
     public boolean isTrained() {
         return m_isTrained;
     }
 
+    /**
+     * @return list of pairs of columns the model was trained on. First String corresponds to column name, second to
+     *         column type.
+     */
     public List<Pair<String, String>> getLearnedColumns() {
         return m_featureColumns;
     }
 
+    /**
+     * @return list of labels used for training of the model was trained supervised.
+     */
     public List<String> getLabels() {
         return m_labels;
     }
 
+    /**
+     * @return the type of learner used to train this model. This specifies the use case. For possible values see static
+     *         access identifier member in learner model implementation.
+     */
     public String getLearnerType() {
         return m_learnerType;
+    }
+
+    /**
+     * @return the type of model contained in the corresponding port object. See {@link ModelType}.
+     */
+    public ModelType getModelType() {
+        if (!m_modelType.isEmpty()) {
+            return ModelType.valueOf(m_modelType);
+        }
+        return null;
     }
 }

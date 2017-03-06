@@ -63,6 +63,7 @@ import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.data.iter.ClassificationBufferedDataTableDataSetIterator;
 import org.knime.ext.dl4j.base.exception.DataCellConversionException;
@@ -236,7 +237,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
         //create new spec and set labels
         m_outputSpec = new DLModelPortObjectSpec(specWithoutLabels.getNeuralNetworkTypes(), newLayerTypes,
             specWithoutLabels.getLearnedColumns(), m_labels, Arrays.asList(labelColumnName), "",
-            specWithoutLabels.isTrained());
+            specWithoutLabels.isTrained(), ModelType.MLN);
 
         return new DLModelPortObjectSpec[]{m_outputSpec};
     }
