@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: KNIME Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.base;singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.3.2.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Export-Package: org.knime.ext.dl4j.base,
  org.knime.ext.dl4j.base.data.convert.extension,
