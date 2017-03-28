@@ -51,7 +51,7 @@ import org.deeplearning4j.nn.conf.GradientNormalization;
  */
 public enum DL4JGradientNormalization {
         /** Rescale gradients by dividing by the L2 norm of all gradients for the layer. */
-    RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
+        RenormalizeL2PerLayer(GradientNormalization.RenormalizeL2PerLayer),
         /**
          * <p>
          * Rescale gradients by dividing by the L2 norm of the gradients, separately for each type of parameter within
@@ -65,7 +65,7 @@ public enum DL4JGradientNormalization {
          * </ul>
          * </p>
          */
-    RenormalizeL2PerParamType(GradientNormalization.RenormalizeL2PerParamType),
+        RenormalizeL2PerParamType(GradientNormalization.RenormalizeL2PerParamType),
         /**
          * <p>
          * Clip the gradients on a per-element basis.<br>
@@ -80,7 +80,7 @@ public enum DL4JGradientNormalization {
          * threshold)
          * </p>
          */
-    ClipElementWiseAbsoluteValue(GradientNormalization.ClipElementWiseAbsoluteValue),
+        ClipElementWiseAbsoluteValue(GradientNormalization.ClipElementWiseAbsoluteValue),
         /**
          * <p>
          * Conditional renormalization. Somewhat similar to RenormalizeL2PerLayer, this strategy scales the gradients
@@ -98,7 +98,7 @@ public enum DL4JGradientNormalization {
          * threshold)
          * </p>
          */
-    ClipL2PerLayer(GradientNormalization.ClipL2PerLayer),
+        ClipL2PerLayer(GradientNormalization.ClipL2PerLayer),
         /**
          * <p>
          * Conditional renormalization. Very similar to ClipL2PerLayer, however instead of clipping per layer, do
@@ -110,7 +110,7 @@ public enum DL4JGradientNormalization {
          * threshold)
          * </p>
          */
-    ClipL2PerParamType(GradientNormalization.ClipL2PerParamType),;
+        ClipL2PerParamType(GradientNormalization.ClipL2PerParamType),;
 
     /** the corresponding dl4j value of this enum. */
     private GradientNormalization m_DL4JValue;

@@ -52,14 +52,21 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
  */
 public enum DL4JLossFunction {
         /** Mean Squared Error: Linear Regression. */
-    MSE(LossFunction.MSE), /** Exponential log likelihood: Poisson Regression. */
-    EXPLL(LossFunction.EXPLL), /** Cross Entropy: Binary Classification. */
-    XENT(LossFunction.XENT), /** Multiclass Cross Entropy. */
-    MCXENT(LossFunction.MCXENT), /** RMSE Cross Entropy. */
-    RMSE_XENT(LossFunction.RMSE_XENT), /** Squared Loss. */
-    SQUARED_LOSS(LossFunction.SQUARED_LOSS), /** Reconstruction Cross Entropy. */
-    RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY), /** Negative Log Likelihood. */
-    NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
+        MSE(LossFunction.MSE),
+        /** Exponential log likelihood: Poisson Regression. */
+        EXPLL(LossFunction.EXPLL),
+        /** Cross Entropy: Binary Classification. */
+        XENT(LossFunction.XENT),
+        /** Multiclass Cross Entropy. */
+        MCXENT(LossFunction.MCXENT),
+        /** RMSE Cross Entropy. */
+        RMSE_XENT(LossFunction.RMSE_XENT),
+        /** Squared Loss. */
+        SQUARED_LOSS(LossFunction.SQUARED_LOSS),
+        /** Reconstruction Cross Entropy. */
+        RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY),
+        /** Negative Log Likelihood. */
+        NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
 
     /** the corresponding dl4j value of this enum */
     private LossFunction m_DL4JValue;

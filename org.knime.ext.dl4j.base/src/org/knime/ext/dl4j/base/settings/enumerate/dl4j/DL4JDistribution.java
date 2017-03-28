@@ -49,13 +49,15 @@
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
 /**
- * Distribution types supported by DL4J. Used for weight initialisation.
+ * Distribution types supported by DL4J. Used for weight initialization.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JDistribution {
         /** Normal distribution with parameter mean and standard deviation. */
-    NORMAL, /** Uniform distribution with parameter upper and lower bound. */
-    UNIFORM, /** Normal distribution with parameter number of trails and probability. */
-    BINOMIAL;
+        NORMAL,
+        /** Uniform distribution with parameter upper and lower bound. */
+        UNIFORM,
+        /** Normal distribution with parameter number of trails and probability. */
+        BINOMIAL;
 }
