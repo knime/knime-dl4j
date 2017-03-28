@@ -51,7 +51,6 @@ package org.knime.ext.dl4j.base.nodes.learn.dialog;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnFilter2;
 import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
-import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 
 /**
@@ -65,7 +64,7 @@ public class PretrainingColumnSelectionComponentGroup extends AbstractGridBagDia
 
     /**
      * Constructor for class PretrainingColumnSelectionComponentGroup using the specified
-     * {@link DataParameterSettingsModels} to create settings for contained components and the specified port index to
+     * {@link DataParameterSettingsModels2} to create settings for contained components and the specified port index to
      * use for the column selection.
      *
      * @param dataSettings

@@ -58,7 +58,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModelNumber;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
-import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 
 /**
@@ -74,7 +73,7 @@ public class LearningRateParameterComponentGroup extends AbstractGridBagDialogCo
 
     /**
      * Constructor for class LearningRateParameterComponentGroup using the specified
-     * {@link LearnerParameterSettingsModels} to create settings for contained components.
+     * {@link LearnerParameterSettingsModels2} to create settings for contained components.
      *
      * @param learnerSettings
      */

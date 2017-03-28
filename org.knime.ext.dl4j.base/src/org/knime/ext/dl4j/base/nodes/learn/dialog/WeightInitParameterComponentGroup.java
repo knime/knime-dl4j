@@ -73,7 +73,6 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JDistribution;
-import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
@@ -99,7 +98,7 @@ public class WeightInitParameterComponentGroup extends AbstractGridBagDialogComp
 
     /**
      * Constructor for class WeightInitParameterComponentGroup using the specified
-     * {@link LearnerParameterSettingsModels} to create settings for contained components.
+     * {@link LearnerParameterSettingsModels2} to create settings for contained components.
      *
      * @param learnerSettings
      */

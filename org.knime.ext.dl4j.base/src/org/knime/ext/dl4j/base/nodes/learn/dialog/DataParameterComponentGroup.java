@@ -52,7 +52,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModelNumber;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
-import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 
 /**
@@ -69,7 +68,7 @@ public class DataParameterComponentGroup extends AbstractGridBagDialogComponentG
     SettingsModelString m_imageSizeSettings;
 
     /**
-     * Constructor for class DataParameterComponentGroup using the specified {@link DataParameterSettingsModels} to
+     * Constructor for class DataParameterComponentGroup using the specified {@link DataParameterSettingsModels2} to
      * create settings for contained components and specifying whether to add a panel for the image size parameter.
      *
      * @param dataSettings

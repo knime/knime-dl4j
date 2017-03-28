@@ -55,7 +55,6 @@ import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
-import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 
@@ -77,7 +76,7 @@ public class OutputLayerParameterComponentGroup extends AbstractGridBagDialogCom
     SettingsModelString m_lossSettings;
 
     /**
-     * Constructor for class OutputLayerParameterComponentGroup using the specified {@link LayerParameterSettingsModels}
+     * Constructor for class OutputLayerParameterComponentGroup using the specified {@link LayerParameterSettingsModels2}
      * to create settings for contained components and specifying whether to add a panel for the activation and the
      * number of outputs parameter.
      *

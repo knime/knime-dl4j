@@ -58,7 +58,6 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.ext.dl4j.base.nodes.dialog.AbstractGridBagDialogComponentGroup;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JUpdater;
-import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.EnumUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
@@ -75,7 +74,7 @@ public class UpdaterParameterComponentGroup extends AbstractGridBagDialogCompone
     SettingsModelString m_updaterSettings;
 
     /**
-     * Constructor for class UpdaterParameterComponentGroup using the specified {@link LearnerParameterSettingsModels}
+     * Constructor for class UpdaterParameterComponentGroup using the specified {@link LearnerParameterSettingsModels2}
      * to create settings for contained components.
      *
      * @param learnerSettings
