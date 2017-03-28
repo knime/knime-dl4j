@@ -51,7 +51,6 @@ package org.knime.ext.dl4j.base.data.iter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.node.BufferedDataTable;
@@ -71,8 +70,6 @@ public abstract class AbstractBufferedDataTableDataSetIterator implements DataSe
      *
      */
     private static final long serialVersionUID = -4611650142289529410L;
-
-    private static final Logger LOGGER = Logger.getLogger(AbstractBufferedDataTableDataSetIterator.class);
 
     private final IDataRowToDataSetConverter m_rowConverter;
 
