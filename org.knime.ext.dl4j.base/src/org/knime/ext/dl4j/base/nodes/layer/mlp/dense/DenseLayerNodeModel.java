@@ -64,6 +64,7 @@ import org.knime.ext.dl4j.base.nodes.layer.DNNType;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
+import org.nd4j.linalg.activations.Activation;
 
 /**
  * Dense layer for Deeplearning4J integration.
@@ -98,7 +99,7 @@ public class DenseLayerNodeModel extends AbstractDLLayerNodeModel {
         //parameters
         final int nOut = m_dnnParameterSettings.getInteger(LayerParameter.NUMBER_OF_OUTPUTS);
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getString(LayerParameter.WEIGHT_INIT));
-        final String activation = DL4JActivationFunction
+        final Activation activation = DL4JActivationFunction
             .fromToString(m_dnnParameterSettings.getString(LayerParameter.ACTIVATION)).getDL4JValue();
         final double learningRate = m_dnnParameterSettings.getDouble(LayerParameter.LEARNING_RATE);
 

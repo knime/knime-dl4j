@@ -65,6 +65,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
@@ -108,7 +109,7 @@ public class RBMLayerNodeModel extends AbstractDLLayerNodeModel {
         final RBM.VisibleUnit visible =
             RBM.VisibleUnit.valueOf(m_dnnParameterSettings.getString(LayerParameter.VISIBLE_UNIT));
         final WeightInit weight = WeightInit.valueOf(m_dnnParameterSettings.getString(LayerParameter.WEIGHT_INIT));
-        final String activation = DL4JActivationFunction
+        final Activation activation = DL4JActivationFunction
             .fromToString(m_dnnParameterSettings.getString(LayerParameter.ACTIVATION)).getDL4JValue();
         final LossFunction loss = DL4JLossFunction
             .fromToString(m_dnnParameterSettings.getString(LayerParameter.LOSS_FUNCTION)).getDL4JValue();

@@ -65,6 +65,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
+import org.nd4j.linalg.activations.Activation;
 
 /**
  * Convolution layer for Deeplearning4J integration.
@@ -102,7 +103,7 @@ public class ConvolutionLayerNodeModel extends AbstractDLLayerNodeModel {
             .convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.KERNEL_SIZE).split(","));
         final int[] stride =
             ParameterUtils.convertStringsToInts(m_dnnParameterSettings.getString(LayerParameter.STRIDE).split(","));
-        final String activation = DL4JActivationFunction
+        final Activation activation = DL4JActivationFunction
             .fromToString(m_dnnParameterSettings.getString(LayerParameter.ACTIVATION)).getDL4JValue();
         final double dropOut = m_dnnParameterSettings.getDouble(LayerParameter.DROP_OUT);
         final double learningRate = m_dnnParameterSettings.getDouble(LayerParameter.LEARNING_RATE);

@@ -81,6 +81,7 @@ import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels2;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -328,7 +329,7 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
         throws InvalidSettingsException {
         int nOut = settings.getInteger(LayerParameter.NUMBER_OF_OUTPUTS);
         final WeightInit weight = WeightInit.valueOf(settings.getString(LayerParameter.WEIGHT_INIT));
-        final String activation =
+        final Activation activation =
             DL4JActivationFunction.fromToString(settings.getString(LayerParameter.ACTIVATION)).getDL4JValue();
         final LossFunction loss =
             DL4JLossFunction.fromToString(settings.getString(LayerParameter.LOSS_FUNCTION)).getDL4JValue();

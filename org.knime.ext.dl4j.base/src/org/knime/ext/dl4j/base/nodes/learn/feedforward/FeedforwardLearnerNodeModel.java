@@ -85,6 +85,7 @@ import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -416,7 +417,7 @@ public class FeedforwardLearnerNodeModel extends AbstractDLLearnerNodeModel {
             nOut = settings.getNumberOfOutputs().getIntValue();
         }
         final WeightInit weight = WeightInit.valueOf(settings.getWeightInit().getStringValue());
-        final String activation =
+        final Activation activation =
             DL4JActivationFunction.fromToString(settings.getActivation().getStringValue()).getDL4JValue();
         final LossFunction loss =
             DL4JLossFunction.fromToString(settings.getLossFunction().getStringValue()).getDL4JValue();

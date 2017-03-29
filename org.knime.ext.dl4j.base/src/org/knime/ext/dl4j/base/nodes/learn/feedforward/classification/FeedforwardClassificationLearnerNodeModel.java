@@ -76,6 +76,7 @@ import org.knime.ext.dl4j.base.nodes.learn.view.UpdateLearnerViewIterationListen
 import org.knime.ext.dl4j.base.settings.enumerate.DataParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LayerParameter;
 import org.knime.ext.dl4j.base.settings.enumerate.LearnerParameter;
+import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JLossFunction;
 import org.knime.ext.dl4j.base.settings.impl.DataParameterSettingsModels2;
 import org.knime.ext.dl4j.base.settings.impl.LayerParameterSettingsModels2;
@@ -84,6 +85,7 @@ import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.knime.ext.dl4j.base.util.ConverterUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 import org.knime.ext.dl4j.base.util.TableUtils;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -389,7 +391,7 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
         }
         final int nOut = m_labels.size();
         final WeightInit weight = WeightInit.valueOf(settings.getString(LayerParameter.WEIGHT_INIT));
-        final String activation = "softmax";
+        final Activation activation = DL4JActivationFunction.softmax.getDL4JValue();
         final LossFunction loss =
             DL4JLossFunction.fromToString(settings.getString(LayerParameter.LOSS_FUNCTION)).getDL4JValue();
         final double learningRate = settings.getDouble(LayerParameter.LEARNING_RATE);
