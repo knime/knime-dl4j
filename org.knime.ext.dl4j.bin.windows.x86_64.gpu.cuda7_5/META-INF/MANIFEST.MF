@@ -7,8 +7,8 @@ Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-PlatformFilter: (&(osgi.arch=x86_64)(osgi.os=win32))
-Bundle-ClassPath: libs/nd4j-cuda-7.5-0.6.0-windows-x86_64.jar,
- libs/nd4j-cuda-7.5-0.6.0.jar
+Bundle-ClassPath: libs/nd4j-cuda-7.5-0.8.0-windows-x86_64.jar,
+ libs/nd4j-cuda-7.5-0.8.0.jar
 Export-Package: org.nd4j.jita.allocator,
  org.nd4j.jita.allocator.concurrency,
  org.nd4j.jita.allocator.context,
@@ -34,8 +34,6 @@ Export-Package: org.nd4j.jita.allocator,
  org.nd4j.jita.handler.impl,
  org.nd4j.jita.memory,
  org.nd4j.jita.memory.impl,
- org.nd4j.jita.perf,
- org.nd4j.jita.perf.data,
  org.nd4j.linalg.jcublas,
  org.nd4j.linalg.jcublas.blas,
  org.nd4j.linalg.jcublas.buffer,
@@ -43,4 +41,7 @@ Export-Package: org.nd4j.jita.allocator,
  org.nd4j.linalg.jcublas.complex,
  org.nd4j.linalg.jcublas.context,
  org.nd4j.linalg.jcublas.ops.executioner,
- org.nd4j.linalg.jcublas.util
+ org.nd4j.linalg.jcublas.ops.executioner.aggregates,
+ org.nd4j.linalg.jcublas.rng,
+ org.nd4j.linalg.jcublas.util,
+ org.nd4j.nativeblas
