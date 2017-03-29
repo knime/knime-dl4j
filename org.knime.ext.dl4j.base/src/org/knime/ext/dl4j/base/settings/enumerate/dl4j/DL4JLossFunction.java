@@ -42,34 +42,42 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
+import org.knime.core.node.NodeLogger;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
- * Wrapper for {@link LossFunction} for better String representation of values. Also hides unsupported LossFunction
- * {@link LossFunction#CUSTOM}.
+ * Wrapper for {@link LossFunction} for better String representation of values.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JLossFunction {
-        /** Mean Squared Error: Linear Regression. */
-        MSE(LossFunction.MSE),
+        /** Hinge Loss. */
+        HINGE(LossFunction.HINGE),
+        /** Squared Hinge Loss. */
+        SQUARED_HINGE(LossFunction.SQUARED_HINGE),
         /** Exponential log likelihood: Poisson Regression. */
-        EXPLL(LossFunction.EXPLL),
+        POISSON(LossFunction.POISSON),
         /** Cross Entropy: Binary Classification. */
         XENT(LossFunction.XENT),
         /** Multiclass Cross Entropy. */
         MCXENT(LossFunction.MCXENT),
-        /** RMSE Cross Entropy. */
-        RMSE_XENT(LossFunction.RMSE_XENT),
-        /** Squared Loss. */
-        SQUARED_LOSS(LossFunction.SQUARED_LOSS),
-        /** Reconstruction Cross Entropy. */
+        /** Kullback-Leibler Divergence. */
         RECONSTRUCTION_CROSSENTROPY(LossFunction.RECONSTRUCTION_CROSSENTROPY),
         /** Negative Log Likelihood. */
-        NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD);
+        NEGATIVELOGLIKELIHOOD(LossFunction.NEGATIVELOGLIKELIHOOD),
+        /** Sum Of Differences. */
+        SUM_OF_DIFFERENCES(LossFunction.L1),
+        /** Sum Of Squared Differences. */
+        SUM_OF_SQUARED_DIFFERENCES(LossFunction.L2),
+        /** Mean Of Sum Of Squared Differences. */
+        MSE(LossFunction.MSE),
+        /** Cosine Proximity. */
+        COSINE_PROXIMITY(LossFunction.COSINE_PROXIMITY);
 
     /** the corresponding dl4j value of this enum */
     private LossFunction m_DL4JValue;
+
+    private static final NodeLogger logger = NodeLogger.getLogger(DL4JLossFunction.class);
 
     private DL4JLossFunction(final LossFunction loss) {
         m_DL4JValue = loss;
@@ -87,7 +95,10 @@ public enum DL4JLossFunction {
                 return e;
             }
         }
-        return null;
+        //default fallback
+        logger.warn("No loss function for parameter value: " + toString
+            + " colud be found. The default 'Mean Squared Error' will be used. Please re-configure and re-execute the Node.");
+        return DL4JLossFunction.MSE;
     }
 
     /**
@@ -102,22 +113,28 @@ public enum DL4JLossFunction {
     @Override
     public String toString() {
         switch (this) {
-            case EXPLL:
-                return "Exponential Log Likelihood";
+            case POISSON:
+                return "Poisson";
             case MCXENT:
                 return "Multiclass Cross Entropy";
             case MSE:
                 return "Mean Squared Error";
+            case SUM_OF_DIFFERENCES:
+                return "Sum Of Errors";
+            case SUM_OF_SQUARED_DIFFERENCES:
+                return "Sum Of Squared Errors";
             case NEGATIVELOGLIKELIHOOD:
                 return "Negative Log Likelihood";
             case RECONSTRUCTION_CROSSENTROPY:
                 return "Reconstruction Cross Entropy";
-            case RMSE_XENT:
-                return "RMSE Cross Entropy";
-            case SQUARED_LOSS:
-                return "Squared Error";
             case XENT:
                 return "Cross Entropy";
+            case COSINE_PROXIMITY:
+                return "Cosine Proximity";
+            case HINGE:
+                return "Hinge Loss";
+            case SQUARED_HINGE:
+                return "Squared Hinge Loss";
             default:
                 return super.toString();
         }

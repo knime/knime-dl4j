@@ -43,6 +43,7 @@
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.knime.core.node.NodeLogger;
 
 /**
  * Wrapper for {@link OptimizationAlgorithm} for better String representation of values.
@@ -51,12 +52,14 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
  */
 public enum DL4JOptimizationAlgorithm {
         LINE_GRADIENT_DESCENT(OptimizationAlgorithm.LINE_GRADIENT_DESCENT),
-        CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT), HESSIAN_FREE(OptimizationAlgorithm.HESSIAN_FREE),
+        CONJUGATE_GRADIENT(OptimizationAlgorithm.CONJUGATE_GRADIENT),
         LBFGS(OptimizationAlgorithm.LBFGS),
         STOCHASTIC_GRADIENT_DESCENT(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT);
 
     /** The corresponding dl4j value of this enum. */
     private OptimizationAlgorithm m_DL4JValue;
+
+    private static final NodeLogger logger = NodeLogger.getLogger(DL4JOptimizationAlgorithm.class);
 
     private DL4JOptimizationAlgorithm(final OptimizationAlgorithm optimization) {
         m_DL4JValue = optimization;
@@ -74,7 +77,10 @@ public enum DL4JOptimizationAlgorithm {
                 return e;
             }
         }
-        return null;
+        //default fallback
+        logger.warn("No optimization algorithm for parameter value: " + toString
+            + " colud be found. The default 'Stochastic Gradient Descent' will be used. Please re-configure and re-execute the Node.");
+        return DL4JOptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
     }
 
     /**
@@ -91,8 +97,6 @@ public enum DL4JOptimizationAlgorithm {
         switch (this) {
             case CONJUGATE_GRADIENT:
                 return "Conjugate Gradient Descent";
-            case HESSIAN_FREE:
-                return "Hessian Free";
             case LBFGS:
                 return super.toString();
             case LINE_GRADIENT_DESCENT:

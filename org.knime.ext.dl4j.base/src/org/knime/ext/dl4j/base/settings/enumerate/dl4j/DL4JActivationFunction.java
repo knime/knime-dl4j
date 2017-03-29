@@ -42,19 +42,50 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
+import org.knime.core.node.NodeLogger;
+import org.nd4j.linalg.activations.Activation;
+
 /**
- * Activation function types supported by DL4J. Enumeration wrapper as there is no enum in DL4J.
+ * Wrapper for {@link Activation} for better String representation of values.
  *
  * @author David Kolb, KNIME.com GmbH
  */
 public enum DL4JActivationFunction {
-        relu("relu"), tanh("tanh"), sigmoid("sigmoid"), softmax("softmax"), hardtanh("hardtanh"),
-        leakyrelu("leakyrelu"), maxout("maxout"), softsign("softsign"), softplus("softplus"), identity("identity");
+        /** Cubic */
+        cube(Activation.CUBE),
+        /** Exponential Linear Unit */
+        elu(Activation.ELU),
+        /** Rectified Linear Unit */
+        relu(Activation.RELU),
+        /** Randomized Leaky Rectified Linear Unit */
+        rrelu(Activation.RRELU),
+        /** Hyperbolic Tangent */
+        tanh(Activation.TANH),
+        /** Hard Sigmoid */
+        hardsigmoid(Activation.HARDSIGMOID),
+        /** Hard TanH */
+        hardtanh(Activation.HARDTANH),
+        /** Identity */
+        identity(Activation.IDENTITY),
+        /** Rational TanH */
+        rationaltanh(Activation.RATIONALTANH),
+        /** Sigmoid */
+        sigmoid(Activation.SIGMOID),
+        /** Softmax */
+        softmax(Activation.SOFTMAX),
+        /** Leaky Rectified Linear Unit */
+        leakyrelu(Activation.LEAKYRELU),
+        /** Softsign */
+        softsign(Activation.SOFTSIGN),
+        /** Softplus */
+        softplus(Activation.SOFTPLUS),;
 
     /** the corresponding dl4j value of this enum. */
-    private String m_DL4JValue;
+    private Activation m_DL4JValue;
 
-    private DL4JActivationFunction(final String activation) {
+    private static final NodeLogger logger = NodeLogger.getLogger(DL4JActivationFunction.class);
+
+    private DL4JActivationFunction(final Activation activation) {
         m_DL4JValue = activation;
     }
 
@@ -70,15 +101,18 @@ public enum DL4JActivationFunction {
                 return e;
             }
         }
-        return null;
+        //default fallback
+        logger.warn("No activation function for parameter value: " + toString
+            + " colud be found. The default 'ReLU' will be used. Please re-configure and re-execute the Node.");
+        return DL4JActivationFunction.relu;
     }
 
     /**
-     * Get the in dl4j usable activation function string corresponding to this enum.
+     * Get the in dl4j usable {@link Activation} corresponding to this enum.
      *
      * @return dl4j usable activation function string
      */
-    public String getDL4JValue() {
+    public Activation getDL4JValue() {
         return m_DL4JValue;
     }
 
@@ -89,8 +123,6 @@ public enum DL4JActivationFunction {
                 return "HardTanH";
             case leakyrelu:
                 return "LeakyReLU";
-            case maxout:
-                return "MaxOut";
             case relu:
                 return "ReLU";
             case sigmoid:
@@ -105,6 +137,16 @@ public enum DL4JActivationFunction {
                 return "TanH";
             case identity:
                 return "Identity";
+            case cube:
+                return "Cubic";
+            case elu:
+                return "ELU";
+            case hardsigmoid:
+                return "HardSigmoid";
+            case rationaltanh:
+                return "RationalTanH";
+            case rrelu:
+                return "RandomizedLeakyReLU";
             default:
                 return super.toString();
         }

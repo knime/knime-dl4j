@@ -43,6 +43,7 @@
 package org.knime.ext.dl4j.base.settings.enumerate.dl4j;
 
 import org.deeplearning4j.nn.conf.GradientNormalization;
+import org.knime.core.node.NodeLogger;
 
 /**
  * Wrapper for {@link GradientNormalization} for better String representation of values.
@@ -115,6 +116,8 @@ public enum DL4JGradientNormalization {
     /** the corresponding dl4j value of this enum. */
     private GradientNormalization m_DL4JValue;
 
+    private static final NodeLogger logger = NodeLogger.getLogger(DL4JGradientNormalization.class);
+
     private DL4JGradientNormalization(final GradientNormalization norm) {
         m_DL4JValue = norm;
     }
@@ -131,7 +134,10 @@ public enum DL4JGradientNormalization {
                 return e;
             }
         }
-        return null;
+        //default fallback
+        logger.warn("No gradient normalization strategy for parameter value: " + toString
+            + " colud be found. The default 'Renormalize L2 Per Param Type' will be used. Please re-configure and re-execute the Node.");
+        return DL4JGradientNormalization.RenormalizeL2PerParamType;
     }
 
     /**
