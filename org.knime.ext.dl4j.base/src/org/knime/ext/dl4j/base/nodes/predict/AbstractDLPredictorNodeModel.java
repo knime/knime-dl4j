@@ -61,8 +61,10 @@ import org.knime.core.node.port.PortType;
 import org.knime.core.util.Pair;
 import org.knime.ext.dl4j.base.AbstractDLNodeModel;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
+import org.knime.ext.dl4j.base.exception.DL4JVersionCompatibilityException;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
+import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -175,7 +177,20 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      */
     protected boolean isOutActivation(final List<Layer> layers, final DL4JActivationFunction activation) {
         final Layer outputLayer = layers.get(layers.size() - 1);
-        if (outputLayer.getActivationFunction().equals(activation.getDL4JValue())) {
+        IActivation activationFn = outputLayer.getActivationFn();
+
+        /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
+         * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
+         * of the layer object will contain null. Old method to retrieve String representation of the
+         * activation function was removed. */
+        if (activationFn == null) {
+            String msg = "DL4J version compatibility problem. Provided model may be "
+                + "trained with an older version of DL4J. Please re-execute the Learner Node.";
+            logger.debug("Activation function of output layer is null.");
+            throw new DL4JVersionCompatibilityException(msg);
+        }
+
+        if (outputLayer.getActivationFn().equals(activation.getDL4JValue().getActivationFunction())) {
             return true;
         }
         return false;
