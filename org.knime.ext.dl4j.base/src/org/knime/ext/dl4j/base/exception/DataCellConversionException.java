@@ -54,7 +54,7 @@ public class DataCellConversionException extends Exception {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs an <code>DataCellConversionException</code> with the specified detail message. Use a helpful message
+     * Constructs an {@link DataCellConversionException} with the specified detail message. Use a helpful message
      * here as it will be displayed to the user, and it is the only hint ones understands to actual the problem.
      *
      * @param s the detail message.
@@ -64,7 +64,7 @@ public class DataCellConversionException extends Exception {
     }
 
     /**
-     * Constructs an <code>DataCellConversionException</code> with the specified cause.
+     * Constructs an {@link DataCellConversionException} with the specified cause.
      *
      * @param cause the original cause of the execption
      */
@@ -73,7 +73,7 @@ public class DataCellConversionException extends Exception {
     }
 
     /**
-     * Constructs an <code>DataCellConversionException</code> with the specified detail message and a cause. Use a
+     * Constructs an {@link DataCellConversionException} with the specified detail message and a cause. Use a
      * helpful message here as it will be displayed to the user, and it is the only hint ones understands to actual the
      * problem.
      *
