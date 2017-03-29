@@ -55,6 +55,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -177,7 +178,7 @@ public class DLModelPortObjectUtils {
 
             } else if (entry.getName().matches("model_type")) {
                 final String read = readStringFromZipStream(inStream);
-                if(!read.isEmpty()){
+                if (!read.isEmpty()) {
                     modelType = ModelType.valueOf(read);
                 } else {
                     modelType = null;
@@ -225,12 +226,16 @@ public class DLModelPortObjectUtils {
 
                 // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("mln_model")) {
-                mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(inStream, true);
+                //stream must not be closed, ModelSerializer tries to close the stream
+                CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);
+                mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(shieldIs, true);
                 mlnLoaded = true;
 
                 // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("cg_model")) {
-                cgFromModelSerializer = ModelSerializer.restoreComputationGraph(inStream, true);
+                //stream must not be closed, ModelSerializer tries to close the stream
+                CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);
+                cgFromModelSerializer = ModelSerializer.restoreComputationGraph(shieldIs, true);
                 cgLoaded = true;
 
                 // read MultilayerNetworkConfig, old format
