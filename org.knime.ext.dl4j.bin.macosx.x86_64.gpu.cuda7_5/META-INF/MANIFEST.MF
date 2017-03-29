@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Macosx specific Cuda 7.5 GPU dependencies for Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.bin.macosx.x86_64.gpu.cuda7_5;singleton:=true
-Bundle-Version: 0.6.0.qualifier
+Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: KNIME GmbH, Konstanz, Germany
 Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
