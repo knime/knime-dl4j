@@ -8,8 +8,12 @@ Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-PlatformFilter: (&(osgi.arch=x86_64)(osgi.os=win32))
 Bundle-ClassPath: libs/nd4j-cuda-8.0-0.8.0-windows-x86_64.jar,
- libs/nd4j-cuda-8.0-0.8.0.jar
-Export-Package: org.nd4j.jita.allocator,
+ libs/nd4j-cuda-8.0-0.8.0.jar,
+ libs/cuda-8.0-1.3-windows-x86_64.jar,
+ libs/cuda-8.0-1.3.jar
+Export-Package: org.bytedeco.javacpp,
+ org.bytedeco.javacpp.presets,
+ org.nd4j.jita.allocator,
  org.nd4j.jita.allocator.concurrency,
  org.nd4j.jita.allocator.context,
  org.nd4j.jita.allocator.context.impl,
