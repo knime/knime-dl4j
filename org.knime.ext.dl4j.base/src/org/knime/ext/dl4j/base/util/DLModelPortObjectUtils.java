@@ -45,11 +45,15 @@
 package org.knime.ext.dl4j.base.util;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -59,6 +63,7 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -70,6 +75,7 @@ import org.knime.ext.dl4j.base.DLModelPortObject.ModelType;
 import org.knime.ext.dl4j.base.DLModelPortObjectSpec;
 import org.knime.ext.dl4j.base.nodes.layer.DNNLayerType;
 import org.knime.ext.dl4j.base.nodes.layer.DNNType;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -222,7 +228,21 @@ public class DLModelPortObjectUtils {
             // read layers
             if (entry.getName().matches("layer[0123456789]+")) {
                 final String read = readStringFromZipStream(inStream);
-                layers.add(NeuralNetConfiguration.fromJson(read).getLayer());
+                Layer l = NeuralNetConfiguration.fromJson(read).getLayer();
+
+                /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
+                 * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
+                 * of the layer object will contain null after 'NeuralNetConfiguration.fromJson'. Old method to
+                 * retrieve String representation of the activation function was removed. Therefore, we parse
+                 * the old activation from the json ourself and map it to the new Activation. */
+                if (l.getActivationFn() == null) {
+                    Optional<Activation> layerActivation = DL4JVersionUtils.parseLayerActivationFromJson(read);
+
+                    if (layerActivation.isPresent()) {
+                        l.setActivationFn(layerActivation.get().getActivationFunction());
+                    }
+                }
+                layers.add(l);
 
                 // directly read MultiLayerNetwork, new format
             } else if (entry.getName().matches("mln_model")) {
@@ -255,7 +275,7 @@ public class DLModelPortObjectUtils {
                 // read updater, old format
             } else if (entry.getName().matches("mln_updater")) {
                 // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
-                final ObjectInputStream ois = new ObjectInputStream(inStream);
+                final IgnoreIDObjectInputStream ois = new IgnoreIDObjectInputStream(inStream);
                 try {
                     updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
                 } catch (final ClassNotFoundException e) {
@@ -531,5 +551,52 @@ public class DLModelPortObjectUtils {
             layersClone.add(l.clone());
         }
         return layersClone;
+    }
+
+    /**
+     * Workaround class for compatibility issue of DL4J version 0.6.0 to 0.8.0. SUID of {@link Updater} changed, therefore
+     * it could not be loaded by standard 'ObjectInputStream' anymore. This class just ignores the SUID and tries to deserialize
+     * the object anyway because the class definition did not change. NOT intended to be used anywhere else!
+     * <br><br>
+     * Taken from: http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
+     *
+     * @author David Kolb, KNIME.com GmbH
+     */
+    private static class IgnoreIDObjectInputStream extends ObjectInputStream {
+
+        /**
+         * @param in
+         * @throws IOException
+         */
+        public IgnoreIDObjectInputStream(final InputStream in) throws IOException {
+            super(in);
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
+            ObjectStreamClass resultClassDescriptor = super.readClassDescriptor(); // initially streams descriptor
+            Class localClass; // the class in the local JVM that this descriptor represents.
+            try {
+                localClass = Class.forName(resultClassDescriptor.getName());
+            } catch (ClassNotFoundException e) {
+                LOGGER.debug("No local updater class for " + resultClassDescriptor.getName(), e);
+                return resultClassDescriptor;
+            }
+            ObjectStreamClass localClassDescriptor = ObjectStreamClass.lookup(localClass);
+            if (localClassDescriptor != null) { // only if class implements serializable
+                final long localSUID = localClassDescriptor.getSerialVersionUID();
+                final long streamSUID = resultClassDescriptor.getSerialVersionUID();
+                if (streamSUID != localSUID) { // check for serialVersionUID mismatch.
+                    final StringBuffer s = new StringBuffer("Overriding serialized class version mismatch: ");
+                    s.append("local serialVersionUID = ").append(localSUID);
+                    s.append(" stream serialVersionUID = ").append(streamSUID);
+                    Exception e = new InvalidClassException(s.toString());
+                    LOGGER.debug("Overriding SUID of saved updater. Potentially Fatal Deserialization Operation.", e);
+                    resultClassDescriptor = localClassDescriptor; // Use local class descriptor for deserialization
+                }
+            }
+            return resultClassDescriptor;
+        }
     }
 }
