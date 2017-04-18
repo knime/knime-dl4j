@@ -189,7 +189,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
         final Layer outputLayer = layers.get(layers.size() - 1);
         IActivation activationFn = outputLayer.getActivationFn();
 
-        /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
+        /* Compatibility issue between dl4j 0.6 and 0.8 due to API change of DL4J. Activations changed from
          * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
          * of the layer object will contain null. Old method to retrieve String representation of the
          * activation function was removed. */

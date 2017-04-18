@@ -558,7 +558,7 @@ public class DLModelPortObjectUtils {
      * it could not be loaded by standard 'ObjectInputStream' anymore. This class just ignores the SUID and tries to deserialize
      * the object anyway because the class definition did not change. NOT intended to be used anywhere else!
      * <br><br>
-     * Taken from: http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
+     * Taken and adapted from: http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
      *
      * @author David Kolb, KNIME.com GmbH
      */
