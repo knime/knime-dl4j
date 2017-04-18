@@ -103,7 +103,7 @@ public enum DL4JActivationFunction {
         }
         //default fallback
         logger.warn("No activation function for parameter value: " + toString
-            + " colud be found. The default 'ReLU' will be used. Please re-configure and re-execute the Node.");
+            + " could be found. The default '" + DL4JActivationFunction.relu + "' will be used.");
         return DL4JActivationFunction.relu;
     }
 

@@ -169,8 +169,8 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
 
                 if (!specType.equals(expectedType)) {
                     throw new InvalidSettingsException(
-                        "Table contains column: " + c.getFirst() + " but was " + "not of expected type. Expected: '"
-                            + c.getSecond() + "' but was: '" + colSpec.getType().getName() + "'");
+                        "Table contains column: " + c.getFirst() + " but the column was not of expected type. Expected type: '"
+                            + c.getSecond() + "' but was: '" + colSpec.getType().getName() + "'. Maybe the column was renamed.");
                 }
             } else {
                 throw new InvalidSettingsException("Table does not contain expected input column: " + c.getFirst());

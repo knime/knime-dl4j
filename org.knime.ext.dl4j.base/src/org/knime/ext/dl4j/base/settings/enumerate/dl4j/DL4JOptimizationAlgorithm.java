@@ -79,7 +79,7 @@ public enum DL4JOptimizationAlgorithm {
         }
         //default fallback
         logger.warn("No optimization algorithm for parameter value: " + toString
-            + " colud be found. The default 'Stochastic Gradient Descent' will be used. Please re-configure and re-execute the Node.");
+            + " could be found. The default '" + DL4JOptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT + "' will be used.");
         return DL4JOptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
     }
 

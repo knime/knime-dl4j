@@ -136,7 +136,7 @@ public enum DL4JGradientNormalization {
         }
         //default fallback
         logger.warn("No gradient normalization strategy for parameter value: " + toString
-            + " colud be found. The default 'Renormalize L2 Per Param Type' will be used. Please re-configure and re-execute the Node.");
+            + " could be found. The default '" + DL4JGradientNormalization.RenormalizeL2PerParamType + "' will be used.");
         return DL4JGradientNormalization.RenormalizeL2PerParamType;
     }
 

@@ -97,7 +97,7 @@ public enum DL4JLossFunction {
         }
         //default fallback
         logger.warn("No loss function for parameter value: " + toString
-            + " colud be found. The default 'Mean Squared Error' will be used. Please re-configure and re-execute the Node.");
+            + " could be found. The default '" + DL4JLossFunction.MSE + "' will be used.");
         return DL4JLossFunction.MSE;
     }
 
