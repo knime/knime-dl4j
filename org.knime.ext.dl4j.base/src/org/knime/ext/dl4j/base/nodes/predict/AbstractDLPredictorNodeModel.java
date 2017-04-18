@@ -200,10 +200,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
             throw new DL4JVersionCompatibilityException(msg);
         }
 
-        if (outputLayer.getActivationFn().equals(activation.getDL4JValue().getActivationFunction())) {
-            return true;
-        }
-        return false;
+        return outputLayer.getActivationFn().equals(activation.getDL4JValue().getActivationFunction());
     }
 
     /**
