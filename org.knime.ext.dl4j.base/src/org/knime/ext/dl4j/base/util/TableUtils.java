@@ -52,7 +52,6 @@ import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
-import org.knime.core.data.DataTable;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataType;
 import org.knime.core.data.StringValue;
@@ -279,8 +278,8 @@ public class TableUtils {
      *
      * @param table the table to check
      */
-    public static void checkForEmptyTable(final DataTable table) {
-        if (!table.iterator().hasNext()) {
+    public static void checkForEmptyTable(final BufferedDataTable table) {
+        if (table.size() == 0) {
             throw new IllegalStateException("Input table must not be empty!");
         }
     }
