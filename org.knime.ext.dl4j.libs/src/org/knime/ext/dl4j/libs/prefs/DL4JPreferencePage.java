@@ -45,7 +45,9 @@ package org.knime.ext.dl4j.libs.prefs;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -59,12 +61,15 @@ import org.knime.ext.dl4j.libs.DL4JPluginActivator;
  */
 public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    /**
-     * Key use GPU checkbox.
-     */
+    /** Key for GPU checkbox. */
     public static final String P_BACKEND_TYPE = "backendType";
 
+    /** Key for verbose logging checkbox */
+    public static final String P_ENABLE_VERBOSE_LOGGING = "enableVerboseLogging";
+
     private boolean m_useGPU;
+
+    private boolean m_enableVerbose;
 
     /**
      * Constructor for class DL4JPreferencePage.
@@ -74,11 +79,13 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
         setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
         setDescription("Preferences for the KNIME Deeplearning4J Integration.");
         m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+        m_enableVerbose = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING);
     }
 
     @Override
     public void init(final IWorkbench workbench) {
         getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
+        getPreferenceStore().setDefault(P_ENABLE_VERBOSE_LOGGING, false);
     }
 
     @Override
@@ -90,6 +97,11 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
         addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?",
             BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
 
+        Label label = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
+
+        addField(new BooleanFieldEditor(P_ENABLE_VERBOSE_LOGGING, "Enable verbose logging?",
+            BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
     }
 
     /**
@@ -115,15 +127,30 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 
         if (useGPUChanged) {
             m_useGPU = currentUseGPU;
-            MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-            mb.setText("Restart workbench...");
-            mb.setMessage("Changes of the used backend become first available after restarting the workbench.\n"
-                    + "Do you want to restart the workbench now?");
-            if (mb.open() != SWT.YES) {
-                return;
-            }
-
-            PlatformUI.getWorkbench().restart();
+            String gpuRestartMessage = "Changes of the used backend become first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?";
+            promptRestartWithMessage(gpuRestartMessage);
         }
+
+        boolean currentEnableVerbose = DL4JPluginActivator.getDefault().getPreferenceStore()
+                .getBoolean(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING);
+        boolean enableVerboseChanged = m_enableVerbose != currentEnableVerbose;
+
+        if (enableVerboseChanged) {
+            m_useGPU = currentEnableVerbose;
+            String gpuRestartMessage = "Changes of verbose logging become first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?";
+            promptRestartWithMessage(gpuRestartMessage);
+        }
+    }
+
+    private void promptRestartWithMessage(final String message){
+        MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+        mb.setText("Restart workbench...");
+        mb.setMessage(message);
+        if (mb.open() != SWT.YES) {
+            return;
+        }
+        PlatformUI.getWorkbench().restart();
     }
 }
