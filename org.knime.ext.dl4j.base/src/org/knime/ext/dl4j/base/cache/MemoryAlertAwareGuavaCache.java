@@ -191,7 +191,7 @@ public class MemoryAlertAwareGuavaCache {
     /**
      * @return singleton instance of this cache
      */
-    public static MemoryAlertAwareGuavaCache getInstance() {
+    public synchronized static MemoryAlertAwareGuavaCache getInstance() {
         if (m_instance == null) {
             m_instance = new MemoryAlertAwareGuavaCache();
             m_instance.initialize();
