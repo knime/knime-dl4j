@@ -93,7 +93,7 @@ public class MemoryAlertAwareGuavaCache {
      * Initializes this cache and registers the cache to the {@link MemoryAlertSystem} which
      * cleans the cache if memory gets low.
      */
-    public void initialize() {
+    private void initialize() {
         if (m_enableVerbose) {
             m_cache = CacheBuilder.newBuilder().maximumSize(m_cacheSize).softValues().recordStats().build();
         } else {
