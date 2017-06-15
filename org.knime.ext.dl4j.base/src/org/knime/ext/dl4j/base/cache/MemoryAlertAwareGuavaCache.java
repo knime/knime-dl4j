@@ -74,6 +74,7 @@ public class MemoryAlertAwareGuavaCache {
 
     private static final NodeLogger LOGGER = NodeLogger.getLogger(MemoryAlertAwareGuavaCache.class);
 
+    // NB: instantiation as static is OK, as cache is not expensive.
     private final static MemoryAlertAwareGuavaCache CACHE = new MemoryAlertAwareGuavaCache();
 
     private boolean m_enableVerbose =
@@ -149,6 +150,8 @@ public class MemoryAlertAwareGuavaCache {
      */
     @SuppressWarnings("unchecked")
     public <V> V get(final UUID key, final Callable<V> valueLoader) throws ExecutionException {
+        // NB: guava takes care about synchronization.
+        // see: https://google.github.io/guava/releases/21.0/api/docs/com/google/common/cache/Cache.html
         V o = (V)m_cache.get(key, valueLoader);
         if (m_enableVerbose) {
             LOGGER.debug("GetOrLoad: " + m_cache.stats());
@@ -174,6 +177,7 @@ public class MemoryAlertAwareGuavaCache {
      * Cleans up the cache, i.e. removes all invalidated objects.
      */
     public synchronized void cleanUp() {
+        // NB: semaphore to avoid redundant cleanUps
         if (m_gate.tryAcquire()) {
             m_cache.cleanUp();
             m_gate.release();
