@@ -74,7 +74,7 @@ public class MemoryAlertAwareGuavaCache {
 
     private static final NodeLogger LOGGER = NodeLogger.getLogger(MemoryAlertAwareGuavaCache.class);
 
-    private static MemoryAlertAwareGuavaCache m_instance;
+    private final static MemoryAlertAwareGuavaCache CACHE = new MemoryAlertAwareGuavaCache();
 
     private boolean m_enableVerbose =
         DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING);
@@ -183,10 +183,7 @@ public class MemoryAlertAwareGuavaCache {
     /**
      * @return singleton instance of this cache
      */
-    public synchronized static MemoryAlertAwareGuavaCache getInstance() {
-        if (m_instance == null) {
-            m_instance = new MemoryAlertAwareGuavaCache();
-        }
-        return m_instance;
+    public static MemoryAlertAwareGuavaCache getInstance() {
+        return CACHE;
     }
 }
