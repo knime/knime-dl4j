@@ -86,14 +86,6 @@ public class MemoryAlertAwareGuavaCache {
     private final int m_cacheSize = 20;
 
     private MemoryAlertAwareGuavaCache() {
-        //this is a singleton
-    }
-
-    /**
-     * Initializes this cache and registers the cache to the {@link MemoryAlertSystem} which
-     * cleans the cache if memory gets low.
-     */
-    private void initialize() {
         if (m_enableVerbose) {
             m_cache = CacheBuilder.newBuilder().maximumSize(m_cacheSize).softValues().recordStats().build();
         } else {
@@ -170,7 +162,7 @@ public class MemoryAlertAwareGuavaCache {
      *
      * @param key
      */
-    public void remove(final UUID key){
+    public void remove(final UUID key) {
         m_cache.invalidate(key);
         if (m_enableVerbose) {
             LOGGER.debug("Remove: " + m_cache.stats());
@@ -194,7 +186,6 @@ public class MemoryAlertAwareGuavaCache {
     public synchronized static MemoryAlertAwareGuavaCache getInstance() {
         if (m_instance == null) {
             m_instance = new MemoryAlertAwareGuavaCache();
-            m_instance.initialize();
         }
         return m_instance;
     }
