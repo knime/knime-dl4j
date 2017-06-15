@@ -90,7 +90,7 @@ public class MemoryAlertAwareGuavaCache {
     }
 
     /**
-     * Initialises this cache and registers the cache to the {@link MemoryAlertSystem} which
+     * Initializes this cache and registers the cache to the {@link MemoryAlertSystem} which
      * cleans the cache if memory gets low.
      */
     public void initialize() {
