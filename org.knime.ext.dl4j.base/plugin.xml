@@ -4,53 +4,53 @@
    <extension-point id="DL4JConverter" name="DL4JConverter" schema="schema/DL4JConverter.exsd"/>
    
    <extension point="org.knime.workbench.repository.nodes">
-<node category-path="/labs/deeplearning/layer/deepbelief" factory-class="org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm.RBMLayerNodeFactory"/>
-<node category-path="/labs/deeplearning/layer" factory-class="org.knime.ext.dl4j.base.nodes.layer.init.DL4JModelInitNodeFactory"/>
-<node category-path="/labs/deeplearning/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
-<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
-<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.convolution.ConvolutionLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer/deepbelief" factory-class="org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm.RBMLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer" factory-class="org.knime.ext.dl4j.base.nodes.layer.init.DL4JModelInitNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.convolution.ConvolutionLayerNodeFactory"/>
 <node
-      category-path="/labs/deeplearning/deprecated"
+      category-path="/labs/deeplearning/dl4j/deprecated"
       deprecated="true"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
-<node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
-<node category-path="/labs/deeplearning/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
 <node
-      category-path="/labs/deeplearning/predict"
+      category-path="/labs/deeplearning/dl4j/predict"
       deprecated="true"
       factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.FeedforwardPredictorNodeFactory"/>
-<node category-path="/labs/deeplearning/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.lrn.LRNLayerNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.lrn.LRNLayerNodeFactory"/>
 <node
-      category-path="/labs/deeplearning/layer/encoder"
+      category-path="/labs/deeplearning/dl4j/layer/encoder"
       factory-class="org.knime.ext.dl4j.base.nodes.layer.autoencoder.AutoEncoderLayerNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/learn/supervised"
+      category-path="/labs/deeplearning/dl4j/learn/supervised"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.regression.FeedforwardRegressionLearnerNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/learn/supervised"
+      category-path="/labs/deeplearning/dl4j/learn/supervised"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.classification.FeedforwardClassificationLearnerNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/learn/unsupervised"
+      category-path="/labs/deeplearning/dl4j/learn/unsupervised"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining.FeedforwardPretrainingLearnerNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/predict"
+      category-path="/labs/deeplearning/dl4j/predict"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.classification.FeedforwardClassificationPredictorNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/predict"
+      category-path="/labs/deeplearning/dl4j/predict"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.regression.FeedforwardRegressionPredictorNodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/predict"
+      category-path="/labs/deeplearning/dl4j/predict"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.layer.FeedforwardLayerPredictorNodeFactory">
 </node>
@@ -69,69 +69,76 @@
    <extension point="org.knime.workbench.repository.categories">
       <category icon="res/icons/dl.png" level-id="deeplearning" locked="true" name="Deep Learning" path="/labs/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="layer" locked="true" name="Layer" path="/labs/deeplearning/">
+      <category icon="res/icons/missing.gif" level-id="layer" locked="true" name="Layer" path="/labs/deeplearning/dl4j/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="deepbelief" locked="true" name="Deep Belief" path="/labs/deeplearning/layer/">
+      <category icon="res/icons/missing.gif" level-id="deepbelief" locked="true" name="Deep Belief" path="/labs/deeplearning/dl4j/layer/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="conv" locked="true" name="Convolutional" path="/labs/deeplearning/layer/">
+      <category icon="res/icons/missing.gif" level-id="conv" locked="true" name="Convolutional" path="/labs/deeplearning/dl4j/layer/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="mlp" locked="true" name="Perceptron" path="/labs/deeplearning/layer/">
+      <category icon="res/icons/missing.gif" level-id="mlp" locked="true" name="Perceptron" path="/labs/deeplearning/dl4j/layer/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="data" locked="true" name="Data" path="/labs/deeplearning/">
+      <category icon="res/icons/missing.gif" level-id="data" locked="true" name="Data" path="/labs/deeplearning/dl4j/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="io" locked="true" name="I/O" path="/labs/deeplearning/">
+      <category icon="res/icons/missing.gif" level-id="io" locked="true" name="I/O" path="/labs/deeplearning/dl4j/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="learn" locked="true" name="Learn" path="/labs/deeplearning/">
+      <category icon="res/icons/missing.gif" level-id="learn" locked="true" name="Learn" path="/labs/deeplearning/dl4j/">
       </category>
-      <category icon="res/icons/missing.gif" level-id="predict" locked="true" name="Predict" path="/labs/deeplearning/">
+      <category icon="res/icons/missing.gif" level-id="predict" locked="true" name="Predict" path="/labs/deeplearning/dl4j/">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="encoder"
             locked="true"
             name="Encoder"
-            path="/labs/deeplearning/layer/">
+            path="/labs/deeplearning/dl4j/layer/">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="testing"
             locked="true"
             name="Testing"
-            path="/labs/deeplearning/">
+            path="/labs/deeplearning/dl4j/">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="supervised"
             locked="true"
             name="Supervised"
-            path="/labs/deeplearning/learn">
+            path="/labs/deeplearning/dl4j/learn">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="unsupervised"
             locked="true"
             name="Unsupervised"
-            path="/labs/deeplearning/learn">
+            path="/labs/deeplearning/dl4j/learn">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="deprecated"
             locked="true"
             name="Deprecated"
-            path="/labs/deeplearning/">
+            path="/labs/deeplearning/dl4j/">
       </category>
       <category
             icon="res/icons/missing.gif"
             level-id="networks"
             locked="true"
             name="Networks"
+            path="/labs/deeplearning/dl4j/">
+      </category>
+      <category
+            icon="res/icons/missing.gif"
+            level-id="dl4j"
+            locked="true"
+            name="DL4J"
             path="/labs/deeplearning/">
-      </category>      
+      </category>
    </extension>
    <extension
          point="org.knime.workbench.repository.metanode">
       <PersistedMetaNode
-            category-path="/labs/deeplearning/networks"
+            category-path="/labs/deeplearning/dl4j/networks"
             expert-flag="false"
             icon="res/icons/meta.png"
             id="alexnet"
@@ -139,7 +146,7 @@
             workflowDir="metanodes/nets/AlexNet/">
       </PersistedMetaNode>
       <PersistedMetaNode
-            category-path="/labs/deeplearning/networks"
+            category-path="/labs/deeplearning/dl4j/networks"
             expert-flag="false"
             icon="res/icons/meta.png"
             id="deepmlp"
@@ -147,7 +154,7 @@
             workflowDir="metanodes/nets/DeepMLP/">
       </PersistedMetaNode>
       <PersistedMetaNode
-            category-path="/labs/deeplearning/networks"
+            category-path="/labs/deeplearning/dl4j/networks"
             expert-flag="false"
             icon="res/icons/meta.png"
             id="lenet"
@@ -155,7 +162,7 @@
             workflowDir="metanodes/nets/LeNet/">
       </PersistedMetaNode>
       <PersistedMetaNode
-            category-path="/labs/deeplearning/networks"
+            category-path="/labs/deeplearning/dl4j/networks"
             expert-flag="false"
             icon="res/icons/meta.png"
             id="simplemlp"
@@ -163,7 +170,7 @@
             workflowDir="metanodes/nets/SimpleMLP/">
       </PersistedMetaNode>
       <PersistedMetaNode
-            category-path="/labs/deeplearning/networks"
+            category-path="/labs/deeplearning/dl4j/networks"
             expert-flag="false"
             icon="res/icons/meta.png"
             id="deepbelief"
