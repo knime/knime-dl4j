@@ -59,7 +59,7 @@
       <portType
             color="#808000"
             hidden="false"
-            name="org.knime.dl.nodes.DNNModelPortObject"
+            name="DL4J Model"
             objectClass="org.knime.ext.dl4j.base.DLModelPortObject"
             objectSerializer="org.knime.ext.dl4j.base.DLModelPortObject$Serializer"
             specClass="org.knime.ext.dl4j.base.DLModelPortObjectSpec"
