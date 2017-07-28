@@ -4,22 +4,22 @@
    <extension
          point="org.knime.workbench.repository.nodes">
       <node
-            category-path="/labs/deeplearning/testing"
+            category-path="/labs/deeplearning/dl4j/testing"
             deprecated="false"
             factory-class="org.knime.ext.dl4j.testing.nodes.model.DL4JModelTesterNodeFactory">
       </node>
       <node
-            category-path="/labs/deeplearning/testing"
+            category-path="/labs/deeplearning/dl4j/testing"
             deprecated="false"
             factory-class="org.knime.ext.dl4j.testing.nodes.conversion.TableToDL4JVectorNodeFactory">
       </node>
       <node
-            category-path="/labs/deeplearning/testing"
+            category-path="/labs/deeplearning/dl4j/testing"
             deprecated="false"
             factory-class="org.knime.ext.dl4j.testing.nodes.conversion.regression.RegressionInputToDL4JVectorNodeFactory">
       </node>
       <node
-            category-path="/labs/deeplearning/testing"
+            category-path="/labs/deeplearning/dl4j/testing"
             deprecated="false"
             factory-class="org.knime.ext.dl4j.testing.nodes.conversion.pretraining.PretrainingInputToDL4JVectorNodeFactory">
       </node>
