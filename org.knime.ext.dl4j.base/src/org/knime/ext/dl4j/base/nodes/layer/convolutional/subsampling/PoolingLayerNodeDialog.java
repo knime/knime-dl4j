@@ -43,7 +43,6 @@
 package org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling;
 
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentString;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
@@ -63,9 +62,6 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  */
 public class PoolingLayerNodeDialog extends DefaultNodeSettingsPane {
 
-    // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(PoolingLayerNodeModel.class);
-
     /**
      * New pane for configuring the SubsamplingLayer node.
      */
@@ -81,8 +77,7 @@ public class PoolingLayerNodeDialog extends DefaultNodeSettingsPane {
             addDialogComponent(new DialogComponentString(
                 (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.STRIDE), "Stride"));
         } catch (final IllegalStateException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            getLogger().error(e.getMessage(), e);
         }
     }
 }

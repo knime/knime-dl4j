@@ -43,7 +43,6 @@
 package org.knime.ext.dl4j.base.nodes.layer.autoencoder;
 
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
@@ -66,9 +65,6 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  * @author David Kolb, KNIME.com GmbH
  */
 public class AutoEncoderLayerNodeDialog extends DefaultNodeSettingsPane {
-
-    // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(AutoEncoderLayerNodeModel.class);
 
     /**
      * New pane for configuring the DenseLayer node.

@@ -44,7 +44,6 @@ package org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm;
 
 import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentNumberEdit;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringSelection;
@@ -67,9 +66,6 @@ import org.knime.ext.dl4j.base.util.EnumUtils;
  * @author David Kolb, KNIME.com GmbH
  */
 public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
-
-    // the logger instance
-    private static final NodeLogger logger = NodeLogger.getLogger(RBMLayerNodeModel.class);
 
     /**
      * New pane for configuring RBMLayer node dialog. This is just a suggestion to demonstrate possible default dialog
@@ -107,8 +103,7 @@ public class RBMLayerNodeDialog extends DefaultNodeSettingsPane {
                 (SettingsModelString)dnnSettingsModels.createParameter(LayerParameter.ACTIVATION),
                 "Activation Function", EnumUtils.getStringCollectionFromToString(DL4JActivationFunction.values())));
         } catch (final IllegalStateException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            getLogger().error(e.getMessage(), e);
         }
 
     }
