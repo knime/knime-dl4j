@@ -1,4 +1,4 @@
-# ![Image](https://www.knime.org/files/knime_logo_github_40x40.png) KNIME® - Deeplearning4J Integration
+# ![Image](https://www.knime.com/files/knime_logo_github_40x40_4layers.png) KNIME® - Deeplearning4J Integration
 
 [KNIME Analytics Platform - Deeplearning4J Integration](http://tech.knime.org/deeplearning4j) enables you to use deep neural networks in KNIME. The extension consists of a set of new nodes which allow you to modularly assemble a deep neural network architecture, train the network on data, and use the trained network for predictions.
 
