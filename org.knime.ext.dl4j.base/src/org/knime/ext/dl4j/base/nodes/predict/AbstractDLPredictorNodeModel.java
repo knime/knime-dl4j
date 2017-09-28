@@ -186,7 +186,13 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
      * @return true if activation of the last layer equals the specified activation, false if not
      */
     protected boolean isOutActivation(final List<Layer> layers, final DL4JActivationFunction activation) {
-        final Layer outputLayer = layers.get(layers.size() - 1);
+        final BaseLayer outputLayer;
+        try {
+            outputLayer = (BaseLayer)layers.get(layers.size() - 1);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("The last layer does not have an activation function!", e);
+        }
+
         IActivation activationFn = outputLayer.getActivationFn();
 
         /* Compatibility issue between dl4j 0.6 and 0.8 due to API change of DL4J. Activations changed from
@@ -200,7 +206,7 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
             throw new DL4JVersionCompatibilityException(msg);
         }
 
-        return outputLayer.getActivationFn().equals(activation.getDL4JValue().getActivationFunction());
+        return activationFn.equals(activation.getDL4JValue().getActivationFunction());
     }
 
     /**

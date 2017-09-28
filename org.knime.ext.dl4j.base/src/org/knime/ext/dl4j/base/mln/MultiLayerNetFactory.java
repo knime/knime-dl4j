@@ -55,6 +55,7 @@ import org.deeplearning4j.nn.conf.distribution.BinomialDistribution;
 import org.deeplearning4j.nn.conf.distribution.Distribution;
 import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
 import org.deeplearning4j.nn.conf.distribution.UniformDistribution;
+import org.deeplearning4j.nn.conf.layers.BaseLayer;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
@@ -70,6 +71,7 @@ import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JGradientNormalization
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JOptimizationAlgorithm;
 import org.knime.ext.dl4j.base.settings.impl.LearnerParameterSettingsModels;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
+import org.knime.ext.dl4j.base.util.DL4JVersionUtils;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.ext.dl4j.base.util.ParameterUtils;
 
@@ -408,7 +410,7 @@ public class MultiLayerNetFactory {
      * @param newBiasLearningRate
      */
     private void overwriteBiasLearningRate(final List<Layer> layers, final double newBiasLearningRate) {
-        for (final Layer l : layers) {
+        for (final BaseLayer l : DL4JVersionUtils.filterBaseLayers(layers)) {
             l.setBiasLearningRate(newBiasLearningRate);
         }
     }
@@ -432,7 +434,7 @@ public class MultiLayerNetFactory {
      * @param newDropOut
      */
     private void overwriteLearningRate(final List<Layer> layers, final double newLearningRate) {
-        for (final Layer l : layers) {
+        for (final BaseLayer l : DL4JVersionUtils.filterBaseLayers(layers)) {
             l.setLearningRate(newLearningRate);
         }
     }
@@ -444,7 +446,7 @@ public class MultiLayerNetFactory {
      * @param newDropOut
      */
     private void overwriteWeightInit(final List<Layer> layers, final WeightInit newWeightInit) {
-        for (final Layer l : layers) {
+        for (final BaseLayer l : DL4JVersionUtils.filterBaseLayers(layers)) {
             l.setWeightInit(newWeightInit);
         }
     }

@@ -46,8 +46,8 @@ import java.util.List;
 
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.Layer;
-import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
 /**
@@ -86,7 +86,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
     @Override
     protected MultiLayerNetwork createMlnWithLearnerParameters(final List<Layer> layers) {
         final NeuralNetConfiguration.ListBuilder listBuilder = createListBuilderWithLearnerParameters(layers);
-        listBuilder.cnnInputSize(m_height, m_width, m_channels);
+        listBuilder.setInputType(InputType.convolutionalFlat(m_height, m_width, m_channels));
 
         final MultiLayerConfiguration layerConf = listBuilder.build();
         final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);
@@ -103,7 +103,7 @@ public class ConvMultiLayerNetFactory extends MultiLayerNetFactory {
             currentLayerIndex++;
         }
 
-        new ConvolutionLayerSetup(listBuilder, m_height, m_width, m_channels);
+        listBuilder.setInputType(InputType.convolutionalFlat(m_height, m_width, m_channels));
 
         final MultiLayerConfiguration layerConf = listBuilder.build();
         final MultiLayerNetwork mln = new MultiLayerNetwork(layerConf);

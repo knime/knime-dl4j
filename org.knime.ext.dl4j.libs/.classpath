@@ -1,117 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/Agrona-0.5.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-actor_2.11-2.3.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-cluster_2.11-2.3.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-contrib_2.11-2.3.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-persistence-experimental_2.11-2.3.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-remote_2.11-2.3.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/akka-slf4j_2.11-2.3.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/annotations-2.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/aopalliance-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/artoolkitplus-2.3.1-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/build-link-2.4.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/classmate-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/common-image-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/common-io-3.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/common-lang-3.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/commons-codec-1.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-compress-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-lang-2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-net-3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/config-1.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/datavec-api-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/datavec-data-image-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/datavec-nd4j-common-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-core-0.8.0.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-core/0.8.0/deeplearning4j-core-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-modelimport-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nlp-0.8.0.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-nlp/0.8.0/deeplearning4j-nlp-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nn-0.8.0.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-nn/0.8.0/deeplearning4j-nn-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-ui-components-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/eclipse-collections-7.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/eclipse-collections-api-7.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/eclipse-collections-forkjoin-7.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/elsa-3.0.0-M5.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-core-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-modelimport-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nlp-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/deeplearning4j-nn-0.9.1.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/deeplearning4j/deeplearning4j-nn/0.9.1/deeplearning4j-nn-0.9.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/fastutil-6.5.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/ffmpeg-3.2.1-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/findbugs-annotations-1.3.9-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/flandmark-1.07-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/flycapture-2.9.3.43-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/freemarker-2.3.23.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/guice-4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/guice-assistedinject-4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/hawtjni-runtime-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/hibernate-validator-5.0.3.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-annotations-2.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-core-2.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-databind-2.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-datatype-jdk8-2.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-datatype-jsr310-2.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jackson-module-scala_2.11-2.4.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jackson-0.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jai-imageio-core-1.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/javacpp-1.3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/javacv-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javacpp-1.3.3.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/bytedeco/javacpp/1.3.3/javacpp-1.3.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javacv-1.3.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/javassist-3.19.0-GA.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/javax.inject-1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/javax.ws.rs-api-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jboss-logging-3.2.1.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jcip-annotations-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jcl-over-slf4j-1.7.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jcommander-1.27.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/joda-convert-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/joda-time-2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/json-20131018.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jsr305-1.3.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jsr305-2.0.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jta-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jul-to-slf4j-1.7.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/junit-4.8.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/kotlin-runtime-1.0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/kotlin-stdlib-1.0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldb-0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldb-api-0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-all-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-linux32-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-linux64-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-osx-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-win32-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/leveldbjni-win64-1.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/libdc1394-2.2.4-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/libfreenect-0.5.3-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/libfreenect2-0.2.0-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/librealsense-1.9.6-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/logback-classic-1.1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/logback-core-1.1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/lombok-1.16.10.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/lz4-1.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/mapdb-3.0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-api-0.8.0.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/nd4j/nd4j-api/0.8.0/nd4j-api-0.8.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-base64-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-buffer-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-common-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-context-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-jackson-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-native-api-0.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/nd4j-native-platform-0.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback-classic-1.1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback-core-1.1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lombok-1.16.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-api-0.9.1.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/nd4j/nd4j-api/0.9.1/nd4j-api-0.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-base64-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-buffer-0.9.1.jar" sourcepath="C:/Users/David Kolb/.m2/repository/org/nd4j/nd4j-buffer/0.9.1/nd4j-buffer-0.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-common-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-context-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-jackson-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nd4j-native-api-0.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nearestneighbor-core-0.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/neoitertools-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/org.apache.commons.codec-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/paranamer-2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/protobuf-java-2.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/reflections-0.9.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/slf4j-api-1.7.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/snakeyaml-1.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/stax2-api-3.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/stream-2.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/tomcat-servlet-api-8.0.21.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/twirl-api_2.11-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/typetools-0.4.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/uncommons-maths-1.2.2a.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/videoinput-0.200-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/xercesImpl-2.11.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/xml-apis-1.4.01.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xz-1.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

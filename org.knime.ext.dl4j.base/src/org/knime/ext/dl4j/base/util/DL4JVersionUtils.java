@@ -49,14 +49,17 @@
 package org.knime.ext.dl4j.base.util;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.deeplearning4j.nn.conf.layers.BaseLayer;
+import org.deeplearning4j.nn.conf.layers.Layer;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.nd4j.linalg.activations.Activation;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.nd4j.shade.jackson.core.JsonProcessingException;
+import org.nd4j.shade.jackson.databind.JsonNode;
+import org.nd4j.shade.jackson.databind.ObjectMapper;
 
 /**
  * Utility class providing methods to support backward compatibility for different DL4J versions.
@@ -98,6 +101,17 @@ public class DL4JVersionUtils {
         }
 
         return Optional.ofNullable(activation);
+    }
+
+    /**
+     * Filters all layers which can't be cast to {@link BaseLayer} and returns the filtered list.
+     *
+     * @param layers the list of layers to filter
+     * @return the list containing only base layers
+     */
+    public static List<BaseLayer> filterBaseLayers(final List<Layer> layers) {
+        return layers.stream().filter(layer -> (layer instanceof BaseLayer)).map(layer -> ((BaseLayer)layer))
+            .collect(Collectors.toList());
     }
 
 }

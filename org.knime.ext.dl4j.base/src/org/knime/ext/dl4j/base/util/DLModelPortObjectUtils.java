@@ -64,6 +64,7 @@ import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.layers.BaseLayer;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -230,18 +231,22 @@ public class DLModelPortObjectUtils {
                 final String read = readStringFromZipStream(inStream);
                 Layer l = NeuralNetConfiguration.fromJson(read).getLayer();
 
-                /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
-                 * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
-                 * of the layer object will contain null after 'NeuralNetConfiguration.fromJson'. Old method to
-                 * retrieve String representation of the activation function was removed. Therefore, we parse
-                 * the old activation from the json ourself and map it to the new Activation. */
-                if (l.getActivationFn() == null) {
-                    Optional<Activation> layerActivation = DL4JVersionUtils.parseLayerActivationFromJson(read);
+                if (l instanceof BaseLayer) {
+                    BaseLayer bl = (BaseLayer)l;
+                    /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
+                     * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
+                     * of the layer object will contain null after 'NeuralNetConfiguration.fromJson'. Old method to
+                     * retrieve String representation of the activation function was removed. Therefore, we parse
+                     * the old activation from the json ourself and map it to the new Activation. */
+                    if (bl.getActivationFn() == null) {
+                        Optional<Activation> layerActivation = DL4JVersionUtils.parseLayerActivationFromJson(read);
 
-                    if (layerActivation.isPresent()) {
-                        l.setActivationFn(layerActivation.get().getActivationFunction());
+                        if (layerActivation.isPresent()) {
+                            bl.setActivationFn(layerActivation.get().getActivationFunction());
+                        }
                     }
                 }
+
                 layers.add(l);
 
                 // directly read MultiLayerNetwork, new format
