@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base.nodes.predict;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.deeplearning4j.nn.conf.layers.BaseLayer;
 import org.deeplearning4j.nn.conf.layers.FeedForwardLayer;
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -65,6 +66,12 @@ import org.knime.ext.dl4j.base.exception.DL4JVersionCompatibilityException;
 import org.knime.ext.dl4j.base.settings.enumerate.dl4j.DL4JActivationFunction;
 import org.knime.ext.dl4j.base.util.ConfigurationUtils;
 import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.api.memory.MemoryWorkspace;
+import org.nd4j.linalg.api.memory.conf.WorkspaceConfiguration;
+import org.nd4j.linalg.api.memory.enums.AllocationPolicy;
+import org.nd4j.linalg.api.memory.enums.LearningPolicy;
+import org.nd4j.linalg.api.memory.enums.ResetPolicy;
+import org.nd4j.linalg.api.memory.enums.SpillPolicy;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -83,6 +90,20 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
     private boolean m_containsLabels;
 
     private boolean m_containsTargetNames;
+
+    /**
+     * WorkspaceConfiguration directly taken from {@link MultiLayerNetwork} as we need it for the workaround in the
+     * {@link #activate(MultiLayerNetwork, int, INDArray)} method.
+     */
+    private final static WorkspaceConfiguration workspaceConfigurationExternal =
+        WorkspaceConfiguration.builder().initialSize(0).overallocationLimit(0.3)
+            .policyLearning(LearningPolicy.FIRST_LOOP).policyReset(ResetPolicy.BLOCK_LEFT)
+            .policySpill(SpillPolicy.REALLOCATE).policyAllocation(AllocationPolicy.OVERALLOCATE).build();
+
+    /**
+     * Name of the external workspace. Also taken from {@link MultiLayerNetwork}.
+     */
+    private final static String workspaceExternal = "LOOP_EXTERNAL";
 
     /**
      * Super constructor for class AbstractDLPredictorNodeModel passing through parameters to node model class.
@@ -266,21 +287,28 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
     }
 
     /**
-     * Activates the specified layer in the specified network with the specified input. The inpu array should contain
+     * Activates the specified layer in the specified network with the specified input. The input array should contain
      * one example per row.
      *
      * @param mln the network to use
-     * @param layer the layer to activate
+     * @param layerNum the layer to activate
      * @param input the inputs to use
      * @return the activations of the layer for the input
      */
-    protected INDArray activate(final MultiLayerNetwork mln, final int layer, final INDArray input) {
-        final List<INDArray> output = new ArrayList<INDArray>();
-        for (int i = 0; i < input.rows(); i++) {
-            List<INDArray> activations = mln.feedForward(input.getRow(i), false);
-            output.add(activations.get(layer + 1));
+    protected INDArray activate(final MultiLayerNetwork mln, final int layerNum, final INDArray input) {
+        /* The MultiLayerNetwork.feedForwardToLayer(int layerNum, INDArray input, boolean train) method is not wrapped
+         * into workspaces by DL4J (see MultiLayerNetwork.output(INDArray input, boolean train) method). Therefore, we
+         * need to do the same thing here. */
+        MemoryWorkspace workspace =
+            Nd4j.getWorkspaceManager().getWorkspaceForCurrentThread(workspaceConfigurationExternal, workspaceExternal);
+        try (MemoryWorkspace wsE = workspace.notifyScopeEntered()) {
+            final List<INDArray> output = new ArrayList<INDArray>();
+            for (int i = 0; i < input.rows(); i++) {
+                List<INDArray> activations = mln.feedForwardToLayer(layerNum, input.getRow(i), false);
+                output.add(activations.get(activations.size() - 1).detach());
+            }
+            return Nd4j.hstack(output);
         }
-        return Nd4j.hstack(output);
     }
 
     /**

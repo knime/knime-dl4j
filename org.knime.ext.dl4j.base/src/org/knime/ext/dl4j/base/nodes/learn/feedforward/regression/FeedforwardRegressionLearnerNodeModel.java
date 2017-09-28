@@ -124,7 +124,7 @@ public class FeedforwardRegressionLearnerNodeModel extends AbstractDLLearnerNode
     }
 
     @Override
-    protected DLModelPortObject[] execute(final PortObject[] inData, final ExecutionContext exec) throws Exception {
+    protected DLModelPortObject[] executeDL4JMemorySafe(final PortObject[] inData, final ExecutionContext exec) throws Exception {
         final DLModelPortObject portObject = (DLModelPortObject)inData[0];
         final BufferedDataTable table = (BufferedDataTable)inData[1];
 

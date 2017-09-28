@@ -50,6 +50,7 @@ import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.WorkspaceMode;
 import org.deeplearning4j.nn.conf.distribution.BinomialDistribution;
 import org.deeplearning4j.nn.conf.distribution.Distribution;
 import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
@@ -241,6 +242,13 @@ public class MultiLayerNetFactory2 {
             .getDL4JValue();
 
         final NeuralNetConfiguration.Builder nnConfigBuilder = new NeuralNetConfiguration.Builder();
+
+        /*
+         * Since 0.9.1: Use DL4J workspaces which makes training faster and we can reduce the number of GC calls of DL4J.
+         * For now use WorkspaceMode.SEPARATE for both training and inference.
+         */
+        nnConfigBuilder.inferenceWorkspaceMode(WorkspaceMode.SEPARATE);
+        nnConfigBuilder.trainingWorkspaceMode(WorkspaceMode.SEPARATE);
 
         /*
          * Need to overwrite global parameters for each layer separately as setting the parameter

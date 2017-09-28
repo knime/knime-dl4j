@@ -99,7 +99,7 @@ public class FeedforwardClassificationPredictorNodeModel extends AbstractDLPredi
     }
 
     @Override
-    protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+    protected PortObject[] executeDL4JMemorySafe(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
         final DLModelPortObject model = (DLModelPortObject)inObjects[0];
         final DLModelPortObjectSpec modelSpec = (DLModelPortObjectSpec)model.getSpec();
         final BufferedDataTable table = (BufferedDataTable)inObjects[1];

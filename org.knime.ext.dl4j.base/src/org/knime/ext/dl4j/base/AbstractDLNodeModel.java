@@ -46,7 +46,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.CanceledExecutionException;
+import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
@@ -54,7 +56,10 @@ import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
+import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortType;
+import org.nd4j.linalg.api.memory.MemoryWorkspaceManager;
+import org.nd4j.linalg.factory.Nd4j;
 
 /**
  * Abstract node model for nodes of Depplearning4J integration.
@@ -110,6 +115,53 @@ public abstract class AbstractDLNodeModel extends NodeModel {
                 logger.debug(w);
             }
         }
+    }
+
+    /**
+     * Helper which calls executeDL4JMemorySafe() and destroys DL4J workspaces before and after execute.
+     */
+    private PortObject[] executeWithMemoryCleanup(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+        MemoryWorkspaceManager mwsm = Nd4j.getWorkspaceManager();
+        //Pre-destroy in case there are any workspaces still left
+        mwsm.destroyAllWorkspacesForCurrentThread();
+        try {
+            return executeDL4JMemorySafe(inObjects, exec);
+        } finally {
+            mwsm.destroyAllWorkspacesForCurrentThread();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec) throws Exception {
+        return (BufferedDataTable[])executeWithMemoryCleanup(inData, exec);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+        try {
+            //If all input objects are tables
+            return execute(toBDTArray(inObjects), exec);
+        } catch (ClassCastException e) {
+            return executeWithMemoryCleanup(inObjects, exec);
+        }
+    }
+
+    /**
+     * Execute method if DL4J memory needs to be released after the execute method. All DL4J workspaces created by the current
+     * thread will be destroyed before and after the call of this method.
+     *
+     * For a general description of the execute method refer to the description of
+     * {@link #execute(PortObject[], ExecutionContext)} methods.
+     */
+    @SuppressWarnings("javadoc")
+    protected PortObject[] executeDL4JMemorySafe(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
+        throw new UnsupportedOperationException("AbstractDLNodeModel.executeDL4JMemorySafe() implementation missing!");
     }
 
     /**
@@ -190,4 +242,11 @@ public abstract class AbstractDLNodeModel extends NodeModel {
         m_settingsModels.add(setting);
     }
 
+    static BufferedDataTable[] toBDTArray(final PortObject[] inObjects) throws IOException {
+        BufferedDataTable[] inTables = new BufferedDataTable[inObjects.length];
+        for (int i = 0; i < inObjects.length; i++) {
+            inTables[i] = (BufferedDataTable)inObjects[i];
+        }
+        return inTables;
+    }
 }
