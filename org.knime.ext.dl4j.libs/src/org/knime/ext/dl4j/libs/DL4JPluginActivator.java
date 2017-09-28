@@ -43,6 +43,8 @@
 package org.knime.ext.dl4j.libs;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
@@ -53,6 +55,7 @@ import org.knime.ext.dl4j.libs.cuda.CudaNotFoundException;
 import org.knime.ext.dl4j.libs.cuda.CudaVersionChecker;
 import org.knime.ext.dl4j.libs.cuda.UnsupportedCudaVersionException;
 import org.knime.ext.dl4j.libs.prefs.DL4JPreferencePage;
+import org.nd4j.linalg.factory.Nd4j;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -60,6 +63,7 @@ import org.osgi.framework.BundleContext;
  *
  * @author David Kolb, KNIME.com GmbH
  */
+@SuppressWarnings("restriction")
 public class DL4JPluginActivator extends AbstractUIPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(DL4JPluginActivator.class);
@@ -109,9 +113,16 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         plugin = this;
     }
 
-    @SuppressWarnings("restriction")
     @Override
     public void start(final BundleContext context) throws Exception {
+        initPreferencePageDefaults();
+
+        //Set off heap limit system properties. See: https://deeplearning4j.org/memory
+        //Note: all lower case!
+        int offHeapLimit = plugin.getPreferenceStore().getInt(DL4JPreferencePage.P_OFF_HEAP_MEMORY_LIMIT);
+        System.setProperty("org.bytedeco.javacpp.maxbytes", offHeapLimit + "M");
+        System.setProperty("org.bytedeco.javacpp.maxphysicalbytes", offHeapLimit + "M");
+
         final boolean useGPU = plugin.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
 
         BackendType backendType = BackendType.CPU;
@@ -160,7 +171,6 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
      * @param backend the backend fragment type to search for
      * @return found fragment or null if not found
      */
-    @SuppressWarnings("restriction")
     private FragmentClasspath findBackendFragment(final FragmentClasspath[] frags, final BackendType backend) {
         for (final FragmentClasspath fcp : frags) {
             final String fragmentFileName = fcp.getGeneration().getBundleFile().getBaseFile().getName();
@@ -186,5 +196,13 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
      */
     public static DL4JPluginActivator getDefault() {
         return plugin;
+    }
+
+    private void initPreferencePageDefaults() {
+        plugin.getPreferenceStore().setDefault(DL4JPreferencePage.P_BACKEND_TYPE, DL4JPreferencePage.DEFAULT_USE_GPU);
+        plugin.getPreferenceStore().setDefault(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING,
+            DL4JPreferencePage.DEFAULT_ENABLE_VERBOSE_LOGGING);
+        plugin.getPreferenceStore().setDefault(DL4JPreferencePage.P_OFF_HEAP_MEMORY_LIMIT,
+            DL4JPreferencePage.DEFAULT_OFF_HEAP_LIMIT);
     }
 }

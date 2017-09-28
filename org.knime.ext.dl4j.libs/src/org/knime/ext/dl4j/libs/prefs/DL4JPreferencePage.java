@@ -42,8 +42,10 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.libs.prefs;
 
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
@@ -64,12 +66,27 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
     /** Key for GPU checkbox. */
     public static final String P_BACKEND_TYPE = "backendType";
 
+    /** Default value if GPU should be used */
+    public static boolean DEFAULT_USE_GPU = false;
+
     /** Key for verbose logging checkbox */
     public static final String P_ENABLE_VERBOSE_LOGGING = "enableVerboseLogging";
+
+    /** Default enable verbose logging value */
+    public static boolean DEFAULT_ENABLE_VERBOSE_LOGGING = false;
+
+    /** Key for off heap memory limit number field */
+    public static final String P_OFF_HEAP_MEMORY_LIMIT = "offHeapMemoryLimit";
+
+    /** Default DL4J off heap limit */
+    public static int DEFAULT_OFF_HEAP_LIMIT = 2000;
 
     private boolean m_useGPU;
 
     private boolean m_enableVerbose;
+
+    /** DL4J off heap memory limit in MB */
+    private int m_offHeapSize;
 
     /**
      * Constructor for class DL4JPreferencePage.
@@ -78,26 +95,28 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
         super(GRID);
         setPreferenceStore(DL4JPluginActivator.getDefault().getPreferenceStore());
         setDescription("Preferences for the KNIME Deeplearning4J Integration.");
-        m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
-        m_enableVerbose = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING);
-    }
-
-    @Override
-    public void init(final IWorkbench workbench) {
-        getPreferenceStore().setDefault(P_BACKEND_TYPE, false);
-        getPreferenceStore().setDefault(P_ENABLE_VERBOSE_LOGGING, false);
+        m_useGPU = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(P_BACKEND_TYPE);
+        m_enableVerbose = DL4JPluginActivator.getDefault().getPreferenceStore().getBoolean(P_ENABLE_VERBOSE_LOGGING);
+        m_offHeapSize = DL4JPluginActivator.getDefault().getPreferenceStore().getInt(P_OFF_HEAP_MEMORY_LIMIT);
     }
 
     @Override
     protected void createFieldEditors() {
         addField(new LabelField(getFieldEditorParent(), "By default CPU is used for calculations. For GPU usage you need to have \n"
                 + "a CUDA (7.5 or 8.0) compatible Graphics Card and the corresponding CUDA Toolkit \n"
-                + "version installed on your system. A change in this option requires a restart \n"
-                + "of KNIME Analytics Platform in order to take effect."));
+                + "version installed on your system."));
         addField(new BooleanFieldEditor(P_BACKEND_TYPE, "Use GPU for calculations?",
             BooleanFieldEditor.SEPARATE_LABEL, getFieldEditorParent()));
 
         Label label = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
+
+        addField(new LabelField(getFieldEditorParent(), "Apart from the java heap space, DL4J additionally uses off-heap memory.\n"
+            + "The off-heap is used to store all data needed for network learning and execution.\n"
+            + "For further information how to configure the value see: https://deeplearning4j.org/memory"));
+        addField(new IntegerFieldEditor(P_OFF_HEAP_MEMORY_LIMIT, "Off Heap Memory Limit (in MB):", getFieldEditorParent()));
+
+        label = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
         label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 
         addField(new BooleanFieldEditor(P_ENABLE_VERBOSE_LOGGING, "Enable verbose logging?",
@@ -122,25 +141,23 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
 
     private void checkChanges() {
         boolean currentUseGPU = DL4JPluginActivator.getDefault().getPreferenceStore()
-                .getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
+                .getBoolean(P_BACKEND_TYPE);
         boolean useGPUChanged = m_useGPU != currentUseGPU;
 
-        if (useGPUChanged) {
-            m_useGPU = currentUseGPU;
-            String gpuRestartMessage = "Changes of the used backend become first available after restarting the workbench.\n"
-                    + "Do you want to restart the workbench now?";
-            promptRestartWithMessage(gpuRestartMessage);
-        }
-
         boolean currentEnableVerbose = DL4JPluginActivator.getDefault().getPreferenceStore()
-                .getBoolean(DL4JPreferencePage.P_ENABLE_VERBOSE_LOGGING);
+                .getBoolean(P_ENABLE_VERBOSE_LOGGING);
         boolean enableVerboseChanged = m_enableVerbose != currentEnableVerbose;
 
-        if (enableVerboseChanged) {
+        int currentOffHeapLimit = DL4JPluginActivator.getDefault().getPreferenceStore()
+                .getInt(P_OFF_HEAP_MEMORY_LIMIT);
+        boolean offHeapLimitCanged = m_offHeapSize != currentOffHeapLimit;
+
+        if (offHeapLimitCanged || enableVerboseChanged || useGPUChanged) {
+            m_offHeapSize = currentOffHeapLimit;
+            m_useGPU = currentUseGPU;
             m_useGPU = currentEnableVerbose;
-            String gpuRestartMessage = "Changes of verbose logging become first available after restarting the workbench.\n"
-                    + "Do you want to restart the workbench now?";
-            promptRestartWithMessage(gpuRestartMessage);
+            promptRestartWithMessage("Changes become first available after restarting the workbench.\n"
+                    + "Do you want to restart the workbench now?");
         }
     }
 
@@ -152,5 +169,13 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
             return;
         }
         PlatformUI.getWorkbench().restart();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(final IWorkbench workbench) {
+        // nothing to do
     }
 }
