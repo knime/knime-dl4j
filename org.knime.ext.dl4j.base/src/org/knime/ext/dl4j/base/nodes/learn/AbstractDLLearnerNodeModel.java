@@ -238,14 +238,16 @@ public abstract class AbstractDLLearnerNodeModel extends AbstractDLNodeModel {
      */
     protected void pretrainOneEpoch(final MultiLayerNetwork mln, final DataSetIterator data,
         final ExecutionContext exec) throws CanceledExecutionException {
-        exec.setMessage("Performing Pretraining");
-        while (data.hasNext()) {
-            exec.checkCanceled();
-            if (m_learningMonitor.checkStopLearning()) {
-                break;
+        for (int i = 0; i < mln.getnLayers(); i++){
+            exec.setMessage("Performing Pretraining on Layer: " + (i+1));
+            while (data.hasNext()) {
+                exec.checkCanceled();
+                if (m_learningMonitor.checkStopLearning()) {
+                    break;
+                }
+                mln.pretrainLayer(i, data.next().getFeatureMatrix());
             }
-
-            mln.pretrain(data.next().getFeatureMatrix());
+            data.reset();
         }
     }
 
