@@ -4,7 +4,10 @@
    <extension-point id="DL4JConverter" name="DL4JConverter" schema="schema/DL4JConverter.exsd"/>
    
    <extension point="org.knime.workbench.repository.nodes">
-<node category-path="/labs/deeplearning/dl4j/layer/deepbelief" factory-class="org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm.RBMLayerNodeFactory"/>
+<node
+      category-path="/labs/deeplearning/dl4j/layer/deepbelief"
+      deprecated="true"
+      factory-class="org.knime.ext.dl4j.base.nodes.layer.deepbelief.rbm.RBMLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/dl4j/layer" factory-class="org.knime.ext.dl4j.base.nodes.layer.init.DL4JModelInitNodeFactory"/>
 <node category-path="/labs/deeplearning/dl4j/layer/mlp" factory-class="org.knime.ext.dl4j.base.nodes.layer.mlp.dense.DenseLayerNodeFactory"/>
 <node category-path="/labs/deeplearning/dl4j/layer/conv" factory-class="org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling.PoolingLayerNodeFactory"/>
