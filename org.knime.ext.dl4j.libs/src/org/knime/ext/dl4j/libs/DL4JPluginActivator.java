@@ -43,7 +43,6 @@
 package org.knime.ext.dl4j.libs;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -57,6 +56,8 @@ import org.knime.ext.dl4j.libs.cuda.UnsupportedCudaVersionException;
 import org.knime.ext.dl4j.libs.prefs.DL4JPreferencePage;
 import org.nd4j.linalg.factory.Nd4j;
 import org.osgi.framework.BundleContext;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Activator choosing between GPU and CPU fragements.
@@ -81,6 +82,8 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         /** CPU. */
         CPU("org\\.knime\\.ext\\.dl4j\\.bin\\.[^\\.]+\\.x86_64\\.cpu.*", "CPU");
 
+        /** Convenience list containing all available CUDA versions */
+        public static final List<BackendType> ALL_CUDA_VERSIONS = ImmutableList.of(GPU_CUDA7_5, GPU_CUDA8_0);
 
         private final String m_fragmentRegex;
 
@@ -159,6 +162,11 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         }
 
         f.setAccessible(false);
+
+        //Since 0.9.1 we are using DL4J workspaces. Therefore, we can reduce the number of GC calls made by DL4J
+        if (BackendType.ALL_CUDA_VERSIONS.contains(backendType)) {
+            Nd4j.getMemoryManager().setAutoGcWindow(10000);
+        }
 
     }
 
