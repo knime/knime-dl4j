@@ -46,6 +46,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bytedeco.javacpp.Pointer;
 import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
 import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
 import org.eclipse.osgi.internal.loader.classpath.FragmentClasspath;
@@ -125,6 +126,10 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         int offHeapLimit = plugin.getPreferenceStore().getInt(DL4JPreferencePage.P_OFF_HEAP_MEMORY_LIMIT);
         System.setProperty("org.bytedeco.javacpp.maxbytes", offHeapLimit + "M");
         System.setProperty("org.bytedeco.javacpp.maxphysicalbytes", offHeapLimit + "M");
+
+        LOGGER.debug("DL4J off-heap sizes: org.bytedeco.javacpp.Pointer.maxBytes(): " + Pointer.maxBytes());
+        LOGGER.debug("DL4J off-heap sizes: org.bytedeco.javacpp.Pointer.maxPhysicalBytes(): " + Pointer.maxPhysicalBytes());
+        LOGGER.debug("JVM maxMemory: Runtime.getRuntime().maxMemory(): " + Runtime.getRuntime().maxMemory());
 
         final boolean useGPU = plugin.getPreferenceStore().getBoolean(DL4JPreferencePage.P_BACKEND_TYPE);
 
