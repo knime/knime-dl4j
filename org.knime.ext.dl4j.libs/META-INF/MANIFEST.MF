@@ -51,7 +51,7 @@ Bundle-ClassPath: knime-dl4j-libs.jar,
  libs/stream-2.7.0.jar,
  libs/xz-1.5.jar
 Bundle-Activator: org.knime.ext.dl4j.libs.DL4JPluginActivator
-Bundle-Vendor: KNIME GmbH, Konstanz, Germany
+Bundle-Vendor: KNIME AG, Zurich, Switzerland
 Export-Package: org.deeplearning4j.datasets.iterator,
  org.deeplearning4j.datasets.iterator.impl,
  org.deeplearning4j.eval,

@@ -3,14 +3,14 @@
       id="org.knime.features.ext.dl4j"
       label="KNIME Deeplearning4J Integration (64bit only)"
       version="3.5.0.qualifier"
-      provider-name="KNIME GmbH, Konstanz, Germany">
+      provider-name="KNIME AG, Zurich, Switzerland">
 
    <description>
       Deeplearning4J Integration for KNIME
    </description>
 
    <copyright>
-      Copyright by KNIME GmbH, Konstanz, Germany
+      Copyright by KNIME AG, Zurich, Switzerland
    </copyright>
 
    <license>

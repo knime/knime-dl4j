@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Windows specific Cuda 8.0 specific GPU dependencies for Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda8_0;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Vendor: KNIME GmbH, Konstanz, Germany
+Bundle-Vendor: KNIME AG, Zurich, Switzerland
 Fragment-Host: org.knime.ext.dl4j.libs;bundle-version="[0.4,1.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-PlatformFilter: (&(osgi.arch=x86_64)(osgi.os=win32))
