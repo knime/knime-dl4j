@@ -58,6 +58,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortType;
+import org.knime.ext.dl4j.base.exception.DL4JOutOfMemoryException;
 import org.nd4j.linalg.api.memory.MemoryWorkspaceManager;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -126,6 +127,9 @@ public abstract class AbstractDLNodeModel extends NodeModel {
         mwsm.destroyAllWorkspacesForCurrentThread();
         try {
             return executeDL4JMemorySafe(inObjects, exec);
+        } catch (OutOfMemoryError oom) {
+            throw new DL4JOutOfMemoryException("Not enough memory available for DL4J. Please consider increasing the "
+                + "'Off Heap Memory Limit' in the DL4J Prefernce Page.", oom);
         } finally {
             mwsm.destroyAllWorkspacesForCurrentThread();
         }
