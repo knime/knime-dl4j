@@ -70,8 +70,6 @@
       </portType>
    </extension>
    <extension point="org.knime.workbench.repository.categories">
-      <category icon="res/icons/dl.png" level-id="deeplearning" locked="true" name="Deep Learning" path="/labs/">
-      </category>
       <category icon="res/icons/missing.gif" level-id="layer" locked="true" name="Layer" path="/labs/deeplearning/dl4j/">
       </category>
       <category icon="res/icons/missing.gif" level-id="deepbelief" locked="true" name="Deep Belief" path="/labs/deeplearning/dl4j/layer/">
