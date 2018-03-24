@@ -104,13 +104,13 @@ Export-Package: org.deeplearning4j.datasets.iterator,
  org.nd4j.linalg.util,
  org.nd4j.shade.jackson.core,
  org.nd4j.shade.jackson.databind
-Require-Bundle: com.google.guava;bundle-version="19.0.0",
+Require-Bundle: com.google.guava;bundle-version="[19.0.0,19.0.0]",
  org.eclipse.core.runtime;bundle-version="[3.11.0,4.0.0)",
  org.apache.commons.io;bundle-version="[2.4.0,3.0.0)",
  org.apache.commons.math3;bundle-version="[3.4.1,4.0.0)",
- org.eclipse.ui;bundle-version="3.107.0",
- org.apache.log4j;bundle-version="1.2.15",
- org.apache.commons.codec;bundle-version="1.10.0"
+ org.eclipse.ui;bundle-version="[3.107.0,4.0.0)",
+ org.apache.log4j;bundle-version="[1.2.15,2.0.0)",
+ org.apache.commons.codec;bundle-version="[1.10.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Eclipse-PlatformFilter: (osgi.arch=x86_64)
