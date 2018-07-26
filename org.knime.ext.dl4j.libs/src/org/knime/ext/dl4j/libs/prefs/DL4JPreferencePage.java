@@ -79,7 +79,7 @@ public class DL4JPreferencePage extends FieldEditorPreferencePage implements IWo
     public static final String P_OFF_HEAP_MEMORY_LIMIT = "offHeapMemoryLimit";
 
     /** Default DL4J off heap limit */
-    public static int DEFAULT_OFF_HEAP_LIMIT = 2000;
+    public static int DEFAULT_OFF_HEAP_LIMIT = 4000;
 
     private boolean m_useGPU;
 
