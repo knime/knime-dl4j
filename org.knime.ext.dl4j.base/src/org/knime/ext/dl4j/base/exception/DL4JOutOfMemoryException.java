@@ -80,4 +80,30 @@ public class DL4JOutOfMemoryException extends Exception {
     public DL4JOutOfMemoryException(final String msg, final Throwable cause) {
         super(msg, cause);
     }
+
+    /**
+     * Searches the specified Throwable and all of its causes for DL4J related Errors, {@link OutOfMemoryError} and
+     * {@link NoClassDefFoundError}. If one is found, the Error is wrapped in a {@link DL4JOutOfMemoryException} with an
+     * error messages suggesting to increase the DL4J off-heap memory limit which is returned. If no such Error is
+     * found, null will be returned.
+     *
+     * @param e the Throwable to check
+     * @return a {@link DL4JOutOfMemoryException} if the specified throwable contains DL4J related errors, null if not
+     */
+    public static DL4JOutOfMemoryException fromDL4JError(final Throwable e) {
+        if (e instanceof OutOfMemoryError) {
+            String msg = "Not enough memory available for DL4J. Please consider increasing the "
+                + "'Off Heap Memory Limit' in the DL4J Prefernce Page.";
+            return new DL4JOutOfMemoryException(msg, e);
+        } else if (e instanceof NoClassDefFoundError) {
+            String msg =
+                "The Deeplearning4J Library could not be initialized. Maybe there is not enough memory available for DL4J. Please consider increasing the "
+                    + "'Off Heap Memory Limit' in the DL4J Prefernce Page.";
+            return new DL4JOutOfMemoryException(msg, e);
+        } else if (e.getCause() == null) {
+            return null;
+        } else {
+            return fromDL4JError(e.getCause());
+        }
+    }
 }

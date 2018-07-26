@@ -59,6 +59,7 @@ import org.knime.core.node.port.PortObjectZipInputStream;
 import org.knime.core.node.port.PortObjectZipOutputStream;
 import org.knime.core.node.port.PortType;
 import org.knime.core.node.port.PortTypeRegistry;
+import org.knime.ext.dl4j.base.exception.DL4JOutOfMemoryException;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 
 /**
@@ -117,7 +118,13 @@ public class DLModelPortObject extends AbstractPortObject {
     protected void load(final PortObjectZipInputStream in, final PortObjectSpec spec, final ExecutionMonitor exec)
         throws IOException, CanceledExecutionException {
 
-        final DLModelPortObject port = DLModelPortObjectUtils.loadPortFromZip(in);
+        DLModelPortObject port = null;
+        try {
+            port = DLModelPortObjectUtils.loadPortFromZip(in);
+        } catch (Error e) {
+            DL4JOutOfMemoryException dl4jOoM = DL4JOutOfMemoryException.fromDL4JError(e);
+            throw new IOException(dl4jOoM == null ? e : dl4jOoM);
+        }
 
         this.m_spec = (DLModelPortObjectSpec)spec;
         this.m_layers = port.getLayers();

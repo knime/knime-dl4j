@@ -122,16 +122,19 @@ public abstract class AbstractDLNodeModel extends NodeModel {
      * Helper which calls executeDL4JMemorySafe() and destroys DL4J workspaces before and after execute.
      */
     private PortObject[] executeWithMemoryCleanup(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
-        MemoryWorkspaceManager mwsm = Nd4j.getWorkspaceManager();
-        //Pre-destroy in case there are any workspaces still left
-        mwsm.destroyAllWorkspacesForCurrentThread();
+        MemoryWorkspaceManager mwsm = null;
         try {
-            return executeDL4JMemorySafe(inObjects, exec);
-        } catch (OutOfMemoryError oom) {
-            throw new DL4JOutOfMemoryException("Not enough memory available for DL4J. Please consider increasing the "
-                + "'Off Heap Memory Limit' in the DL4J Prefernce Page.", oom);
-        } finally {
+            mwsm = Nd4j.getWorkspaceManager();
+            //Pre-destroy in case there are any workspaces still left
             mwsm.destroyAllWorkspacesForCurrentThread();
+            return executeDL4JMemorySafe(inObjects, exec);
+        } catch (Error e) {
+            DL4JOutOfMemoryException dl4jOoM = DL4JOutOfMemoryException.fromDL4JError(e);
+            throw dl4jOoM == null ? new Exception(e) : dl4jOoM;
+        } finally {
+            if (mwsm != null) {
+                mwsm.destroyAllWorkspacesForCurrentThread();
+            }
         }
     }
 
