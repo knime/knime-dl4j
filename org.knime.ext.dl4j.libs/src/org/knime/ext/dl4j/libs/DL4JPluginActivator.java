@@ -138,11 +138,15 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
             try {
                 backendType = CudaVersionChecker.getCudaVersion();
             } catch (CudaNotFoundException e) {
-                LOGGER.error("CUDA seems not to be installed on the system!", e);
+                String message = "CUDA seems not to be installed on the system!";
+                LOGGER.error(message);
+                LOGGER.debug(message, e);
                 backendType = BackendType.CPU;
             } catch (UnsupportedCudaVersionException e) {
-                LOGGER.error("No compatible CUDA version seems to be installed on the system! Supported versions are: "
-                    + BackendType.GPU_CUDA7_5.toString() + " and " + BackendType.GPU_CUDA8_0.toString(), e);
+                String message = "No compatible CUDA version seems to be installed on the system! Supported versions are: "
+                        + BackendType.GPU_CUDA7_5.toString() + " and " + BackendType.GPU_CUDA8_0.toString();
+                LOGGER.error(message);
+                LOGGER.debug(message, e);
                 backendType = BackendType.CPU;
             }
         }
