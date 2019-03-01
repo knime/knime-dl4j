@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.knime.features.ext.dl4j_3.8.0.qualifier.jar" id="org.knime.features.ext.dl4j" version="3.8.0.qualifier"/>
+   <feature url="features/org.knime.features.ext.dl4j.testing_3.8.0.qualifier.jar" id="org.knime.features.ext.dl4j.testing" version="3.8.0.qualifier"/>
+</site>

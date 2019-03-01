@@ -30,3 +30,4 @@ Require-Bundle: org.knime.base;bundle-version="[3.3.0,4.0.0)",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Eclipse-PlatformFilter: (osgi.arch=x86_64)
+Bundle-ClassPath: dl4j-base.jar
