@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: KNIME Deeplearning4J Integration
 Bundle-SymbolicName: org.knime.ext.dl4j.base;singleton:=true
-Bundle-Version: 3.8.0.qualifier
+Bundle-Version: 4.0.0.qualifier
+Bundle-ClassPath: dl4j-base.jar
 Bundle-Vendor: KNIME AG, Zurich, Switzerland
 Export-Package: org.knime.ext.dl4j.base,
   org.knime.ext.dl4j.base.cache,
@@ -28,6 +29,5 @@ Require-Bundle: org.knime.base;bundle-version="[3.3.0,4.0.0)",
   org.knime.base;bundle-version="[3.3.0,4.0.0)",
   org.eclipse.ui;bundle-version="[3.108.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
 Eclipse-PlatformFilter: (osgi.arch=x86_64)
-Bundle-ClassPath: dl4j-base.jar
+Bundle-ActivationPolicy: lazy
