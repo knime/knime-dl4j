@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base.nodes.learn.feedforward.classification;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -248,8 +249,8 @@ public class FeedforwardClassificationLearnerNodeModel extends AbstractDLLearner
 
     @Override
     protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-        final String momentumAfter = settings.getString(LearnerParameter.MOMENTUM_AFTER.toString().toLowerCase());
-        final String imageSize = settings.getString(DataParameter.IMAGE_SIZE.toString().toLowerCase());
+        final String momentumAfter = settings.getString(LearnerParameter.MOMENTUM_AFTER.toString().toLowerCase(Locale.ENGLISH));
+        final String imageSize = settings.getString(DataParameter.IMAGE_SIZE.toString().toLowerCase(Locale.ENGLISH));
 
         ParameterUtils.validateMomentumAfterParameter(momentumAfter);
         if (isConvolutional()) {

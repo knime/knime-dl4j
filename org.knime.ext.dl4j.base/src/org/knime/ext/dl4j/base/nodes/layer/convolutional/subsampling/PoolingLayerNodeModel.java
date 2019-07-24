@@ -45,6 +45,7 @@ package org.knime.ext.dl4j.base.nodes.layer.convolutional.subsampling;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
@@ -120,8 +121,8 @@ public class PoolingLayerNodeModel extends AbstractDLLayerNodeModel {
 
     @Override
     protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase());
-        final String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase());
+        final String kernel = settings.getString(LayerParameter.KERNEL_SIZE.toString().toLowerCase(Locale.ENGLISH));
+        final String stride = settings.getString(LayerParameter.STRIDE.toString().toLowerCase(Locale.ENGLISH));
 
         ParameterUtils.validateKernelSizeParameter(kernel);
         ParameterUtils.validateStrideParameter(stride);
