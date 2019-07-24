@@ -44,6 +44,7 @@ package org.knime.ext.dl4j.base.nodes.learn.feedforward.pretraining;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.deeplearning4j.nn.conf.layers.Layer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
@@ -213,7 +214,7 @@ public class FeedforwardPretrainingLearnerNodeModel extends AbstractDLLearnerNod
 
     @Override
     protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-        final String momentumAfter = settings.getString(LearnerParameter.MOMENTUM_AFTER.toString().toLowerCase());
+        final String momentumAfter = settings.getString(LearnerParameter.MOMENTUM_AFTER.toString().toLowerCase(Locale.ENGLISH));
         ParameterUtils.validateMomentumAfterParameter(momentumAfter);
 
         super.validateSettings(settings);
