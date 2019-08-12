@@ -24,3 +24,4 @@ Export-Package: org.bytedeco.javacpp,
  org.nd4j.nativeblas
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-PlatformFilter: (&(osgi.arch=x86_64)(osgi.os=linux))
+Eclipse-BundleShape: dir

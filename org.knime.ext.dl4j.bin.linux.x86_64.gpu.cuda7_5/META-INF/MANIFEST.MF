@@ -53,3 +53,4 @@ Export-Package: org.bytedeco.javacpp,
  org.nd4j.linalg.jcublas.rng,
  org.nd4j.linalg.jcublas.util,
  org.nd4j.nativeblas
+Eclipse-BundleShape: dir
