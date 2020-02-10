@@ -51,7 +51,9 @@ import org.knime.core.node.NodeView;
  *
  *
  * @author KNIME
+ * @deprecated
  */
+@Deprecated
 public class Dl4JModelWriterNodeFactory extends NodeFactory<Dl4JModelWriterNodeModel> {
 
     /**

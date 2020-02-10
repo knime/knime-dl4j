@@ -65,7 +65,7 @@
 <node
       category-path="/labs/deeplearning/dl4j/io"
       deprecated="false"
-      factory-class="org.knime.ext.dl4j.base.nodes.io.writer2.Dl4JModelWriter2NodeFactory">
+      factory-class="org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.writer.Dl4JModelWriter2NodeFactory">
 </node>
 </extension>
    <extension point="org.knime.core.PortType">

@@ -71,7 +71,9 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  * Node to write a Deep Learning Model.
  *
  * @author David Kolb, KNIME.com GmbH
+ * @deprecated
  */
+@Deprecated
 public class Dl4JModelWriterNodeModel extends AbstractDLNodeModel {
 
     private static final NodeLogger logger = NodeLogger.getLogger(Dl4JModelWriterNodeModel.class);

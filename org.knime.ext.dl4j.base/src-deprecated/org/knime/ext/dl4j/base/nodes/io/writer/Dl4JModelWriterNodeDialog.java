@@ -58,7 +58,9 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
  * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
  *
  * @author David Kolb, KNIME.com GmbH
+ * @deprecated
  */
+@Deprecated
 public class Dl4JModelWriterNodeDialog extends DefaultNodeSettingsPane {
 
     /**
