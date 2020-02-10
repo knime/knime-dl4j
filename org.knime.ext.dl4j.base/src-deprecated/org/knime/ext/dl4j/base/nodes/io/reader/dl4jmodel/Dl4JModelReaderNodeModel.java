@@ -69,7 +69,9 @@ import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
  * Node to read a previously saved Deep Learning Model.
  *
  * @author David Kolb, KNIME.com GmbH
+ * @deprecated
  */
+@Deprecated
 public class Dl4JModelReaderNodeModel extends AbstractDLNodeModel {
 
     private SettingsModelString m_infile;

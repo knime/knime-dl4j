@@ -130,74 +130,12 @@ public class DLModelPortObjectUtils {
      * @throws IOException
      */
     public static DLModelPortObjectSpec loadSpecFromZip(final ZipInputStream inStream) throws IOException {
-        final List<DNNLayerType> layerTypes = new ArrayList<>();
-        final List<DNNType> networkTypes = new ArrayList<>();
-        boolean isTrained = false;
-        final List<Pair<String, String>> learnedColumnTypes = new ArrayList<>();
-        final List<String> labels = new ArrayList<>();
-        final List<String> targetColumnNames = new ArrayList<String>();
-        String learnerType = "";
-        ModelType modelType = null;
-
         ZipEntry entry;
-
+        final SpecParser p = new SpecParser();
         while ((entry = inStream.getNextEntry()) != null) {
-            //read flag
-            if (entry.getName().matches("isTrained")) {
-                final Integer read = inStream.read();
-                if (read == 1) {
-                    isTrained = true;
-                } else {
-                    isTrained = false;
-                }
-
-                //read layer type
-            } else if (entry.getName().matches("layer_type[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                layerTypes.add(DNNLayerType.valueOf(read));
-
-                //read dnn type
-            } else if (entry.getName().matches("dnn_type[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                networkTypes.add(DNNType.valueOf(read));
-
-                //read input type
-            } else if (entry.getName().matches("input_column[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                final String columnName = read.split(",")[0];
-                final String columnType = read.split(",")[1];
-                learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
-
-                //read label
-            } else if (entry.getName().matches("label[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                labels.add(read);
-
-                //read target column name
-            } else if (entry.getName().matches("target_column[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                targetColumnNames.add(read);
-
-                //read learner type
-            } else if (entry.getName().matches("learner_type")) {
-                final String read = readStringFromZipStream(inStream);
-                learnerType = read;
-
-            } else if (entry.getName().matches("model_type")) {
-                final String read = readStringFromZipStream(inStream);
-                if (!read.isEmpty()) {
-                    modelType = ModelType.valueOf(read);
-                } else {
-                    modelType = null;
-                }
-
-            } else {
-                // ignore unrecognized ZipEntries
-                LOGGER.debug("Skipping unrecognized ZipEntry: " + entry.getName());
-            }
+            p.parseEntry(inStream, entry.getName());
         }
-        return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
-            learnerType, isTrained, modelType);
+        return p.getSpec();
     }
 
     /**
@@ -208,96 +146,38 @@ public class DLModelPortObjectUtils {
      * @return the loaded {@link DLModelPortObject}
      * @throws IOException
      */
-    @SuppressWarnings("resource")
     public static DLModelPortObject loadPortFromZip(final ZipInputStream inStream) throws IOException {
-        final List<Layer> layers = new ArrayList<>();
-
-        //old model format
-        INDArray mln_params = null;
-        MultiLayerConfiguration mln_config = null;
-        org.deeplearning4j.nn.api.Updater updater = null;
-
-        //new model format
-        boolean mlnLoaded = false;
-        boolean cgLoaded = false;
-        MultiLayerNetwork mlnFromModelSerializer = null;
-        ComputationGraph cgFromModelSerializer = null;
-
         ZipEntry entry;
-
+        final PortParser p = new PortParser();
         while ((entry = inStream.getNextEntry()) != null) {
-            // read layers
-            if (entry.getName().matches("layer[0123456789]+")) {
-                final String read = readStringFromZipStream(inStream);
-                Layer l = NeuralNetConfiguration.fromJson(read).getLayer();
+            p.parseEntry(inStream, entry.getName());
+        }
+        return p.getPortObject();
+    }
 
-                if (l instanceof BaseLayer) {
-                    BaseLayer bl = (BaseLayer)l;
-                    /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
-                     * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
-                     * of the layer object will contain null after 'NeuralNetConfiguration.fromJson'. Old method to
-                     * retrieve String representation of the activation function was removed. Therefore, we parse
-                     * the old activation from the json ourself and map it to the new Activation. */
-                    if (bl.getActivationFn() == null) {
-                        Optional<Activation> layerActivation = DL4JVersionUtils.parseLayerActivationFromJson(read);
-
-                        if (layerActivation.isPresent()) {
-                            bl.setActivationFn(layerActivation.get().getActivationFunction());
-                        }
-                    }
-                }
-
-                layers.add(l);
-
-                // directly read MultiLayerNetwork, new format
-            } else if (entry.getName().matches("mln_model")) {
-                //stream must not be closed, ModelSerializer tries to close the stream
-                CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);
-                mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(shieldIs, true);
-                mlnLoaded = true;
-
-                // directly read MultiLayerNetwork, new format
-            } else if (entry.getName().matches("cg_model")) {
-                //stream must not be closed, ModelSerializer tries to close the stream
-                CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);
-                cgFromModelSerializer = ModelSerializer.restoreComputationGraph(shieldIs, true);
-                cgLoaded = true;
-
-                // read MultilayerNetworkConfig, old format
-            } else if (entry.getName().matches("mln_config")) {
-
-                final String read = readStringFromZipStream(inStream);
-                mln_config = MultiLayerConfiguration.fromJson(read.toString());
-
-                // read params, old format
-            } else if (entry.getName().matches("mln_params")) {
-                try {
-                    mln_params = Nd4j.read(inStream);
-                } catch (Exception e) {
-                    throw new IOException("Could not load network parameters. Please re-execute the Node.", e);
-                }
-
-                // read updater, old format
-            } else if (entry.getName().matches("mln_updater")) {
-                // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
-                final IgnoreIDObjectInputStream ois = new IgnoreIDObjectInputStream(inStream);
-                try {
-                    updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
-                } catch (final ClassNotFoundException e) {
-                    throw new IOException("Problem with updater loading: " + e.getMessage(), e);
-                }
+    /**
+     * Loads a {@link DLModelPortObject} including it's spec from the specified {@link ZipInputStream}. Supports both
+     * deserialization of old and new format.
+     *
+     * @param inStream the stream to load from
+     * @return the loaded {@link DLModelPortObject}
+     * @throws IOException
+     */
+    public static DLModelPortObject loadPortAndSpecFromZip(final ZipInputStream inStream) throws IOException {
+        ZipEntry entry;
+        final PortParser pParser = new PortParser();
+        final SpecParser sParser = new SpecParser();
+        boolean hasSpec = false;
+        while ((entry = inStream.getNextEntry()) != null) {
+            final String identifier = entry.getName();
+            if (!pParser.parseEntry(inStream, identifier)) {
+                hasSpec |= sParser.parseEntry(inStream, identifier);
             }
         }
-
-        if (mlnLoaded) {
-            assert (!cgLoaded);
-            return new DLModelPortObject(layers, mlnFromModelSerializer, null);
-        } else if (cgLoaded) {
-            assert (!mlnLoaded);
-            return new DLModelPortObject(layers, cgFromModelSerializer, null);
-        } else {
-            return new DLModelPortObject(layers, buildMln(mln_config, updater, mln_params), null);
+        if (hasSpec) {
+            return pParser.getPortObject(sParser.getSpec());
         }
+        return pParser.getPortObject();
     }
 
     /**
@@ -559,10 +439,11 @@ public class DLModelPortObjectUtils {
     }
 
     /**
-     * Workaround class for compatibility issue of DL4J version 0.6.0 to 0.8.0. SUID of {@link Updater} changed, therefore
-     * it could not be loaded by standard 'ObjectInputStream' anymore. This class just ignores the SUID and tries to deserialize
-     * the object anyway because the class definition did not change. NOT intended to be used anywhere else!
-     * <br><br>
+     * Workaround class for compatibility issue of DL4J version 0.6.0 to 0.8.0. SUID of {@link Updater} changed,
+     * therefore it could not be loaded by standard 'ObjectInputStream' anymore. This class just ignores the SUID and
+     * tries to deserialize the object anyway because the class definition did not change. NOT intended to be used
+     * anywhere else! <br>
+     * <br>
      * Taken and adapted from: http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
      *
      * @author David Kolb, KNIME.com GmbH
@@ -602,6 +483,193 @@ public class DLModelPortObjectUtils {
                 }
             }
             return resultClassDescriptor;
+        }
+    }
+
+    private static class SpecParser {
+
+        final List<DNNLayerType> layerTypes = new ArrayList<>();
+
+        final List<DNNType> networkTypes = new ArrayList<>();
+
+        boolean isTrained = false;
+
+        final List<Pair<String, String>> learnedColumnTypes = new ArrayList<>();
+
+        final List<String> labels = new ArrayList<>();
+
+        final List<String> targetColumnNames = new ArrayList<String>();
+
+        String learnerType = "";
+
+        ModelType modelType = null;
+
+        boolean parseEntry(final ZipInputStream inStream, final String identifier) throws IOException {
+            //read flag
+            if (identifier.matches("isTrained")) {
+                final Integer read = inStream.read();
+                if (read == 1) {
+                    isTrained = true;
+                } else {
+                    isTrained = false;
+                }
+
+                //read layer type
+            } else if (identifier.matches("layer_type[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                layerTypes.add(DNNLayerType.valueOf(read));
+
+                //read dnn type
+            } else if (identifier.matches("dnn_type[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                networkTypes.add(DNNType.valueOf(read));
+
+                //read input type
+            } else if (identifier.matches("input_column[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                final String columnName = read.split(",")[0];
+                final String columnType = read.split(",")[1];
+                learnedColumnTypes.add(new Pair<String, String>(columnName, columnType));
+
+                //read label
+            } else if (identifier.matches("label[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                labels.add(read);
+
+                //read target column name
+            } else if (identifier.matches("target_column[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                targetColumnNames.add(read);
+
+                //read learner type
+            } else if (identifier.matches("learner_type")) {
+                final String read = readStringFromZipStream(inStream);
+                learnerType = read;
+
+            } else if (identifier.matches("model_type")) {
+                final String read = readStringFromZipStream(inStream);
+                if (!read.isEmpty()) {
+                    modelType = ModelType.valueOf(read);
+                } else {
+                    modelType = null;
+                }
+            } else {
+                // ignore unrecognized ZipEntries
+                LOGGER.debug("Skipping unrecognized ZipEntry: " + identifier);
+                return false;
+            }
+            return true;
+        }
+
+        DLModelPortObjectSpec getSpec() {
+            return new DLModelPortObjectSpec(networkTypes, layerTypes, learnedColumnTypes, labels, targetColumnNames,
+                learnerType, isTrained, modelType);
+        }
+
+    }
+
+    private static class PortParser {
+
+        final List<Layer> layers = new ArrayList<>();
+
+        //old model format
+        INDArray mln_params = null;
+
+        MultiLayerConfiguration mln_config = null;
+
+        org.deeplearning4j.nn.api.Updater updater = null;
+
+        //new model format
+        boolean mlnLoaded = false;
+
+        boolean cgLoaded = false;
+
+        MultiLayerNetwork mlnFromModelSerializer = null;
+
+        ComputationGraph cgFromModelSerializer = null;
+
+        boolean parseEntry(final ZipInputStream inStream, final String identifier) throws IOException {
+            // read layers
+            if (identifier.matches("layer[0123456789]+")) {
+                final String read = readStringFromZipStream(inStream);
+                Layer l = NeuralNetConfiguration.fromJson(read).getLayer();
+
+                if (l instanceof BaseLayer) {
+                    BaseLayer bl = (BaseLayer)l;
+                    /* Compatibility issue between dl4j 0.6 and 0.8 due to API change. Activations changed from
+                     * Strings to an interface. Therefore, if a model was saved with 0.6 the corresponding member
+                     * of the layer object will contain null after 'NeuralNetConfiguration.fromJson'. Old method to
+                     * retrieve String representation of the activation function was removed. Therefore, we parse
+                     * the old activation from the json ourself and map it to the new Activation. */
+                    if (bl.getActivationFn() == null) {
+                        Optional<Activation> layerActivation = DL4JVersionUtils.parseLayerActivationFromJson(read);
+
+                        if (layerActivation.isPresent()) {
+                            bl.setActivationFn(layerActivation.get().getActivationFunction());
+                        }
+                    }
+                }
+
+                layers.add(l);
+
+                // directly read MultiLayerNetwork, new format
+            } else if (identifier.matches("mln_model")) {
+                //stream must not be closed, ModelSerializer tries to close the stream
+                try (CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);) {
+                    mlnFromModelSerializer = ModelSerializer.restoreMultiLayerNetwork(shieldIs, true);
+                }
+                mlnLoaded = true;
+
+                // directly read MultiLayerNetwork, new format
+            } else if (identifier.matches("cg_model")) {
+                //stream must not be closed, ModelSerializer tries to close the stream
+                try (CloseShieldInputStream shieldIs = new CloseShieldInputStream(inStream);) {
+                    cgFromModelSerializer = ModelSerializer.restoreComputationGraph(shieldIs, true);
+                }
+                cgLoaded = true;
+
+                // read MultilayerNetworkConfig, old format
+            } else if (identifier.matches("mln_config")) {
+
+                final String read = readStringFromZipStream(inStream);
+                mln_config = MultiLayerConfiguration.fromJson(read.toString());
+
+                // read params, old format
+            } else if (identifier.matches("mln_params")) {
+                try {
+                    mln_params = Nd4j.read(inStream);
+                } catch (Exception e) {
+                    throw new IOException("Could not load network parameters. Please re-execute the Node.", e);
+                }
+
+                // read updater, old format
+            } else if (identifier.matches("mln_updater")) {
+                // stream must not be closed, even if an exception is thrown, because the wrapped stream must stay open
+                try (final IgnoreIDObjectInputStream ois = new IgnoreIDObjectInputStream(inStream);) {
+                    updater = (org.deeplearning4j.nn.api.Updater)ois.readObject();
+                } catch (final ClassNotFoundException e) {
+                    throw new IOException("Problem with updater loading: " + e.getMessage(), e);
+                }
+            } else {
+                return false;
+            }
+            return true;
+        }
+
+        DLModelPortObject getPortObject() {
+            return getPortObject(null);
+        }
+
+        DLModelPortObject getPortObject(final DLModelPortObjectSpec spec) {
+            if (mlnLoaded) {
+                assert (!cgLoaded);
+                return new DLModelPortObject(layers, mlnFromModelSerializer, spec);
+            } else if (cgLoaded) {
+                assert (!mlnLoaded);
+                return new DLModelPortObject(layers, cgFromModelSerializer, spec);
+            } else {
+                return new DLModelPortObject(layers, buildMln(mln_config, updater, mln_params), spec);
+            }
         }
     }
 }

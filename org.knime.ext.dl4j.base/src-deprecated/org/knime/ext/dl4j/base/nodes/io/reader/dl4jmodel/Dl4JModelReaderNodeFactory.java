@@ -42,32 +42,59 @@
  *******************************************************************************/
 package org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel;
 
-import javax.swing.JFileChooser;
-
-import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
-import org.knime.core.node.defaultnodesettings.DialogComponentFileChooser;
-import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.core.node.NodeDialogPane;
+import org.knime.core.node.NodeFactory;
+import org.knime.core.node.NodeView;
 
 /**
- * <code>NodeDialog</code> for the "Dl4JModelReader" Node.
+ * <code>NodeFactory</code> for the "Dl4JModelReader" Node.
  *
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows creation of a simple dialog with standard
- * components. If you need a more complex dialog please derive directly from {@link org.knime.core.node.NodeDialogPane}.
- *
- * @author David Kolb, KNIME.com GmbH
+ * @author KNIME
+ * @deprecated
  */
-public class Dl4JModelReaderNodeDialog extends DefaultNodeSettingsPane {
+@Deprecated
+public class Dl4JModelReaderNodeFactory extends NodeFactory<Dl4JModelReaderNodeModel> {
 
     /**
-     * New pane for configuring the Dl4JModelReader node.
+     * {@inheritDoc}
      */
-    protected Dl4JModelReaderNodeDialog() {
-        addDialogComponent(new DialogComponentFileChooser(createFileModel(), "dl4j.model.reader.history",
-            JFileChooser.OPEN_DIALOG, false, createFlowVariableModel(createFileModel()), ".dl4j"));
+    @Override
+    public Dl4JModelReaderNodeModel createNodeModel() {
+        return new Dl4JModelReaderNodeModel();
     }
 
-    static SettingsModelString createFileModel() {
-        return new SettingsModelString("dl4j_model_reader_file", "");
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNrNodeViews() {
+        return 0;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NodeView<Dl4JModelReaderNodeModel> createNodeView(final int viewIndex,
+        final Dl4JModelReaderNodeModel nodeModel) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasDialog() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NodeDialogPane createNodeDialogPane() {
+        return new Dl4JModelReaderNodeDialog();
+    }
+
 }

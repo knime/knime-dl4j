@@ -16,8 +16,8 @@
       category-path="/labs/deeplearning/dl4j/deprecated"
       deprecated="true"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
-<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory"/>
-<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory"/>
+<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory" deprecated="true"/>
+<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory" deprecated="true"/>
 <node
       category-path="/labs/deeplearning/dl4j/predict"
       deprecated="true"
@@ -56,6 +56,16 @@
       category-path="/labs/deeplearning/dl4j/predict"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.predict.feedforward.layer.FeedforwardLayerPredictorNodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/dl4j/io"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.reader.Dl4JModelReader2NodeFactory">
+</node>
+<node
+      category-path="/labs/deeplearning/dl4j/io"
+      deprecated="false"
+      factory-class="org.knime.ext.dl4j.base.nodes.io.writer2.Dl4JModelWriter2NodeFactory">
 </node>
 </extension>
    <extension point="org.knime.core.PortType">
@@ -190,6 +200,15 @@
       <DL4JConverter
             converterClass="org.knime.ext.dl4j.base.data.convert.extension.impl.CollectionDataValueToDoubleArrayConverter">
       </DL4JConverter>
+   </extension>
+   <extension
+         point="org.knime.workbench.repository.registeredFileExtensions">
+      <FileExtensionMapping
+            NodeFactory="org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.reader.Dl4JModelReader2NodeFactory">
+         <FileExtension
+               extension=".dl4j">
+         </FileExtension>
+      </FileExtensionMapping>
    </extension>
    
 </plugin>
