@@ -96,10 +96,20 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
         return settings;
     }
 
+    /**
+     * Creates the compare models settings model.
+     *
+     * @return the compare models setting model
+     */
     public static SettingsModelBoolean createCompareModelsModel() {
         return new SettingsModelBoolean("compate_models", false);
     }
 
+    /**
+     * Creates the output models settings model.
+     *
+     * @return the output models settings model
+     */
     public static SettingsModelBoolean createOutputModelsModel() {
         return new SettingsModelBoolean("output_models", false);
     }
@@ -115,13 +125,13 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
         return new DataTableSpec();
     }
 
-    private void compareModels(final DLModelPortObject model1, final DLModelPortObject model2) throws Exception {
+    private static void compareModels(final DLModelPortObject model1, final DLModelPortObject model2) throws Exception {
         compareLayerLists(model1.getLayers(), model2.getLayers());
         compareMLN(model1.getMultilayerLayerNetwork(), model2.getMultilayerLayerNetwork());
-        compareSpec((DLModelPortObjectSpec)model1.getSpec(), (DLModelPortObjectSpec)model2.getSpec());
+        compareSpec(model1.getSpec(), model2.getSpec());
     }
 
-    private void compareSpec(final DLModelPortObjectSpec s1, final DLModelPortObjectSpec s2) throws Exception {
+    private static void compareSpec(final DLModelPortObjectSpec s1, final DLModelPortObjectSpec s2) throws Exception {
         if ((s1 != null) && (s2 != null)) {
             if (!s1.equals(s2)) {
                 logger.error("Spec of model 1 is different than Spec of model 2");
@@ -129,7 +139,7 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
         }
     }
 
-    private void compareMLN(final MultiLayerNetwork m1, final MultiLayerNetwork m2) throws Exception {
+    private static void compareMLN(final MultiLayerNetwork m1, final MultiLayerNetwork m2) throws Exception {
         if ((m1 != null) && (m2 != null)) {
             final String m1Conf = m1.getLayerWiseConfigurations().toJson();
             final String m2Conf = m2.getLayerWiseConfigurations().toJson();
@@ -154,7 +164,10 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
                 m2ContainsParams = false;
             }
             if (m1ContainsParams && m2ContainsParams) {
-                if (!m1params.equals(m2params)) {
+                if(m1params == null) {
+                    logger.error("Parameters of model 1 were null");
+                }
+                else if (!m1params.equals(m2params)) {
                     logger.error("Parameters of model 1 are different from Parameter of model 2");
                 }
             } else if (!m1ContainsParams && !m2ContainsParams) {
@@ -171,7 +184,7 @@ public class DL4JModelTesterNodeModel extends AbstractDLNodeModel {
         }
     }
 
-    private void compareLayerLists(final List<Layer> l1, final List<Layer> l2) throws Exception {
+    private static void compareLayerLists(final List<Layer> l1, final List<Layer> l2) throws Exception {
         if ((l1 != null) && (l2 != null)) {
             if (l1.size() != l2.size()) {
                 logger.error("Different number of Layers. Number of Layers model 1: " + l1.size()

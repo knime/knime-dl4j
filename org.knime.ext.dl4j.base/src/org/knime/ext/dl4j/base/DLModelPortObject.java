@@ -137,7 +137,7 @@ public class DLModelPortObject extends AbstractPortObject {
     }
 
     @Override
-    public PortObjectSpec getSpec() {
+    public DLModelPortObjectSpec getSpec() {
         return m_spec;
     }
 

@@ -106,7 +106,7 @@ public class DLModelPortObjectUtils {
      */
     public static void saveModelToZip(final DLModelPortObject portObject, final boolean writePortObject,
         final boolean writeSpec, final ZipOutputStream outStream) throws IOException {
-        final DLModelPortObjectSpec spec = (DLModelPortObjectSpec)portObject.getSpec();
+        final DLModelPortObjectSpec spec = portObject.getSpec();
 
         if (outStream == null) {
             throw new IOException("OutputStream is null");

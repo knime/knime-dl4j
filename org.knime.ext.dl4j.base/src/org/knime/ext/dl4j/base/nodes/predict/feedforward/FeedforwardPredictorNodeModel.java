@@ -107,7 +107,7 @@ public class FeedforwardPredictorNodeModel extends AbstractDLPredictorNodeModel 
     @Override
     protected PortObject[] execute(final PortObject[] inObjects, final ExecutionContext exec) throws Exception {
         final DLModelPortObject port = (DLModelPortObject)inObjects[0];
-        final DLModelPortObjectSpec portSpec = (DLModelPortObjectSpec)port.getSpec();
+        final DLModelPortObjectSpec portSpec = port.getSpec();
         final BufferedDataTable table = (BufferedDataTable)inObjects[1];
 
         //select feature columns from table used for prediction
