@@ -188,15 +188,30 @@ public class DLModelPortObject extends AbstractPortObject {
         return new JComponent[]{};
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof DLModelPortObject)) {
+            return false;
+        }
+        final DLModelPortObject oPortObject = (DLModelPortObject)obj;
+
+        return (m_layers == null ? oPortObject.m_layers == null : m_layers.equals(oPortObject.m_layers))//
+            && (m_model == null ? oPortObject.m_model == null : m_model.equals(oPortObject.m_model)) //
+            && (m_spec == null ? oPortObject.m_spec == null : m_spec.equals(oPortObject.m_spec));
+    }
+
     /**
      * Currently supported implementations of {@link Model} by this port object.
      *
      * @author David Kolb, KNIME.com GmbH
      */
     public enum ModelType {
-        /** MultiLayerNetwork */
-        MLN,
-        /** ComputationGraph */
-        CG;
+            /** MultiLayerNetwork */
+            MLN,
+            /** ComputationGraph */
+            CG;
     }
 }
