@@ -98,7 +98,7 @@ public class DL4JOutOfMemoryException extends Exception {
         } else if (e instanceof NoClassDefFoundError) {
             String msg =
                 "The Deeplearning4J Library could not be initialized. Maybe there is not enough memory available for DL4J. Please consider increasing the "
-                    + "'Off Heap Memory Limit' in the DL4J Prefernce Page.";
+                    + "'Off Heap Memory Limit' in the DL4J Preference Page.";
             return new DL4JOutOfMemoryException(msg, e);
         } else if (e.getCause() == null) {
             return null;

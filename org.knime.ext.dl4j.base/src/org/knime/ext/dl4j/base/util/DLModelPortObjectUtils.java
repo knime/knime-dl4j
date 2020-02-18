@@ -167,12 +167,18 @@ public class DLModelPortObjectUtils {
         ZipEntry entry;
         final PortParser pParser = new PortParser();
         final SpecParser sParser = new SpecParser();
+        boolean hasModel = false;
         boolean hasSpec = false;
         while ((entry = inStream.getNextEntry()) != null) {
             final String identifier = entry.getName();
-            if (!pParser.parseEntry(inStream, identifier)) {
+            final boolean parserRecognizedEntry = pParser.parseEntry(inStream, identifier);
+            hasModel |= parserRecognizedEntry;
+            if (!parserRecognizedEntry) {
                 hasSpec |= sParser.parseEntry(inStream, identifier);
             }
+        }
+        if (!hasModel) {
+            throw new IOException("File does not specify a valid DL4J model.");
         }
         if (hasSpec) {
             return pParser.getPortObject(sParser.getSpec());
@@ -498,7 +504,7 @@ public class DLModelPortObjectUtils {
 
         final List<String> labels = new ArrayList<>();
 
-        final List<String> targetColumnNames = new ArrayList<String>();
+        final List<String> targetColumnNames = new ArrayList<>();
 
         String learnerType = "";
 
