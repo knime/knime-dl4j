@@ -53,6 +53,7 @@ import javax.swing.JFileChooser;
 import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.filehandling.core.node.portobject.reader.PortObjectReaderNodeConfig;
 import org.knime.filehandling.core.node.portobject.reader.PortObjectReaderNodeDialog;
 import org.knime.filehandling.core.node.portobject.reader.PortObjectReaderNodeFactory;
 
@@ -61,8 +62,14 @@ import org.knime.filehandling.core.node.portobject.reader.PortObjectReaderNodeFa
  *
  * @author Perla Gjoka, KNIME GmbH, Konstanz, Germany
  */
-public final class Dl4JModelReader2NodeFactory
-    extends PortObjectReaderNodeFactory<Dl4JModelReader2NodeModel, PortObjectReaderNodeDialog<Dl4JModelReaderConfig>> {
+public final class Dl4JModelReader2NodeFactory extends
+    PortObjectReaderNodeFactory<Dl4JModelReader2NodeModel, PortObjectReaderNodeDialog<PortObjectReaderNodeConfig>> {
+
+    /** File chooser history Id. */
+    private static final String HISTORY_ID = "dl4j_model_reader_writer";
+
+    /** The dl4j model file extension/suffix. */
+    private static final String[] DL4J_SUFFIX = new String[]{".dl4j"};
 
     @Override
     protected PortType getOutputPortType() {
@@ -70,15 +77,24 @@ public final class Dl4JModelReader2NodeFactory
     }
 
     @Override
-    protected PortObjectReaderNodeDialog<Dl4JModelReaderConfig>
+    protected PortObjectReaderNodeDialog<PortObjectReaderNodeConfig>
         createDialog(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectReaderNodeDialog<>(creationConfig.getPortConfig().get(), new Dl4JModelReaderConfig(),
-            "dl4j_reader", JFileChooser.FILES_ONLY);
+        return new PortObjectReaderNodeDialog<>(creationConfig.getPortConfig().get(), getConfig(), HISTORY_ID,
+            JFileChooser.FILES_ONLY);
     }
 
     @Override
     protected Dl4JModelReader2NodeModel createNodeModel(final NodeCreationConfiguration creationConfig) {
-        return new Dl4JModelReader2NodeModel(creationConfig);
+        return new Dl4JModelReader2NodeModel(creationConfig, getConfig());
+    }
+
+    /**
+     * Returns the port object reader node configuration.
+     *
+     * @return the reader configuration
+     */
+    private static PortObjectReaderNodeConfig getConfig() {
+        return new PortObjectReaderNodeConfig(DL4J_SUFFIX);
     }
 
 }

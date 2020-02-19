@@ -57,21 +57,24 @@ import org.knime.core.node.port.PortObject;
 import org.knime.ext.dl4j.base.DLModelPortObject;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.filehandling.core.node.portobject.writer.PortObjectToFileWriterNodeModel;
+import org.knime.filehandling.core.node.portobject.writer.PortObjectWriterNodeConfig;
 
 /**
  * This class creates the node model for the Dl4J model writer node.
  *
  * @author Perla Gjoka, KNIME GmbH, Konstanz, Germany
  */
-final class Dl4JModelWriter2NodeModel extends PortObjectToFileWriterNodeModel<Dl4JModelWriterConfig> {
+final class Dl4JModelWriter2NodeModel extends PortObjectToFileWriterNodeModel<PortObjectWriterNodeConfig> {
 
     /**
      * Constructor.
      *
      * @param creationConfig the node creation configuration
+     * @param config the writer configuration
      */
-    protected Dl4JModelWriter2NodeModel(final NodeCreationConfiguration creationConfig) {
-        super(creationConfig, new Dl4JModelWriterConfig());
+    protected Dl4JModelWriter2NodeModel(final NodeCreationConfiguration creationConfig,
+        final PortObjectWriterNodeConfig config) {
+        super(creationConfig, config);
     }
 
     @Override

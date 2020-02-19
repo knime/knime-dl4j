@@ -56,21 +56,24 @@ import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.core.node.port.PortObject;
 import org.knime.ext.dl4j.base.util.DLModelPortObjectUtils;
 import org.knime.filehandling.core.node.portobject.reader.PortObjectFromFileReaderNodeModel;
+import org.knime.filehandling.core.node.portobject.reader.PortObjectReaderNodeConfig;
 
 /**
  * This class created the node model for the Dl4J model reader node.
  *
  * @author Perla Gjoka, KNIME GmbH, Konstanz, Germany
  */
-final class Dl4JModelReader2NodeModel extends PortObjectFromFileReaderNodeModel<Dl4JModelReaderConfig> {
+final class Dl4JModelReader2NodeModel extends PortObjectFromFileReaderNodeModel<PortObjectReaderNodeConfig> {
 
     /**
      * Constructor.
      *
      * @param creationConfig the node creation configuration
+     * @param config the reader configuration
      */
-    protected Dl4JModelReader2NodeModel(final NodeCreationConfiguration creationConfig) {
-        super(creationConfig, new Dl4JModelReaderConfig());
+    protected Dl4JModelReader2NodeModel(final NodeCreationConfiguration creationConfig,
+        final PortObjectReaderNodeConfig config) {
+        super(creationConfig, config);
     }
 
     @Override

@@ -53,6 +53,7 @@ import javax.swing.JFileChooser;
 import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
+import org.knime.filehandling.core.node.portobject.writer.PortObjectWriterNodeConfig;
 import org.knime.filehandling.core.node.portobject.writer.PortObjectWriterNodeDialog;
 import org.knime.filehandling.core.node.portobject.writer.PortObjectWriterNodeFactory;
 
@@ -61,8 +62,14 @@ import org.knime.filehandling.core.node.portobject.writer.PortObjectWriterNodeFa
  *
  * @author Perla Gjoka, KNIME GmbH, Konstanz, Germany
  */
-public final class Dl4JModelWriter2NodeFactory
-    extends PortObjectWriterNodeFactory<Dl4JModelWriter2NodeModel, PortObjectWriterNodeDialog<Dl4JModelWriterConfig>> {
+public final class Dl4JModelWriter2NodeFactory extends
+    PortObjectWriterNodeFactory<Dl4JModelWriter2NodeModel, PortObjectWriterNodeDialog<PortObjectWriterNodeConfig>> {
+
+    /** File chooser history Id. */
+    private static final String HISTORY_ID = "dl4j_model_reader_writer";
+
+    /** The dl4j model file extension/suffix. */
+    private static final String[] DL4J_SUFFIX = new String[]{".dl4j"};
 
     @Override
     protected PortType getInputPortType() {
@@ -70,15 +77,23 @@ public final class Dl4JModelWriter2NodeFactory
     }
 
     @Override
-    protected PortObjectWriterNodeDialog<Dl4JModelWriterConfig>
+    protected PortObjectWriterNodeDialog<PortObjectWriterNodeConfig>
         createDialog(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectWriterNodeDialog<>(creationConfig.getPortConfig().get(), new Dl4JModelWriterConfig(),
-            "dl4j_writer", JFileChooser.FILES_ONLY);
+        return new PortObjectWriterNodeDialog<>(creationConfig.getPortConfig().get(), getConfig(), HISTORY_ID,
+            JFileChooser.FILES_ONLY);
     }
 
     @Override
     protected Dl4JModelWriter2NodeModel createNodeModel(final NodeCreationConfiguration creationConfig) {
-        return new Dl4JModelWriter2NodeModel(creationConfig);
+        return new Dl4JModelWriter2NodeModel(creationConfig, getConfig());
     }
 
+    /**
+     * Returns the port object writer node configuration.
+     *
+     * @return the writer configuration
+     */
+    private static PortObjectWriterNodeConfig getConfig() {
+        return new PortObjectWriterNodeConfig(DL4J_SUFFIX);
+    }
 }
