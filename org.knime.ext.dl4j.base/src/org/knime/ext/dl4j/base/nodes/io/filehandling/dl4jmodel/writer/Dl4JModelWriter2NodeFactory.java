@@ -48,8 +48,6 @@
  */
 package org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.writer;
 
-import javax.swing.JFileChooser;
-
 import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
@@ -79,21 +77,23 @@ public final class Dl4JModelWriter2NodeFactory extends
     @Override
     protected PortObjectWriterNodeDialog<PortObjectWriterNodeConfig>
         createDialog(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectWriterNodeDialog<>(creationConfig.getPortConfig().get(), getConfig(), HISTORY_ID,
-            JFileChooser.FILES_ONLY);
+        return new PortObjectWriterNodeDialog<>(getConfig(creationConfig), HISTORY_ID);
     }
 
     @Override
     protected Dl4JModelWriter2NodeModel createNodeModel(final NodeCreationConfiguration creationConfig) {
-        return new Dl4JModelWriter2NodeModel(creationConfig, getConfig());
+        return new Dl4JModelWriter2NodeModel(creationConfig, getConfig(creationConfig));
     }
 
     /**
      * Returns the port object writer node configuration.
      *
+     * @param creationConfig
+     *
+     * @param creationConfig {@link NodeCreationConfiguration} of the corresponding KNIME node
      * @return the writer configuration
      */
-    private static PortObjectWriterNodeConfig getConfig() {
-        return new PortObjectWriterNodeConfig(DL4J_SUFFIX);
+    private static PortObjectWriterNodeConfig getConfig(final NodeCreationConfiguration creationConfig) {
+        return new PortObjectWriterNodeConfig(creationConfig, DL4J_SUFFIX);
     }
 }

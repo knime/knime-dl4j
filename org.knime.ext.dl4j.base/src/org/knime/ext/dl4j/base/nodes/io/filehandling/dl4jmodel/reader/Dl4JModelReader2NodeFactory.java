@@ -48,8 +48,6 @@
  */
 package org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.reader;
 
-import javax.swing.JFileChooser;
-
 import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.core.node.port.PortType;
 import org.knime.ext.dl4j.base.DLModelPortObject;
@@ -79,22 +77,22 @@ public final class Dl4JModelReader2NodeFactory extends
     @Override
     protected PortObjectReaderNodeDialog<PortObjectReaderNodeConfig>
         createDialog(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectReaderNodeDialog<>(creationConfig.getPortConfig().get(), getConfig(), HISTORY_ID,
-            JFileChooser.FILES_ONLY);
+        return new PortObjectReaderNodeDialog<>(getConfig(creationConfig), HISTORY_ID);
     }
 
     @Override
     protected Dl4JModelReader2NodeModel createNodeModel(final NodeCreationConfiguration creationConfig) {
-        return new Dl4JModelReader2NodeModel(creationConfig, getConfig());
+        return new Dl4JModelReader2NodeModel(creationConfig, getConfig(creationConfig));
     }
 
     /**
      * Returns the port object reader node configuration.
      *
+     * @param creationConfig {@link NodeCreationConfiguration} of the corresponding KNIME node
      * @return the reader configuration
      */
-    private static PortObjectReaderNodeConfig getConfig() {
-        return new PortObjectReaderNodeConfig(DL4J_SUFFIX);
+    private static PortObjectReaderNodeConfig getConfig(final NodeCreationConfiguration creationConfig) {
+        return new PortObjectReaderNodeConfig(creationConfig, DL4J_SUFFIX);
     }
 
 }
