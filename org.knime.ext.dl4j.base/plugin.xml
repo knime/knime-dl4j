@@ -16,7 +16,7 @@
       category-path="/labs/deeplearning/dl4j/deprecated"
       deprecated="true"
       factory-class="org.knime.ext.dl4j.base.nodes.learn.feedforward.FeedforwardLearnerNodeFactory"/>
-<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory" deprecated="true"/>
+<node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.writer.Dl4JModelWriterNodeFactory" deprecated="false"/>
 <node category-path="/labs/deeplearning/dl4j/io" factory-class="org.knime.ext.dl4j.base.nodes.io.reader.dl4jmodel.Dl4JModelReaderNodeFactory" deprecated="false"/>
 <node
       category-path="/labs/deeplearning/dl4j/predict"
@@ -63,7 +63,7 @@
       factory-class="org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.reader.Dl4JModelReader2NodeFactory">
 </node>
 <node
-      category-path="/labs/deeplearning/dl4j/io"
+      category-path="/labs/file-handling-prototype/file-handling-IO/file-handling-Write"
       deprecated="false"
       factory-class="org.knime.ext.dl4j.base.nodes.io.filehandling.dl4jmodel.writer.Dl4JModelWriter2NodeFactory">
 </node>
