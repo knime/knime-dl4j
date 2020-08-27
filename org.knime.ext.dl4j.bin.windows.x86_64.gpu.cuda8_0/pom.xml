@@ -14,6 +14,11 @@
   <artifactId>org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda8_0</artifactId>
   <version>0.9.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+  
+  <properties>
+    <revision>4.3.0</revision>
+  </properties>
+
   <build>
     <plugins>
       <!-- tycho is not able to automatically determine os/ws/arch of this bundle -->
