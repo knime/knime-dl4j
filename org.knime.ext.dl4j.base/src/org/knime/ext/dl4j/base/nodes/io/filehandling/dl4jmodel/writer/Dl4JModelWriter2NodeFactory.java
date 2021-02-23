@@ -94,6 +94,6 @@ public final class Dl4JModelWriter2NodeFactory extends
      * @return the writer configuration
      */
     private static PortObjectWriterNodeConfig getConfig(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectWriterNodeConfig(creationConfig, DL4J_SUFFIX);
+        return PortObjectWriterNodeConfig.builder(creationConfig).withFileSuffixes(DL4J_SUFFIX).build();
     }
 }

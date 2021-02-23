@@ -92,7 +92,9 @@ public final class Dl4JModelReader2NodeFactory extends
      * @return the reader configuration
      */
     private static PortObjectReaderNodeConfig getConfig(final NodeCreationConfiguration creationConfig) {
-        return new PortObjectReaderNodeConfig(creationConfig, DL4J_SUFFIX);
+        return PortObjectReaderNodeConfig.builder(creationConfig)//
+                .withFileSuffixes(DL4J_SUFFIX)//
+                .build();
     }
 
 }
