@@ -4,14 +4,14 @@
 
 	<parent>
 		<groupId>org.knime</groupId>
-    <artifactId>knime-dl4j</artifactId>
-    <version>${revision}${changelist}</version>
+        <artifactId>knime-dl4j</artifactId>
+        <version>${revision}${changelist}</version>
       <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>org.knime.ext.textprocessing.dl4j</artifactId>
   <packaging>eclipse-plugin</packaging>
-  
+ 
   <properties>
     <revision>4.4.0</revision>
   </properties>

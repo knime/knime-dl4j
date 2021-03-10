@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
    <feature id="org.knime.features.ext.dl4j" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
    <feature id="org.knime.features.ext.dl4j.source" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
    <feature id="org.knime.features.ext.dl4j.testing" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
    <feature id="org.knime.features.ext.dl4j.testing.source" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
    <feature id="org.knime.features.ext.textprocessing.dl4j" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
    <feature id="org.knime.features.ext.textprocessing.dl4j.source" version="0.0.0">
-       <category name="knime-dl4j"/>
+        <category name="knime-dl4j"/>
     </feature>
 
    <category-def name="knime-dl4j" label="Build artifacts from knime-dl4j">
        <description>Build artifacts from knime-dl4j</description>
-       <query><expression type="match">id ~= /.+/</expression></query>
    </category-def>
 </site>
