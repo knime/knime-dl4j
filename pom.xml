@@ -32,9 +32,11 @@
         <module>org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda7_5</module>
         <module>org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda8_0</module>
         <module>org.knime.ext.dl4j.libs</module>
+        <module>org.knime.ext.textprocessing.dl4j</module>
         <module>org.knime.features.ext.dl4j</module>
         <module>org.knime.ext.dl4j.testing</module>
         <module>org.knime.features.ext.dl4j.testing</module>
+        <module>org.knime.features.ext.textprocessing.dl4j</module>
         <module>org.knime.update.ext.dl4j</module>
     </modules>
 
@@ -65,9 +67,19 @@
             <url>${knime.shared.p2}</url>
         </repository>
         <repository>
+            <id>p2-knime-textprocessing</id>
+            <layout>p2</layout>
+            <url>${knime.textprocessing.p2}</url>
+        </repository>
+        <repository>
             <id>p2-knime-tp</id>
             <layout>p2</layout>
             <url>${knime.tp.p2}</url>
+        </repository>
+        <repository>
+            <id>p2-knime-svg</id>
+            <layout>p2</layout>
+            <url>${knime.svg.p2}</url>
         </repository>
     </repositories>
 

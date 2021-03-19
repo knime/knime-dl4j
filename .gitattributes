@@ -33,3 +33,4 @@
 *.sym binary filter=lfs diff=lfs merge=lfs
 *.msi binary filter=lfs diff=lfs merge=lfs
 *.tar.gz binary filter=lfs diff=lfs merge=lfs
+
