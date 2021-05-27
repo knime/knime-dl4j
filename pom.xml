@@ -83,37 +83,4 @@
         </repository>
     </repositories>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.tycho.extras</groupId>
-                <artifactId>tycho-source-feature-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>source-feature</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>source-feature</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludes>
-                        <plugin id="org.apache.commons.logging.log4j"/>
-                        <plugin id="org.apache.xerces.clfix"/>
-                        <plugin id="org.knime.ext.dl4j.bin.linux.x86_64.cpu"/>
-                        <plugin id="org.knime.ext.dl4j.bin.macosx.x86_64.cpu"/>
-                        <plugin id="org.knime.ext.dl4j.bin.windows.x86_64.cpu"/>
-                        <plugin id="org.knime.ext.dl4j.bin.linux.x86_64.gpu.cuda7_5"/>
-                        <plugin id="org.knime.ext.dl4j.bin.macosx.x86_64.gpu.cuda7_5"/>
-                        <plugin id="org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda7_5"/>
-                        <plugin id="org.knime.ext.dl4j.bin.linux.x86_64.gpu.cuda8_0"/>
-                        <plugin id="org.knime.ext.dl4j.bin.macosx.x86_64.gpu.cuda8_0"/>
-                        <plugin id="org.knime.ext.dl4j.bin.windows.x86_64.gpu.cuda8_0"/>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
