@@ -125,7 +125,6 @@ public class DL4JPluginActivator extends AbstractUIPlugin {
         //Note: all lower case!
         int offHeapLimit = plugin.getPreferenceStore().getInt(DL4JPreferencePage.P_OFF_HEAP_MEMORY_LIMIT);
         System.setProperty("org.bytedeco.javacpp.maxbytes", offHeapLimit + "M");
-        System.setProperty("org.bytedeco.javacpp.maxphysicalbytes", offHeapLimit + "M");
 
         LOGGER.debug("DL4J off-heap sizes: org.bytedeco.javacpp.Pointer.maxBytes(): " + Pointer.maxBytes());
         LOGGER.debug("DL4J off-heap sizes: org.bytedeco.javacpp.Pointer.maxPhysicalBytes(): " + Pointer.maxPhysicalBytes());
