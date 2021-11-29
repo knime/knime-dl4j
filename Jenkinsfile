@@ -15,6 +15,22 @@ properties([
 try {
     knimetools.defaultTychoBuild('org.knime.update.ext.dl4j')
 
+    // We need to exclude macosx from the workflowtest configuration, so we
+    // set the configs for the workflowtests here
+    String[] fsConfigurations = [ ]
+    if (params.USE_DEFAULT_TEST_CONFIGURATION == false) {
+        // this must be a real boolean test, because if the parameter is missing completey we don't want to end up here
+        for (c in (workflowTests.ALL_CONFIGURATIONS - 'macosx')) {
+            if (params[c]) {
+                fsConfigurations += c
+            }
+        }
+    } else if (BRANCH_NAME.startsWith('releases/')) {
+        fsConfigurations = workflowTests.DEFAULT_CONFIGURATIONS - 'macosx'
+    } else {
+        fsConfigurations = workflowTests.DEFAULT_FEATURE_BRANCH_CONFIGURATIONS - 'macosx'
+    }
+
     testConfigs = [
         WorkflowTests: {
              workflowTests.runTests(
@@ -27,13 +43,21 @@ try {
        },
        FilehandlingTests: {
             workflowTests.runFilehandlingTests (
+                configurations: fsConfigurations,
                 dependencies: [
                     repositories: [
-                        "knime-dl4j", "knime-distance", "knime-js-base", "knime-textprocessing", "knime-datageneration", "knime-r", "knime-database", "knime-kerberos"
+                        'knime-dl4j',
+                        'knime-distance',
+                        'knime-js-base',
+                        'knime-textprocessing',
+                        'knime-datageneration',
+                        'knime-r',
+                        'knime-database',
+                        'knime-kerberos'
                     ]
                 ],
             )
-        }
+       }
     ]
 
     parallel testConfigs
@@ -46,6 +70,6 @@ try {
     currentBuild.result = 'FAILURE'
     throw ex
 } finally {
-    notifications.notifyBuild(currentBuild.result);
+    notifications.notifyBuild(currentBuild.result)
 }
 /* vim: set shiftwidth=4 expandtab smarttab: */
