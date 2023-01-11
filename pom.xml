@@ -13,12 +13,12 @@
     <version>${revision}${changelist}</version>
     <packaging>pom</packaging>
 
-   <properties>
-		<revision>5.0.0</revision>
-		<changelist>-SNAPSHOT</changelist>
-		<feature-branch-extension.branchListProperty>git.branch</feature-branch-extension.branchListProperty>
-		<feature-branch-extension.appendArtifactoryProperties>false</feature-branch-extension.appendArtifactoryProperties>
-		<knime.sonar-env>Sonarcloud</knime.sonar-env>
+    <properties>
+        <revision>5.0.0</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <feature-branch-extension.branchListProperty>git.branch</feature-branch-extension.branchListProperty>
+        <feature-branch-extension.appendArtifactoryProperties>false</feature-branch-extension.appendArtifactoryProperties>
+        <knime.sonar-env>Sonarcloud</knime.sonar-env>
     </properties>
 
     <modules>
@@ -53,10 +53,10 @@
             <url>${knime.core.p2}</url>
         </repository>
         <repository>
-			<id>p2-knime-core-ui</id>
-			<layout>p2</layout>
-			<url>${knime.core.ui.p2}</url>
-		</repository>
+            <id>p2-knime-core-ui</id>
+            <layout>p2</layout>
+            <url>${knime.core.ui.p2}</url>
+        </repository>
         <repository>
             <id>p2-knime-expressions</id>
             <layout>p2</layout>
