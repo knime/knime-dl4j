@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.knime.features.ext.dl4j"
-      label="KNIME Deeplearning4J Integration (64bit only)"
+      label="KNIME Deeplearning4J Integration (64bit only) (legacy)"
       version="5.0.0.qualifier"
       provider-name="KNIME AG, Zurich, Switzerland">
 
