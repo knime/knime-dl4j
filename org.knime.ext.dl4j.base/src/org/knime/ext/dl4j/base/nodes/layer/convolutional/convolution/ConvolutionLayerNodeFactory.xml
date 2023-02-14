@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./conv.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Convolution Layer</name>
+    <name>Convolution Layer (legacy)</name>
     
     <shortDescription>
         Convolutional layer.
@@ -11,6 +11,10 @@
         This node adds a Convolutional layer to the Deep Learning Model supplied by the input port. 
         The layer performs convolution of the inputs (usually images) using a user defined number of 
         convolution kernels.
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+        </p>
         </intro>
         
         

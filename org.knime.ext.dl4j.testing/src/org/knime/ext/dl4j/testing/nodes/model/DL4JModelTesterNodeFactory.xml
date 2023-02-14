@@ -7,7 +7,13 @@
     </shortDescription>
     
     <fullDescription>
-        <intro>Compares Deep Learning Models and outputs configuration.</intro>
+        <intro>Compares Deep Learning Models and outputs configuration.
+        
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>        
+        </intro>
         
         
         <option name="Check Models for Differences?">Whether to compare the models.</option>

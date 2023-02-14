@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./learn.png" deprecated="true" type="Learner" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>DL4J Feedforward Learner</name>
+    <name>DL4J Feedforward Learner (legacy)</name>
     
     <shortDescription>
         Learner for Feedforward Deep Learning Models.
@@ -18,6 +18,11 @@
         of the new network for the new training run, because the network configuration can be changed between learner nodes. This way 
         methods like <a href="https://en.wikipedia.org/wiki/Inductive_transfer">Transfer Learning</a> can be implemented. The output 
         of the node is a learned Deep Learning Model containing the original configuration and tuned network weights and biases.
+        
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>        
         </intro>
 
         <tab name="Learning Parameters">

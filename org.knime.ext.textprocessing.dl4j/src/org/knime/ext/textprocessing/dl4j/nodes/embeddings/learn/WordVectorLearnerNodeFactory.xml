@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./learn.png" type="Learner" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Word Vector Learner</name>
+    <name>Word Vector Learner (legacy)</name>
     
     <shortDescription>
         Learn a Word Vector Model on labelled or unlabelled documents.
@@ -11,6 +11,11 @@
         or Strings. This results in a Word Vector model containing Neural Word Embeddings depending on the chosen learning
         method. For more information on Word Vectors see:
         <a href="http://deeplearning4j.org/word2vec">http://deeplearning4j.org/word2vec</a>
+        
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>        
         </intro>
         
     <tab name="Options">   

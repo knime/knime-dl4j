@@ -2,7 +2,7 @@
 <knimeNode icon="./predict.png" type="Predictor"
 	xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-	<name>DL4J Feedforward Predictor (Classification)</name>
+	<name>DL4J Feedforward Predictor (Classification) (legacy)</name>
 
 	<shortDescription>
 		Predictor for Feedforward Deep Learning Models.
@@ -15,6 +15,11 @@
 			output is a column containing the predicted class value for each
 			example in the input table. If specified, additional columns
 			containing the the probability for each class value will be appended.
+			
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>			
 		</intro>
 
 		<option name="Change prediction column name?">

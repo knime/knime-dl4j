@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./learn.png" type="Learner" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>DL4J Feedforward Learner (Classification)</name>
+    <name>DL4J Feedforward Learner (Classification) (legacy)</name>
     
     <shortDescription>
         Learner for Feedforward Deep Learning Models.
@@ -14,7 +14,12 @@
         node automatically adds an output layer to the network configuration, which can be also configured in the node
         dialog. For classification, the output layer will always use 'softmax' as the activation function and the number
         of outputs will be automatically set to match the number of unique labels used for training. The output of the
-        node is a trained deep learning model which can be used to predict the labels of unseen data instances.              
+        node is a trained deep learning model which can be used to predict the labels of unseen data instances.
+        
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>                     
         </intro>
 
         <tab name="Learning Parameters">          

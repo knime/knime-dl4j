@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./predict.png" deprecated="true" type="Predictor" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>DL4J Feedforward Predictor</name>
+    <name>DL4J Feedforward Predictor (legacy)</name>
     
     <shortDescription>
         Predictor for Feedforward Deep Learning Models.
@@ -13,7 +13,13 @@
         contained in the collection are the raw output activations of the last layer of the network. If specified and the activation of 
         the last layer is 'softmax' the raw activation can be interpreted as class probabilities and be associated with a class label 
         taken from the Deeplearning Model the model was trained on. The supplied data table needs to be in the same format as the table 
-        used for learning, meaning it needs to contain columns of the same name and type.</intro>
+        used for learning, meaning it needs to contain columns of the same name and type.
+        
+        <p>
+            The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
+		</p>        
+        </intro>
             
         <option name="Append softmax prediction?">
         Whether to append the predicted label to the output table. This is only possible if the output layer of the network

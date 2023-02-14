@@ -3,7 +3,7 @@
 	xmlns="http://knime.org/node/v4.1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://knime.org/node/v4.1 http://knime.org/node/v4.1.xsd">
-	<name>DL4J Model Writer</name>
+	<name>DL4J Model Writer (legacy)</name>
 
 	<shortDescription>
         Writes Deep Learning model port objects to a file.
@@ -22,6 +22,10 @@
             <a href="https://docs.knime.com/2021-06/analytics_platform_file_handling_guide/index.html#analytics-platform-file-systems"><i>file systems.</i></a> 
             <i>More information about file handling in KNIME can be found in the official</i> 
             <a href="https://docs.knime.com/latest/analytics_platform_file_handling_guide/index.html"><i>File Handling Guide.</i></a>
+            </p>
+            <p>
+            	The KNIME Deeplearning4J Integration has been marked as legacy with KNIME Analytics Platform 5.0 and will be deprecated in a future version. 
+            	If you are using this extension in a production workflow, consider switching to one of the other deep learning integrations available in KNIME Analytics Platform.
             </p>
 		</intro>
 		<option name="Write to">
