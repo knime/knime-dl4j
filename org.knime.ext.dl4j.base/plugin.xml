@@ -142,7 +142,7 @@
             icon="res/icons/missing.gif"
             level-id="dl4j"
             locked="true"
-            name="DL4J"
+            name="DL4J (legacy)"
             path="/labs/deeplearning/">
       </category>
    </extension>
