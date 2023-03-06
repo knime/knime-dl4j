@@ -2,7 +2,7 @@
 <feature
       id="org.knime.features.ext.textprocessing.dl4j"
       label="KNIME Textprocessing - Deeplearning4J Integration (64bit only) (legacy)"
-      version="5.0.0.qualifier"
+      version="5.1.0.qualifier"
       provider-name="KNIME AG, Zurich, Switzerland">
 
    <description>
@@ -732,7 +732,7 @@ propagated with or for interoperation with KNIME.
 
    <requires>
       <import feature="org.knime.features.ext.dl4j" version="5.0.0" match="greaterOrEqual"/>
-      <import feature="org.knime.features.ext.textprocessing" version="5.0.0.qualifier" match="greaterOrEqual"/>
+      <import feature="org.knime.features.ext.textprocessing" version="5.1.0.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
