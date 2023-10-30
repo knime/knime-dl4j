@@ -4,9 +4,9 @@ Bundle-Name: KNIME Deeplearning4J Integration Testing
 Bundle-SymbolicName: org.knime.ext.dl4j.testing;singleton:=true
 Bundle-Version: 5.2.0.qualifier
 Bundle-Vendor: KNIME AG, Zurich, Switzerland
-Require-Bundle: org.knime.core;bundle-version="[5.0.0,6.0.0)",
+Require-Bundle: org.knime.core;bundle-version="[5.2.0,6.0.0)",
   org.knime.ext.dl4j.libs;bundle-version="[0.8.0,0.9.0)",
-  org.knime.ext.dl4j.base;bundle-version="[5.0.0,6.0.0)"
+  org.knime.ext.dl4j.base;bundle-version="[5.2.0,6.0.0)"
 Eclipse-PlatformFilter: (osgi.arch=x86_64)
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.knime.ext.dl4j.testing
