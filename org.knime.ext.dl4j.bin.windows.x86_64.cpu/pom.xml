@@ -12,11 +12,10 @@
       <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>org.knime.ext.dl4j.bin.windows.x86_64.cpu</artifactId>
-  <version>0.9.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   
   <properties>
-    <revision>5.0.0</revision>
+    <revision>0.9.1</revision>
   </properties>
 
   <build>
