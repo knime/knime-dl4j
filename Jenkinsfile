@@ -7,7 +7,9 @@ properties([
     pipelineTriggers([
         upstream('knime-base/' + env.BRANCH_NAME.replaceAll('/', '%2F'))
     ]),
-    parameters(workflowTests.getConfigurationsAsParameters() + fsTests.getFSConfigurationsAsParameters()),
+    parameters(workflowTests.getConfigurationsAsParameters([
+        ignoreConfiguration: ['macosx-aarch']
+    ]) + fsTests.getFSConfigurationsAsParameters()),
     buildDiscarder(logRotator(numToKeepStr: '5')),
     disableConcurrentBuilds()
 ])
