@@ -271,7 +271,7 @@ public class ConfigurationUtils {
         final List<Pair<String, String>> inputs = new ArrayList<>();
         for (final String colName : featureColumns) {
             final DataColumnSpec colSpec = tableSpec.getColumnSpec(colName);
-            final String type = colSpec.getType().getName();
+            final String type = colSpec.getType().getIdentifier();
             inputs.add(new Pair<String, String>(colName, type));
         }
         return inputs;

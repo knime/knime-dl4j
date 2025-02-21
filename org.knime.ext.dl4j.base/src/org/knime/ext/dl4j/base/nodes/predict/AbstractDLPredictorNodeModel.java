@@ -180,7 +180,6 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
             if (spec.containsName(c.getFirst())) {
                 final DataColumnSpec colSpec = spec.getColumnSpec(c.getFirst());
 
-                String specType = colSpec.getType().getName();
                 String expectedType = c.getSecond();
 
                 // Backwards compatibility, Collections and Lists are interchangeable
@@ -188,7 +187,9 @@ public abstract class AbstractDLPredictorNodeModel extends AbstractDLNodeModel {
                     expectedType = "List";
                 }
 
-                if (!specType.equals(expectedType)) {
+                if (!(colSpec.getType().getIdentifier().equals(expectedType)
+                        // Also accept legacy names -- Added as part of AP-23571
+                    || colSpec.getType().getLegacyName().equals(expectedType))) {
                     throw new InvalidSettingsException(
                         "Table contains column: " + c.getFirst() + " but the column was not of expected type. Expected type: '"
                             + c.getSecond() + "' but was: '" + colSpec.getType().getName() + "'. Maybe the column was renamed.");
