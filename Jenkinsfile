@@ -8,7 +8,7 @@ properties([
         upstream('knime-base/' + env.BRANCH_NAME.replaceAll('/', '%2F'))
     ]),
     parameters(workflowTests.getConfigurationsAsParameters([
-        ignoreConfiguration: ['macosx-aarch']
+        ignoreConfiguration: ['macosx-aarch', 'macosx']
     ]) + fsTests.getFSConfigurationsAsParameters()),
     buildDiscarder(logRotator(numToKeepStr: '5')),
     disableConcurrentBuilds()
@@ -17,22 +17,6 @@ properties([
 try {
     knimetools.defaultTychoBuild('org.knime.update.ext.dl4j')
 
-    // We need to exclude macosx from the workflowtest configuration, so we
-    // set the configs for the workflowtests here
-    String[] fsConfigurations = [ ]
-    if (params.USE_DEFAULT_TEST_CONFIGURATION == false) {
-        // this must be a real boolean test, because if the parameter is missing completey we don't want to end up here
-        for (c in (workflowTests.ALL_CONFIGURATIONS - 'macosx')) {
-            if (params[c]) {
-                fsConfigurations += c
-            }
-        }
-    } else if (BRANCH_NAME.startsWith('releases/')) {
-        fsConfigurations = workflowTests.DEFAULT_CONFIGURATIONS - 'macosx'
-    } else {
-        fsConfigurations = workflowTests.DEFAULT_FEATURE_BRANCH_CONFIGURATIONS - 'macosx'
-    }
-
     testConfigs = [
         WorkflowTests: {
              workflowTests.runTests(
@@ -40,12 +24,13 @@ try {
                      repositories: ['knime-dl4j', 'knime-wide-data', 'knime-filehandling',
                      'knime-datageneration', 'knime-textprocessing', 'knime-distance',
                      'knime-r', 'knime-js-base', 'knime-database', 'knime-kerberos'],
-                 ]
+                 ],
+                ignoreConfiguration: ['macosx-aarch', 'macosx']
              )
        },
        FilehandlingTests: {
             workflowTests.runFilehandlingTests (
-                configurations: fsConfigurations,
+                ignoreConfiguration: ['macosx-aarch', 'macosx'],
                 dependencies: [
                     repositories: [
                         'knime-dl4j',
