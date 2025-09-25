@@ -121,7 +121,7 @@ public class FeedforwardRegressionPredictorNodeModel extends AbstractDLPredictor
 
         if (!isOutActivation(model.getLayers(), DL4JActivationFunction.identity)) {
             throw new InvalidSettingsException(
-                "The activation of the output layer is not identity! Maybe the wrong learner node is beeing used.");
+                "The activation of the output layer is not identity! Maybe the wrong learner node is being used.");
         }
 
         //write output to table
