@@ -732,7 +732,7 @@ propagated with or for interoperation with KNIME.
 
    <requires>
       <import feature="org.knime.features.ext.dl4j" version="5.9.0" match="greaterOrEqual"/>
-      <import feature="org.knime.features.ext.textprocessing" version="5.10.0" match="greaterOrEqual"/>
+      <import feature="org.knime.features.ext.textprocessing" version="5.12.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
